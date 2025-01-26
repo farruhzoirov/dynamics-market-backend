@@ -1,10 +1,13 @@
 import {registerAs} from "@nestjs/config";
+import * as dotenv from "dotenv";
 import * as process from "node:process";
 
+dotenv.config();
 
-export default registerAs('google', () => ({
-  CLIENT_ID: process.env.CLIENT_ID,
-  CLIENT_KEY: process.env.CLIENT_KEY,
+export const GOOGLE_BASED = 'GOOGLE_BASED';
+
+export default registerAs(GOOGLE_BASED, () => ({
+  GOOGLE_CLIENT_ID: process.env.GOOGLE_CLIENT_ID,
 }))
 
 

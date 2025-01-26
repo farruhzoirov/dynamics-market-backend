@@ -1,4 +1,4 @@
-import {Body, Controller, Post, UsePipes, ValidationPipe} from '@nestjs/common';
+import {Body, Controller, HttpCode, HttpStatus, Post, UsePipes, ValidationPipe} from '@nestjs/common';
 import {AuthService} from "./auth.service";
 // import {GoogleOauthGuard} from "./guards/google-oauth.guard";
 import {VerifyTokenDto} from "./dto/id_token.dto";
@@ -9,6 +9,7 @@ export class AuthController {
   }
 
   @Post('google')
+  @HttpCode(HttpStatus.OK)
   // @UseGuards(AuthGuard('google'))
   @UsePipes(ValidationPipe)
   async auth(@Body() body: VerifyTokenDto) {
