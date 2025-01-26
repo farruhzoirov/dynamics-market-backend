@@ -1,12 +1,12 @@
 import {NestFactory} from '@nestjs/core';
 import {AppModule} from './app.module';
 import {DocumentBuilder, SwaggerModule} from '@nestjs/swagger';
-import * as process from "node:process";
-import * as passport from "passport";
 
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
+
+  app.enableCors();
 
   // Swagger based
   const options = new DocumentBuilder()
