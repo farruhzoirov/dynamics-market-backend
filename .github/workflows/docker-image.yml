@@ -1,9 +1,9 @@
-name: Deploy to Heroku
+name: Deploy to Heroku using Docker
 
 on:
   push:
     branches:
-      - main
+      - main  # O'zgartirish kerak bo'lsa, o'zingiz ishlayotgan branchni qo'ying
 
 jobs:
   deploy:
@@ -13,15 +13,18 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v3
 
+      - name: Install Heroku CLI
+        run: curl https://cli-assets.heroku.com/install.sh | sh
+
       - name: Login to Heroku Container Registry
-        run: |
-          echo ${{ secrets.HEROKU_API_KEY }} | docker login --username=_ --password-stdin registry.heroku.com
+        run: heroku container:login
+        env:
+          HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
 
-      - name: Build and push Docker image
+      - name: Build and Push Docker Image
         run: |
-          docker build -t registry.heroku.com/${{ secrets.HEROKU_APP_NAME }}/web .
-          docker push registry.heroku.com/${{ secrets.HEROKU_APP_NAME }}/web
+          heroku container:push web -a ${{ secrets.HEROKU_APP_NAME }}
 
-      - name: Release to Heroku
+      - name: Release Docker Container
         run: |
           heroku container:release web -a ${{ secrets.HEROKU_APP_NAME }}
