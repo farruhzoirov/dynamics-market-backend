@@ -15,7 +15,7 @@ async function bootstrap() {
 
   // Swagger based
   const options = new DocumentBuilder()
-      .setTitle('DYNAMIC MARKETS APIS')
+      .setTitle('DYNAMIC MARKETS APIS 1')
       .setDescription("These apis for dynamics market")
       .setVersion('1.0')
       .addServer(`http://localhost:5000`, 'Local environment')
