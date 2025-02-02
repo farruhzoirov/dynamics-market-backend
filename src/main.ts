@@ -1,6 +1,7 @@
 import {NestFactory} from '@nestjs/core';
 import {AppModule} from './app.module';
 import {DocumentBuilder, SwaggerModule} from '@nestjs/swagger';
+import * as process from "node:process";
 
 
 async function bootstrap() {
@@ -24,10 +25,9 @@ async function bootstrap() {
   SwaggerModule.setup('api-docs', app, document);
 
   // Server is running here
-  await app.listen(5000, '0.0.0.0', () => {
+  await app.listen(process.env.PORT || 5000,  () => {
     console.log('Server started on port 5000.');
   });
-
 }
 
 bootstrap();

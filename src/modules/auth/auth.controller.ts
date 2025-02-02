@@ -20,9 +20,7 @@ export class AuthController {
       given_name: profile.given_name,
       family_name: profile.family_name
     });
-    return {
-      token: token
-    };
+    return token;
   }
 }
 

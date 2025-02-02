@@ -1,12 +1,13 @@
 import {Module} from '@nestjs/common';
+import {MongooseModule} from "@nestjs/mongoose";
+import {ConfigModule, ConfigService} from "@nestjs/config";
+
 import {AppController} from './app.controller';
 import {AppService} from './app.service';
 import {AuthModule} from './modules/auth/auth.module';
-import {ConfigModule, ConfigService} from "@nestjs/config";
-import {MongooseModule} from "@nestjs/mongoose";
+
 import databaseConfig, {CONFIG_DATABASE} from "./config/database.config";
 import googleConfig from "./config/google.config";
-import {PassportModule} from "@nestjs/passport";
 
 @Module({
   imports: [
@@ -24,7 +25,6 @@ import {PassportModule} from "@nestjs/passport";
       },
       inject: [ConfigService]
     }),
-    PassportModule.register({session: true}),
     AuthModule
   ],
   controllers: [AppController],

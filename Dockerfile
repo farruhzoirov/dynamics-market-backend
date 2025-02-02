@@ -1,4 +1,23 @@
-FROM ubuntu:latest
-LABEL authors="farruh"
+# 1. Base image sifatida Node.js foydalanamiz
+FROM node:18
 
-ENTRYPOINT ["top", "-b"]
+WORKDIR /usr/src/app
+
+COPY package.json package-lock.json ./
+
+RUN npm install --force
+
+COPY . .
+
+RUN npm run build
+
+
+ENV PORT=$PORT
+
+
+EXPOSE $PORT
+
+CMD ["node", "dist/main.js"]
+
+
+
