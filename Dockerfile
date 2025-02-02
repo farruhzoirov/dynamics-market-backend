@@ -11,9 +11,7 @@ COPY . .
 RUN npm run build
 
 
-ENV PORT=$PORT
 
-EXPOSE $PORT
 
 CMD ["node", "dist/main.js"]
 

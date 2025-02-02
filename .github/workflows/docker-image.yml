@@ -1,30 +1,29 @@
-name: Deploy to Heroku using Docker
+name: Deploy to Heroku
 
 on:
   push:
     branches:
-      - main  # O'zgartirish kerak bo'lsa, o'zingiz ishlayotgan branchni qo'ying
+      - main  # yoki master
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
-
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v3
-
-      - name: Install Heroku CLI
-        run: curl https://cli-assets.heroku.com/install.sh | sh
+      - uses: actions/checkout@v2
 
       - name: Login to Heroku Container Registry
-        run: heroku container:login
         env:
           HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
+        run: heroku container:login
 
-      - name: Build and Push Docker Image
+      - name: Build and push Docker image
+        env:
+          HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
         run: |
-          heroku container:push web -a ${{ secrets.HEROKU_APP_NAME }}
+          docker build -t registry.heroku.com/dynamics-market/web .
+          docker push registry.heroku.com/dynamics-market/web
 
-      - name: Release Docker Container
-        run: |
-          heroku container:release web -a ${{ secrets.HEROKU_APP_NAME }}
+      - name: Release
+        env:
+          HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
+        run: heroku container:release web -a dynamics-market
