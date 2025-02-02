@@ -8,7 +8,7 @@ import {ConfigService} from "@nestjs/config";
 import {User, UserDocument} from "../user/schemas/user.schema";
 
 // Interfaces
-import {jwtPayload} from "./interfaces/jwt-payload";
+import {JwtPayload} from "./interfaces/jwt-payload";
 
 const client = new OAuth2Client();
 
@@ -33,7 +33,7 @@ export class AuthService {
     }
   }
 
-  async generateJwtToken(payload: jwtPayload) {
+  async generateJwtToken(payload: JwtPayload) {
     return jwt.sign(payload, "JWT_SECRET", {expiresIn: "1w"});
   }
 
