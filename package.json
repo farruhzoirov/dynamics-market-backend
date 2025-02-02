@@ -5,13 +5,17 @@
   "author": "",
   "private": true,
   "license": "UNLICENSED",
+  "engines": {
+    "node": ">=14.0.0"
+  },
   "scripts": {
     "build": "nest build",
     "format": "prettier --write \"../src/**/*.ts\" \"test1/**/*.ts\"",
     "start": "nest start",
     "start:dev": "nest start --watch",
     "start:debug": "nest start --debug --watch",
-    "start:prod": "concurrently \"tsc --watch\" \"pm2 start dist/main.js --watch --name main\"",
+    "start:prod:1": "concurrently \"tsc --watch\" \"pm2 start dist/main.js --watch --name main\"",
+    "start:prod": "node dist/main.js",
     "lint": "eslint \"{src,apps,libs,test}/**/*.ts\" --fix",
     "test": "jest",
     "test:watch": "jest --watch",
