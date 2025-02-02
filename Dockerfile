@@ -1,5 +1,4 @@
-# 1. Base image sifatida Node.js foydalanamiz
-FROM node:18
+FROM node:18-alpine
 
 WORKDIR /usr/src/app
 
@@ -13,7 +12,6 @@ RUN npm run build
 
 
 ENV PORT=$PORT
-
 
 EXPOSE $PORT
 
