@@ -19,7 +19,7 @@ async function bootstrap() {
       .setDescription("These apis for dynamics market")
       .setVersion('1.0')
       .addServer(`http://localhost:5000`, 'Local environment')
-      .addServer('http://95.130.227.52:5000', 'Production')
+      .addServer('https://dynamics-market-437742f0667d.herokuapp.com', 'Production')
       .build();
   const document = SwaggerModule.createDocument(app, options);
   SwaggerModule.setup('api-docs', app, document);
