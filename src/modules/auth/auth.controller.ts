@@ -14,7 +14,6 @@ export class AuthController {
     const token = await this.authService.registerOrLoginUser(body.idToken)
     return {
       token: token,
-      name: "farruh"
     };
   }
 }

@@ -19,7 +19,6 @@ export class UserMiddleware implements NestMiddleware {
     }
 
     req.user = payload;
-
     next();
   }
 }

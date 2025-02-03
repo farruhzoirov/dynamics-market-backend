@@ -1,4 +1,4 @@
-import {Injectable} from '@nestjs/common';
+import {Injectable, NotFoundException} from '@nestjs/common';
 import {Model} from "mongoose";
 import {InjectModel} from "@nestjs/mongoose";
 
@@ -8,17 +8,22 @@ import {User, UserDocument} from "./schemas/user.schema";
 export class UserService {
   constructor(
       @InjectModel(User.name) private readonly userModel: Model<UserDocument>
-  ) {}
+  ) {
+  }
 
-  async getUserByToken(email: string) {
-    return this.userModel.findOne({email}).lean();
+  async getUserByToken(userId: string) {
+    const findUser = await this.userModel.findOne({_id: userId}).lean();
+    if (!findUser) {
+      throw new NotFoundException("User not found");
+    }
+    return findUser;
   }
 
   async getAllUsers() {
 
   }
 
-  async getUserById(userId: string){
+  async getUserById(userId: string) {
 
   }
 
@@ -26,7 +31,7 @@ export class UserService {
 
   }
 
-  async deleteUserById(userId: string){
+  async deleteUserById(userId: string) {
 
   }
 }

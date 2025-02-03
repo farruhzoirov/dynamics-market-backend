@@ -6,7 +6,6 @@ import * as process from "node:process";
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
-
   app.enableCors({
     origin: '*',
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
@@ -20,6 +19,7 @@ async function bootstrap() {
       .setVersion('1.0')
       .addServer(`http://localhost:5000`, 'Local environment')
       .addServer('https://dynamics-market-437742f0667d.herokuapp.com', 'Production')
+      .addBearerAuth()
       .build();
   const document = SwaggerModule.createDocument(app, options);
   SwaggerModule.setup('api-docs', app, document);

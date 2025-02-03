@@ -8,7 +8,7 @@ import {ConfigService} from "@nestjs/config";
 import {User, UserDocument} from "../user/schemas/user.schema";
 
 // Interfaces
-import {JwtPayload} from "./interfaces/jwt-payload";
+import {JwtPayload} from "../../shared/interfaces/jwt-payload";
 
 const client = new OAuth2Client();
 
