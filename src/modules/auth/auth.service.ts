@@ -49,7 +49,7 @@ export class AuthService {
       });
       return await this.generateJwtToken({
         id: newUser._id.toString(),
-        name: newUser.name,
+        firstName: newUser.firstName,
         lastName: newUser.lastName,
         email: newUser.email,
         role: newUser.role,
@@ -57,7 +57,7 @@ export class AuthService {
     }
     return await this.generateJwtToken({
       id: checkUser._id.toString(),
-      name: checkUser.name,
+      firstName: checkUser.firstName,
       lastName: checkUser.lastName,
       email: checkUser.email,
       role: checkUser.role,
