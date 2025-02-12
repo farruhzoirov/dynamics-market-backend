@@ -42,7 +42,7 @@ export class AuthService {
     const checkUser = await this.userModel.findOne({email: payload.email});
     if (!checkUser) {
       const newUser = await this.userModel.create({
-        name: payload.given_name,
+        firstName: payload.given_name,
         lastName: payload.family_name,
         email: payload.email,
         image: payload.picture,
