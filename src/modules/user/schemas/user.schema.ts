@@ -23,32 +23,32 @@ export class User {
     type: String,
     enum: UserRole,
     default: UserRole.user,
-    required: true
   })
   role: UserRole;
 
-  @Prop()
+  @Prop({default: []})
   location: []
 
-  @Prop()
+  @Prop({default: null})
   telegram: string
 
   @Prop({
     type: String,
+    default: null,
     enum: Gender,
   })
   gender: Gender
 
-  @Prop()
+  @Prop({default: null})
   regionId: string
 
-  @Prop()
+  @Prop({default: null})
   districtId: string
 
-  @Prop()
+  @Prop({default: null})
   address: string
 
-  @Prop()
+  @Prop({default: null})
   phone: string
 }
 
