@@ -7,8 +7,7 @@ export class CleanResponseInterceptor implements NestInterceptor {
   intercept(context: ExecutionContext, next: CallHandler): Observable<any> {
     return next.handle().pipe(
         map((data) => {
-          console.log(data);
-          if (data && typeof data === 'object') {
+          if (typeof data === 'object' || Array.isArray(data) ) {
 
             delete data.__v;
           }

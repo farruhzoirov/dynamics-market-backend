@@ -2,11 +2,11 @@ import {ApiProperty} from "@nestjs/swagger";
 import {IsNotEmpty, IsNumber, IsOptional, IsString} from "class-validator";
 
 
+// This dto for query parameters
 export class GetMainCategoryDto {
   @IsOptional()
   @IsNumber()
   page?: number;
-
 
   @IsOptional()
   @IsNumber()

@@ -25,6 +25,9 @@ export class MidCategory {
 
   @Prop({type: Types.ObjectId, ref: 'MainCategory' })
   mainCategory: Types.ObjectId;
+
+  @Prop({default: 1})
+  status: number;
 }
 
 

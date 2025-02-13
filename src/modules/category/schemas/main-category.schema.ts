@@ -22,6 +22,9 @@ export class MainCategory {
 
   @Prop()
   slugEn: string;
+
+  @Prop({default: 1})
+  status: number;
 }
 
 

@@ -25,6 +25,9 @@ export class SubCategory {
 
   @Prop({type: Types.ObjectId, ref: 'MidCategory'})
   midCategory: Types.ObjectId;
+
+  @Prop({default: 1})
+  status: number;
 }
 
 export const SubCategorySchema = SchemaFactory.createForClass(SubCategory);
