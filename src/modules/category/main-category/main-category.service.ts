@@ -2,7 +2,6 @@ import {Injectable} from '@nestjs/common';
 import {InjectModel} from "@nestjs/mongoose";
 import {Model} from "mongoose";
 import slugify from "slugify";
-import {v4 as uuid4} from 'uuid';
 
 import {
   AddingModelException,
@@ -53,9 +52,10 @@ export class MainCategoryService {
   async addMainCategory(body: IMainCategory) {
     try {
       const {nameUz, nameRu, nameEn} = body;
-      body.slugUz = `${slugify(nameUz)}-${uuid4().slice(0, 8)}`;
-      body.slugRu = `${slugify(nameRu)}-${uuid4().slice(0, 8)}`;
-      body.slugEn = `${slugify(nameEn)}-${uuid4().slice(0, 8)}`;
+      const randomPart = Math.random().toString().slice(-5);
+      body.slugUz = `${slugify(nameUz)}-${randomPart}`;
+      body.slugRu = `${slugify(nameRu)}-${randomPart}`;
+      body.slugEn = `${slugify(nameEn)}-${randomPart}`;
       await this.mainCategoryModel.create(body);
     } catch (err) {
       console.log(`adding mainCategory ====>  ${err.message}`);
