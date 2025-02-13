@@ -13,6 +13,7 @@ import {MainCategory, MainCategoryDocument} from "../schemas/main-category.schem
 import {IMainCategory} from "../interface/main-category";
 import {GetMainCategoryDto} from "../dto/main-category.dto";
 import {universalSearchSchema} from "../../../shared/helpers/search";
+import {generateUniqueSlug} from "../../../shared/helpers/generate-slugs";
 
 @Injectable()
 export class MainCategoryService {
@@ -52,10 +53,9 @@ export class MainCategoryService {
   async addMainCategory(body: IMainCategory) {
     try {
       const {nameUz, nameRu, nameEn} = body;
-      const randomPart = Math.random().toString().slice(-5);
-      body.slugUz = `${slugify(nameUz)}-${randomPart}`;
-      body.slugRu = `${slugify(nameRu)}-${randomPart}`;
-      body.slugEn = `${slugify(nameEn)}-${randomPart}`;
+      body.slugUz = generateUniqueSlug(nameUz);
+      body.slugRu = generateUniqueSlug(nameRu);
+      body.slugEn = generateUniqueSlug(nameEn);
       await this.mainCategoryModel.create(body);
     } catch (err) {
       console.log(`adding mainCategory ====>  ${err.message}`);
@@ -65,6 +65,8 @@ export class MainCategoryService {
 
   async updateMainCategory(body: IMainCategory) {
     try {
+
+
       await this.mainCategoryModel.updateOne({
         $set: {
           ...body,
