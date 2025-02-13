@@ -1,8 +1,7 @@
 import {Controller, HttpCode, HttpStatus, Post, Req, UseInterceptors} from '@nestjs/common';
+import {Request} from "express";
 import {UserService} from "./user.service";
 import {ApiBearerAuth, ApiTags} from "@nestjs/swagger";
-import {Request} from "express";
-
 
 import {JwtPayload} from "../../shared/interfaces/jwt-payload";
 import {CleanResponseInterceptor} from "../../shared/interceptors/clean-response";

@@ -1,4 +1,4 @@
-import {Injectable, UnauthorizedException} from '@nestjs/common';
+import {Injectable} from '@nestjs/common';
 import {InjectModel} from "@nestjs/mongoose";
 import {Model} from "mongoose";
 import * as jwt from 'jsonwebtoken';
@@ -6,9 +6,9 @@ import {OAuth2Client} from 'google-auth-library';
 import {ConfigService} from "@nestjs/config";
 // Schemas
 import {User, UserDocument} from "../user/schemas/user.schema";
-
 // Interfaces
 import {JwtPayload} from "../../shared/interfaces/jwt-payload";
+import {VerifyIdTokenException} from "../../shared/errors/auth/verify-id-token.exception";
 
 const client = new OAuth2Client();
 
@@ -29,7 +29,7 @@ export class AuthService {
       const payload = ticket.getPayload();
       return payload;
     } catch (error) {
-      throw new UnauthorizedException("Error while verifying token");
+      throw new VerifyIdTokenException("Error verifying id token");
     }
   }
 
@@ -47,6 +47,7 @@ export class AuthService {
         email: payload.email,
         image: payload.picture,
       });
+
       return await this.generateJwtToken({
         id: newUser._id.toString(),
         firstName: newUser.firstName,

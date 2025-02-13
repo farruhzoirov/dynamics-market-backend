@@ -1,15 +1,20 @@
 import {MiddlewareConsumer, Module, NestModule, RequestMethod} from '@nestjs/common';
 import {MongooseModule} from "@nestjs/mongoose";
 import {ConfigModule, ConfigService} from "@nestjs/config";
-
-import {AppController} from './app.controller';
-import {AppService} from './app.service';
-import {AuthModule} from './modules/auth/auth.module';
-
+// configs
 import databaseConfig, {CONFIG_DATABASE} from "./config/database.config";
 import googleConfig from "./config/google.config";
-import {UserMiddleware} from "./shared/middleware/user/user.middleware";
+// Middleware
+import {AuthMiddleware} from "./shared/middleware/auth.middleware";
+// Modules
+import {AuthModule} from './modules/auth/auth.module';
 import {UserModule} from "./modules/user/user.module";
+import {MainCategoryModule} from './modules/category/main-category/main-category.module';
+import {MidCategoryModule} from './modules/category/mid-category/mid-category.module';
+import {SubCategoryModule} from './modules/category/sub-category/sub-category.module';
+import {CategoryModule} from './modules/category/category.module';
+import {APP_GUARD} from "@nestjs/core";
+import {RolesGuard} from "./shared/guards/roles.guard";
 
 @Module({
   imports: [
@@ -28,16 +33,25 @@ import {UserModule} from "./modules/user/user.module";
       inject: [ConfigService]
     }),
     AuthModule,
-    UserModule
+    UserModule,
+    MainCategoryModule,
+    MidCategoryModule,
+    SubCategoryModule,
+    CategoryModule,
   ],
-  controllers: [AppController],
-  providers: [AppService],
+  providers: [
+    {
+      provide: APP_GUARD,
+      useClass: RolesGuard,
+    }
+  ],
 })
 
 export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {
     consumer
-        .apply(UserMiddleware)
-        .forRoutes({path: "user/get-user-by-token", method: RequestMethod.POST})
+        .apply(AuthMiddleware)
+        .exclude('/auth/google')
+        .forRoutes('*')
   }
 }

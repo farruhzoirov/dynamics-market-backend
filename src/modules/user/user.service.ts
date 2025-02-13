@@ -12,7 +12,7 @@ export class UserService {
   }
 
   async getUserByToken(userId: string) {
-    const findUser = await this.userModel.findOne({_id: userId}).lean();
+    const findUser = await this.userModel.findById({_id: userId}).lean();
     if (!findUser) {
       throw new NotFoundException("User not found");
     }
