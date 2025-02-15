@@ -39,7 +39,7 @@ import { UploaderModule } from './uploader/uploader.module';
     MidCategoryModule,
     SubCategoryModule,
     CategoryModule,
-    UploaderModule,
+    // UploaderModule,
   ],
   providers: [
     {
