@@ -1,8 +1,8 @@
-import {ApiProperty} from "@nestjs/swagger";
-import {IsArray, IsEmail, IsNotEmpty, IsNumber, IsOptional, IsString, Validate, ValidateNested} from "class-validator";
-import {ILocations} from "../interfaces/location";
-import {Gender} from "../enums/gender.enum";
 import {Type} from "class-transformer";
+import {IsArray, IsEmail, IsNotEmpty, IsNumber, IsOptional, IsString, ValidateNested} from "class-validator";
+import {ApiProperty} from "@nestjs/swagger";
+import {ILocations} from "../../../shared/interfaces/location";
+import {Gender} from "../enums/gender.enum";
 
 export class UpdateUserDto {
   @ApiProperty({required: true})
@@ -37,6 +37,7 @@ export class UpdateUserDto {
     description: "it will be user's telegram username"
   })
   @IsString()
+  @IsOptional()
   telegram: String
 
   @ApiProperty({
@@ -52,24 +53,28 @@ export class UpdateUserDto {
     required: false,
   })
   @IsString()
+  @IsOptional()
   regionId: String
 
   @ApiProperty({
     required: false,
   })
   @IsString()
+  @IsOptional()
   districtId: String
 
   @ApiProperty({
     required: false,
   })
   @IsString()
+  @IsOptional()
   address: String
 
   @ApiProperty({
     required: false,
   })
   @IsString()
+  @IsOptional()
   phone: String
 }
 
