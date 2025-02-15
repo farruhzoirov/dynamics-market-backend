@@ -1,7 +1,6 @@
 import {Injectable} from '@nestjs/common';
 import {InjectModel} from "@nestjs/mongoose";
 import {Model} from "mongoose";
-import slugify from "slugify";
 
 import {
   AddingModelException,
@@ -65,7 +64,17 @@ export class MainCategoryService {
 
   async updateMainCategory(body: IMainCategory) {
     try {
+      if (body.nameUz) {
+        body.slugUz = generateUniqueSlug(body.nameUz);
+      }
 
+      if (body.nameRu) {
+        body.slugRu = generateUniqueSlug(body.nameRu);
+      }
+
+      if (body.nameEn) {
+        body.slugEn = generateUniqueSlug(body.nameEn);
+      }
 
       await this.mainCategoryModel.updateOne({
         $set: {

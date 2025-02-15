@@ -11,12 +11,12 @@ export class User {
   firstName: string;
 
   @Prop({required: true})
+  lastName: string;
+
+  @Prop({required: true})
   email: string;
 
   @Prop({required: true})
-  lastName: string;
-
-  @Prop({required:true})
   image: string;
 
   @Prop({
@@ -26,7 +26,7 @@ export class User {
   })
   role: UserRole;
 
-  @Prop({default: []})
+  @Prop({type: [{lang: Number, lat: Number}], default: []})
   location: []
 
   @Prop({default: null})
@@ -51,6 +51,7 @@ export class User {
   @Prop({default: null})
   phone: string
 }
+
 
 
 export const UserSchema = SchemaFactory.createForClass(User);

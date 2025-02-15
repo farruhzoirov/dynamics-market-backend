@@ -34,7 +34,7 @@ export class AuthService {
   }
 
   async generateJwtToken(payload: JwtPayload) {
-    return jwt.sign(payload, "JWT_SECRET", {expiresIn: "1w"});
+    return jwt.sign(payload, "JWT_SECRET");
   }
 
   async registerOrLoginUser(idToken: string): Promise<string> {

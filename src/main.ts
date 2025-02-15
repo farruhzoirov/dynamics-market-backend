@@ -3,6 +3,7 @@ import {AppModule} from './app.module';
 import {DocumentBuilder, SwaggerModule} from '@nestjs/swagger';
 import * as process from "node:process";
 import {GlobalExceptionFilter} from "./shared/errors/global-exception";
+import {ValidationPipe} from "@nestjs/common";
 
 
 async function bootstrap() {
@@ -26,7 +27,6 @@ async function bootstrap() {
   SwaggerModule.setup('api-docs', app, document);
 
   // app.useGlobalFilters(new GlobalExceptionFilter());
-
   // Server is running here
   await app.listen(process.env.PORT || 5000,  () => {
     console.log('Server started on port 5000.');

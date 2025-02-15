@@ -3,6 +3,9 @@ import {Model} from "mongoose";
 import {InjectModel} from "@nestjs/mongoose";
 
 import {User, UserDocument} from "./schemas/user.schema";
+import {UpdateUserDto} from "./dto/user.dto";
+import {UpdatingModelException} from "../../shared/errors/model/model-based.exceptions";
+import * as jwt from 'jsonwebtoken';
 
 @Injectable()
 export class UserService {
@@ -27,8 +30,18 @@ export class UserService {
 
   }
 
-  async updateUser() {
-
+  async updateUserById(id: string, body: UpdateUserDto) {
+    try {
+      const updateUser = await this.userModel.findByIdAndUpdate(id,
+          {$set: body},
+          {new: true}
+      ).lean();
+      // Regenerate jwt token
+      return jwt.sign(updateUser, 'JWT_SECRET');
+    } catch (err) {
+      console.error('Error updating user', err.message);
+      throw new UpdatingModelException('Error updating user');
+    }
   }
 
   async deleteUserById(userId: string) {
