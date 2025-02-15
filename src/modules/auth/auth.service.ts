@@ -47,13 +47,19 @@ export class AuthService {
         email: payload.email,
         image: payload.picture,
       });
-
       return await this.generateJwtToken({
         id: newUser._id.toString(),
         firstName: newUser.firstName,
         lastName: newUser.lastName,
         email: newUser.email,
         role: newUser.role,
+        locations: [],
+        gender: null,
+        telegram: null,
+        regionId: null,
+        districtId: null,
+        address: null,
+        phone: null,
       });
     }
     return await this.generateJwtToken({
@@ -62,6 +68,13 @@ export class AuthService {
       lastName: checkUser.lastName,
       email: checkUser.email,
       role: checkUser.role,
+      locations: [],
+      gender: null,
+      telegram: null,
+      regionId: null,
+      districtId: null,
+      address: null,
+      phone: null,
     });
   }
 }
