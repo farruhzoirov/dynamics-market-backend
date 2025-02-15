@@ -15,7 +15,6 @@ import {SubCategoryModule} from './modules/category/sub-category/sub-category.mo
 import {CategoryModule} from './modules/category/category.module';
 import {APP_GUARD} from "@nestjs/core";
 import {RolesGuard} from "./shared/guards/roles.guard";
-import { UploaderModule } from './uploader/uploader.module';
 
 @Module({
   imports: [
