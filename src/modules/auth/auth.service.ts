@@ -48,7 +48,7 @@ export class AuthService {
         image: payload.picture,
       });
       return await this.generateJwtToken({
-        id: newUser._id.toString(),
+        _id: newUser._id.toString(),
         firstName: newUser.firstName,
         lastName: newUser.lastName,
         email: newUser.email,
@@ -63,7 +63,7 @@ export class AuthService {
       });
     }
     return await this.generateJwtToken({
-      id: checkUser._id.toString(),
+      _id: checkUser._id.toString(),
       firstName: checkUser.firstName,
       lastName: checkUser.lastName,
       email: checkUser.email,

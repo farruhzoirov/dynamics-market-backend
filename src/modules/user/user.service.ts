@@ -35,7 +35,6 @@ export class UserService {
       if (body.email) {
         delete body.email;
       }
-      console.log(body);
       const updateUser = await this.userModel.findByIdAndUpdate(id,
           {$set: body},
           {new: true}

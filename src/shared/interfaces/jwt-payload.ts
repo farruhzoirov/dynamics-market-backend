@@ -1,7 +1,7 @@
 import {ILocations} from "./location";
 
 export interface JwtPayload {
-  id: string;
+  _id: string;
   firstName: string;
   lastName: string;
   email: string;

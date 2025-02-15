@@ -32,18 +32,18 @@ export class UserController {
   @Post('get-user-by-token')
   async getUserByToken(@Req() req: Request) {
     const user = req.user as JwtPayload;
-    const getUser = await this.userService.getUserByToken(user.id);
+    const getUser = await this.userService.getUserByToken(user._id);
     return getUser
   }
 
   @HttpCode(HttpStatus.OK)
-  @Post('update')
+  @Post('update/')
   @UsePipes(new ValidationPipe({whitelist: true, forbidNonWhitelisted: true}))
   async updateUserById(
       @Req() req: Request,
       @Body() body: UpdateUserDto) {
     const user = req.user as JwtPayload;
-    const regeneratedJwtToken = await this.userService.updateUserById(user.id, body);
+    const regeneratedJwtToken = await this.userService.updateUserById(user._id, body);
     return {
       token: regeneratedJwtToken,
     }
