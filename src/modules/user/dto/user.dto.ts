@@ -1,36 +1,36 @@
 import {ApiProperty} from "@nestjs/swagger";
-import {IsArray, IsEmail, IsNumber, IsOptional, IsString, Validate, ValidateNested} from "class-validator";
-import {ILocation} from "../interfaces/location";
+import {IsArray, IsEmail, IsNotEmpty, IsNumber, IsOptional, IsString, Validate, ValidateNested} from "class-validator";
+import {ILocations} from "../interfaces/location";
 import {Gender} from "../enums/gender.enum";
 import {Type} from "class-transformer";
 
 export class UpdateUserDto {
-  @ApiProperty({required: false})
-  @IsOptional()
+  @ApiProperty({required: true})
   @IsString()
+  @IsNotEmpty()
   firstName: string;
 
-  @ApiProperty({required: false})
-  @IsOptional()
+  @ApiProperty({required: true})
   @IsString()
+  @IsNotEmpty()
   lastName: string;
 
   @ApiProperty({required: false})
-  @IsOptional()
   @IsEmail()
+  @IsNotEmpty()
   email: String
 
   @ApiProperty({
     required: false,
     type: 'array',
-    items: {type: 'object', properties: {lang: {type: 'number'}, lat: {type: 'number'}}},
-    description: 'Array of location objects with lang and lat',
+    items: {type: 'object', properties: {long: {type: 'number'}, lat: {type: 'number'}}},
+    description: 'Array of location objects with long and lat',
   })
   @IsOptional()
   @IsArray()
   @ValidateNested({ each: true })
-  @Type(() => LocationDto)
-  location: ILocation[]
+  @Type(() => LocationsDto)
+  locations: ILocations[]
 
   @ApiProperty({
     required: false,
@@ -45,6 +45,7 @@ export class UpdateUserDto {
     description: "User gender (male or female)"
   })
   @IsString()
+  @IsNotEmpty()
   gender: Gender
 
   @ApiProperty({
@@ -72,9 +73,9 @@ export class UpdateUserDto {
   phone: String
 }
 
-export class LocationDto {
+export class LocationsDto {
   @IsNumber()
-  lang: number;
+  long: number;
 
   @IsNumber()
   lat: number;

@@ -2,6 +2,7 @@ import {Injectable, NestMiddleware} from '@nestjs/common';
 import {NextFunction, Request, Response} from "express";
 import * as jwt from 'jsonwebtoken';
 import {InvalidTokenException, NoTokenProvidedException} from "../errors/auth/auth.exception";
+import {JwtPayload} from "jsonwebtoken";
 
 @Injectable()
 export class AuthMiddleware implements NestMiddleware {
@@ -15,7 +16,7 @@ export class AuthMiddleware implements NestMiddleware {
 
     try {
       const payload = jwt.verify(extractToken, "JWT_SECRET");
-      req.user = payload;
+      req.user = payload as JwtPayload;
       next();
     } catch (e) {
       throw new InvalidTokenException("Invalid token");

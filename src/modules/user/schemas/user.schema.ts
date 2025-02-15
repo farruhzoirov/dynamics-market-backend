@@ -26,8 +26,8 @@ export class User {
   })
   role: UserRole;
 
-  @Prop({type: [{lang: Number, lat: Number}], default: []})
-  location: []
+  @Prop({type: [{long: Number, lat: Number}], default: []})
+  locations: []
 
   @Prop({default: null})
   telegram: string

@@ -6,10 +6,11 @@ import {
   Param,
   Post,
   Req,
-  UseInterceptors, UsePipes,
+  UseInterceptors,
+  UsePipes,
   ValidationPipe
 } from '@nestjs/common';
-import {ApiBearerAuth, ApiParam, ApiTags} from "@nestjs/swagger";
+import {ApiBearerAuth, ApiTags} from "@nestjs/swagger";
 import {Request} from "express";
 
 import {UserService} from "./user.service";
@@ -36,12 +37,13 @@ export class UserController {
   }
 
   @HttpCode(HttpStatus.OK)
-  @Post('update/:id')
-  @UsePipes(new ValidationPipe({ whitelist: true, forbidNonWhitelisted: true }))
+  @Post('update')
+  @UsePipes(new ValidationPipe({whitelist: true, forbidNonWhitelisted: true}))
   async updateUserById(
-      @Param('id', new ValidateObjectIdPipe()) id: string,
+      @Req() req: Request,
       @Body() body: UpdateUserDto) {
-    const regeneratedJwtToken = await this.userService.updateUserById(id, body);
+    const user = req.user as JwtPayload;
+    const regeneratedJwtToken = await this.userService.updateUserById(user.id, body);
     return {
       token: regeneratedJwtToken,
     }
