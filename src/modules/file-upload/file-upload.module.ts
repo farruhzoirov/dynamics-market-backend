@@ -28,8 +28,7 @@ const fileFilter = (req: any, file: Express.Multer.File, cb: Function) => {
     MulterModule.register({
       storage: diskStorage({
         destination: async (req, file, cb) => {
-          const model = req.params.model;
-          const destinationDirectory = path.join('./uploads', model);
+          const destinationDirectory = path.join('./uploads');
           if (!fs.existsSync(destinationDirectory)) {
             await fs.promises.mkdir(destinationDirectory, {recursive: true});
           }

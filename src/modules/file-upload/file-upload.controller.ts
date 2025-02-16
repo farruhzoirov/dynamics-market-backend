@@ -32,7 +32,8 @@ export class FileUploadController {
       }
     }
   })
-  @Post(':model')
+
+  @Post('upload')
   @UseInterceptors(FilesInterceptor('file', 10))
   uploadFile(@Param('model') model: string, @UploadedFiles() files: Express.Multer.File[]) {
     return this.fileUploadService.handleFileUpload(files);
