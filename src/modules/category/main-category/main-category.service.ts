@@ -9,7 +9,7 @@ import {
 } from "../../../shared/errors/model/model-based.exceptions";
 
 import {MainCategory, MainCategoryDocument} from "../schemas/main-category.schema";
-import {IMainCategory} from "../interface/main-category";
+import {IMainCategory} from "../interface/categories";
 import {CreateMainCategoryDto, GetMainCategoryDto, UpdateMainCategoryDto} from "../dto/main-category.dto";
 import {universalSearchSchema} from "../../../shared/helpers/search";
 import {generateUniqueSlug} from "../../../shared/helpers/generate-slugs";
@@ -21,10 +21,10 @@ export class MainCategoryService {
       private readonly mainCategoryModel: Model<MainCategoryDocument>) {
   }
 
-  async getAllMainCategory(body: GetMainCategoryDto) {
+  async getMainCategoriesList(body: GetMainCategoryDto) {
     const payload = {
       page: body?.page ? body.page : 1,
-      limit: body?.limit ? body.limit : 20,
+      limit: body?.limit ? body.limit : null,
       select: body?.select ? body.select.split(",") : null,
       search: body?.search || null,
     }
@@ -36,16 +36,10 @@ export class MainCategoryService {
         .limit(payload.limit)
         .select(payload.select ? payload.select : "-__v")
         .lean();
-    const count = await this.mainCategoryModel.countDocuments();
-    const pagination = {
-      total: count,
-      limit: payload.limit,
-      page: payload.page,
-      pages: Math.ceil(count / payload.limit),
-    }
+    const total = await this.mainCategoryModel.countDocuments();
     return {
       data: getMatchingMainCategories,
-      pagination,
+      total,
     }
   }
 

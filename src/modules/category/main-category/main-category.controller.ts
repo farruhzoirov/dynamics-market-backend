@@ -45,14 +45,14 @@ export class MainCategoryController {
 
   @Post('get-list')
   @HttpCode(HttpStatus.OK)
-  @Roles(UserRole.superAdmin, UserRole.admin, UserRole.user)
-  async getAllMainCategory(@Body() body: GetMainCategoryDto) {
-    return await this.mainCategoryService.getAllMainCategory(body);
+  @Roles(UserRole.superAdmin, UserRole.admin)
+  async getMainCategoriesList(@Body() body: GetMainCategoryDto) {
+    return await this.mainCategoryService.getMainCategoriesList(body);
   }
 
 
   @Post('add')
-  @Roles(UserRole.superAdmin, UserRole.admin, UserRole.user)
+  @Roles(UserRole.superAdmin, UserRole.admin)
   async addMainCategory(@Body() body: CreateMainCategoryDto) {
     await this.mainCategoryService.addMainCategory(body);
     return new CreatedSuccessResponse();
@@ -61,7 +61,7 @@ export class MainCategoryController {
   @ApiProperty({name: '_id'})
   @Post('update')
   @HttpCode(HttpStatus.OK)
-  @Roles(UserRole.superAdmin, UserRole.admin, UserRole.user)
+  @Roles(UserRole.superAdmin, UserRole.admin)
   async updateMainCategory(@Body() updateBody: UpdateMainCategoryDto, @Body('_id', ValidateObjectIdPipe) _id: string) {
     await this.mainCategoryService.updateMainCategory(updateBody);
     return new UpdatedSuccessResponse();
@@ -69,7 +69,7 @@ export class MainCategoryController {
 
   @Post('delete')
   @HttpCode(HttpStatus.OK)
-  @Roles(UserRole.superAdmin, UserRole.admin, UserRole.user)
+  @Roles(UserRole.superAdmin, UserRole.admin)
   async deleteMainCategory( @Body() body: DeleteMainCategoryDto, @Body('_id', ValidateObjectIdPipe) _id: string) {
     await this.mainCategoryService.deleteMainCategory(body._id);
     return new DeletedSuccessResponse();
