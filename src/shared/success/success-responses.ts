@@ -36,3 +36,16 @@ export class DeletedSuccessResponse {
     this.message = message;
   }
 }
+
+
+export class FileDeletedSuccessResponse {
+  readonly statusCode: number;
+  readonly message: string;
+  readonly errorCode: null;
+
+  constructor(message: string = " File deleted successfully",) {
+    this.errorCode = null;
+    this.statusCode = HttpStatus.OK;
+    this.message = message;
+  }
+}

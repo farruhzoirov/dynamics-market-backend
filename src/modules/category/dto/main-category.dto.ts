@@ -1,21 +1,25 @@
 import {ApiProperty} from "@nestjs/swagger";
-import {IsNotEmpty, IsNumber, IsOptional, IsString} from "class-validator";
+import {IS_ARRAY, IsArray, IsNotEmpty, IsNumber, IsOptional, IsString} from "class-validator";
 
 
 // This dto for query parameters
 export class GetMainCategoryDto {
+  @ApiProperty()
   @IsOptional()
   @IsNumber()
   page?: number;
 
+  @ApiProperty()
   @IsOptional()
   @IsNumber()
   limit?: number;
 
+  @ApiProperty()
   @IsOptional()
   @IsString()
   select?: string;
 
+  @ApiProperty()
   @IsOptional()
   @IsString()
   search?: string;
@@ -38,10 +42,31 @@ export class CreateMainCategoryDto {
   @IsNotEmpty()
   nameEn: string;
 
+
+  @IsString()
+  @IsOptional()
+  slugUz?: string;
+
+  @IsString()
+  @IsOptional()
+  slugRu?: string;
+
+  @IsString()
+  @IsOptional()
+  slugEn?: string;
+
+  @ApiProperty()
+  @IsOptional()
+  @IsArray()
+  images: string[];
 }
 
 
 export class UpdateMainCategoryDto {
+  @ApiProperty()
+  @IsString()
+  _id: string;
+
   @ApiProperty({example: "Asosiy toifa nomi (uz)", description: "Main category name in Uzbek"})
   @IsString()
   nameUz: string;
@@ -54,18 +79,22 @@ export class UpdateMainCategoryDto {
   @IsString()
   nameEn: string;
 
-  @ApiProperty({example: "asosiy-toifa", description: "Slug for category in Uzbek"})
   @IsString()
-  slugUz: string;
+  @IsOptional()
+  slugUz?: string;
 
-  @ApiProperty({example: "osnovnaya-kategoriya", description: "Slug for category in Russian"})
   @IsString()
-  slugRu: string;
+  @IsOptional()
+  slugRu?: string;
 
-  @ApiProperty({example: "main-category", description: "Slug for category in English"})
   @IsString()
-  @IsNotEmpty()
-  slugEn: string;
+  @IsOptional()
+  slugEn?: string;
+
+  @ApiProperty()
+  @IsOptional()
+  @IsArray()
+  images: string[];
 }
 
 
@@ -73,5 +102,5 @@ export class DeleteMainCategoryDto {
   @ApiProperty({required: true})
   @IsString()
   @IsNotEmpty()
-  id: string;
+  _id: string;
 }

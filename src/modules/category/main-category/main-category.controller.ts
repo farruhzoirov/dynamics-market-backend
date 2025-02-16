@@ -1,51 +1,53 @@
-import {Body, Controller, Get, Post, Query, UploadedFiles, UseInterceptors} from '@nestjs/common';
-import {ApiBearerAuth, ApiOkResponse, ApiOperation, ApiQuery} from "@nestjs/swagger";
+import {
+  Body,
+  Controller,
+  HttpCode,
+  HttpStatus,
+  Post,
+  UploadedFiles,
+  UseInterceptors,
+  UsePipes,
+  ValidationPipe
+} from '@nestjs/common';
+
+import {ApiBearerAuth, ApiProperty} from "@nestjs/swagger";
+import {FileInterceptor} from "@nestjs/platform-express";
+
+// Dto
 import {
   CreateMainCategoryDto,
   DeleteMainCategoryDto,
   GetMainCategoryDto,
   UpdateMainCategoryDto
 } from "../dto/main-category.dto";
-
+// Service
 import {MainCategoryService} from "./main-category.service";
+// Decorator
 import {Roles} from "../../../shared/decorator/roles.decarator";
+// Enum
 import {UserRole} from "../../user/enums/roles.enum";
+// SuccessResponse
 import {
   CreatedSuccessResponse,
   DeletedSuccessResponse,
   UpdatedSuccessResponse
 } from "../../../shared/success/success-responses";
-import {FileInterceptor} from "@nestjs/platform-express";
+// Pipe
+import {ValidateObjectIdPipe} from "../../../shared/pipes/object-id.pipe";
+
 
 @Controller('main-category')
 @ApiBearerAuth()
+@UsePipes(new ValidationPipe({whitelist: true}))
 export class MainCategoryController {
   constructor(private readonly mainCategoryService: MainCategoryService) {
   }
 
-  @ApiOperation({summary: "Get all main categories with search and pagination"})
-  @ApiOkResponse({description: "Returns a list of main categories"})
-  @ApiQuery({name: "page", required: false, type: Number, example: 1, description: "Page number for pagination"})
-  @ApiQuery({name: "limit", required: false, type: Number, example: 20, description: "Number of items per page"})
-  @ApiQuery({
-    name: "select",
-    required: false,
-    type: String,
-    example: "nameUz,nameRu",
-    description: "Fields to select (comma-separated)"
-  })
-  @ApiQuery({
-    name: "search",
-    required: false,
-    type: String,
-    example: "nodejs",
-    description: "Search term (searches in all language fields)"
-  })
-
-  @Get('all')
+  @Post('all')
+  @HttpCode(HttpStatus.OK)
   @Roles(UserRole.superAdmin, UserRole.admin, UserRole.user)
-  async getAllMainCategory(@Query() query: GetMainCategoryDto) {
-    return await this.mainCategoryService.getAllMainCategory(query);
+  async getAllMainCategory(@Body() body: GetMainCategoryDto) {
+    return await this.mainCategoryService.getAllMainCategory(body);
   }
 
 
@@ -56,17 +58,20 @@ export class MainCategoryController {
     return new CreatedSuccessResponse();
   }
 
+  @ApiProperty({name: '_id'})
   @Post('update')
-  @Roles(UserRole.superAdmin, UserRole.admin)
-  async updateMainCategory(@Body() updateBody: UpdateMainCategoryDto) {
+  @HttpCode(HttpStatus.OK)
+  @Roles(UserRole.superAdmin, UserRole.admin, UserRole.user)
+  async updateMainCategory(@Body() updateBody: UpdateMainCategoryDto, @Body('_id', ValidateObjectIdPipe) _id: string) {
     await this.mainCategoryService.updateMainCategory(updateBody);
     return new UpdatedSuccessResponse();
   }
 
   @Post('delete')
-  @Roles(UserRole.superAdmin, UserRole.admin)
-  async deleteMainCategory(body: DeleteMainCategoryDto) {
-    await this.mainCategoryService.deleteMainCategory(body.id);
+  @HttpCode(HttpStatus.OK)
+  @Roles(UserRole.superAdmin, UserRole.admin, UserRole.user)
+  async deleteMainCategory( @Body() body: DeleteMainCategoryDto, @Body('_id', ValidateObjectIdPipe) _id: string) {
+    await this.mainCategoryService.deleteMainCategory(body._id);
     return new DeletedSuccessResponse();
   }
 
@@ -77,4 +82,3 @@ export class MainCategoryController {
     console.log(file);
   }
 }
-

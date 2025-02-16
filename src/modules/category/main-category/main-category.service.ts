@@ -10,7 +10,7 @@ import {
 
 import {MainCategory, MainCategoryDocument} from "../schemas/main-category.schema";
 import {IMainCategory} from "../interface/main-category";
-import {GetMainCategoryDto} from "../dto/main-category.dto";
+import {CreateMainCategoryDto, GetMainCategoryDto, UpdateMainCategoryDto} from "../dto/main-category.dto";
 import {universalSearchSchema} from "../../../shared/helpers/search";
 import {generateUniqueSlug} from "../../../shared/helpers/generate-slugs";
 
@@ -21,12 +21,12 @@ export class MainCategoryService {
       private readonly mainCategoryModel: Model<MainCategoryDocument>) {
   }
 
-  async getAllMainCategory(query: GetMainCategoryDto) {
+  async getAllMainCategory(body: GetMainCategoryDto) {
     const payload = {
-      page: query?.page ? +query.page : 1,
-      limit: query?.limit ? +query.limit : 20,
-      select: query?.select ? query.select.split(",") : null,
-      search: query?.search || null,
+      page: body?.page ? body.page : 1,
+      limit: body?.limit ? body.limit : 20,
+      select: body?.select ? body.select.split(",") : null,
+      search: body?.search || null,
     }
     const skip = (payload.page - 1) * payload.limit;
     const filter = await universalSearchSchema(payload.search, ['nameUz', 'nameRu', 'nameEn']);
@@ -49,7 +49,7 @@ export class MainCategoryService {
     }
   }
 
-  async addMainCategory(body: IMainCategory) {
+  async addMainCategory(body: CreateMainCategoryDto) {
     try {
       const {nameUz, nameRu, nameEn} = body;
       body.slugUz = generateUniqueSlug(nameUz);
@@ -62,23 +62,23 @@ export class MainCategoryService {
     }
   }
 
-  async updateMainCategory(body: IMainCategory) {
+  async updateMainCategory(updateBody: UpdateMainCategoryDto) {
     try {
-      if (body.nameUz) {
-        body.slugUz = generateUniqueSlug(body.nameUz);
+      if (updateBody.nameUz) {
+        updateBody.slugUz = generateUniqueSlug(updateBody.nameUz);
       }
 
-      if (body.nameRu) {
-        body.slugRu = generateUniqueSlug(body.nameRu);
+      if (updateBody.nameRu) {
+        updateBody.slugRu = generateUniqueSlug(updateBody.nameRu);
       }
 
-      if (body.nameEn) {
-        body.slugEn = generateUniqueSlug(body.nameEn);
+      if (updateBody.nameEn) {
+        updateBody.slugEn = generateUniqueSlug(updateBody.nameEn);
       }
 
-      await this.mainCategoryModel.updateOne({
+      await this.mainCategoryModel.findByIdAndUpdate(updateBody._id, {
         $set: {
-          ...body,
+          ...updateBody,
         }
       })
     } catch (err) {
@@ -87,9 +87,9 @@ export class MainCategoryService {
     }
   }
 
-  async deleteMainCategory(id: string) {
+  async deleteMainCategory(_id: string) {
     try {
-      await this.mainCategoryModel.deleteOne({_id: id});
+      await this.mainCategoryModel.deleteOne({_id});
     } catch (err) {
       console.log(`deleting mainCategory ====>  ${err.message}`);
       throw new DeletingModelException();

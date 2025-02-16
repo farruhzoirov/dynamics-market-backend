@@ -23,6 +23,9 @@ export class MainCategory {
   @Prop()
   slugEn: string;
 
+  @Prop({default: []})
+  images: string[];
+
   @Prop({default: 1})
   status: number;
 }

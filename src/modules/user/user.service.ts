@@ -1,7 +1,6 @@
-import {Injectable, NotFoundException} from '@nestjs/common';
+import {Injectable} from '@nestjs/common';
 import {Model} from "mongoose";
 import {InjectModel} from "@nestjs/mongoose";
-
 import {User, UserDocument} from "./schemas/user.schema";
 import {UpdateUserDto} from "./dto/user.dto";
 import {UpdatingModelException} from "../../shared/errors/model/model-based.exceptions";
@@ -14,14 +13,6 @@ export class UserService {
   ) {
   }
 
-  async getUserByToken(userId: string) {
-    const findUser = await this.userModel.findById({_id: userId}).lean();
-    if (!findUser) {
-      throw new NotFoundException("User not found");
-    }
-    return findUser;
-  }
-
   async getAllUsers() {
 
   }
@@ -32,9 +23,6 @@ export class UserService {
 
   async updateUserById(id: string, body: UpdateUserDto) {
     try {
-      if (body.email) {
-        delete body.email;
-      }
       const updateUser = await this.userModel.findByIdAndUpdate(id,
           {$set: body},
           {new: true}

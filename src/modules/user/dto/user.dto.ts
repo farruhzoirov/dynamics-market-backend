@@ -15,10 +15,10 @@ export class UpdateUserDto {
   @IsNotEmpty()
   lastName: string;
 
-  @ApiProperty({required: false})
-  @IsEmail()
-  @IsNotEmpty()
-  email: String
+  // @ApiProperty({required: false})
+  // @IsEmail()
+  // @IsNotEmpty()
+  // email: String
 
   @ApiProperty({
     required: false,
