@@ -4,10 +4,11 @@ import {DocumentBuilder, SwaggerModule} from '@nestjs/swagger';
 import * as process from "node:process";
 import {GlobalExceptionFilter} from "./shared/errors/global-exception";
 import {ValidationPipe} from "@nestjs/common";
+import {NestExpressApplication} from "@nestjs/platform-express";
 
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule);
+  const app = await NestFactory.create<NestExpressApplication>(AppModule);
   app.enableCors({
     origin: '*',
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
@@ -26,10 +27,12 @@ async function bootstrap() {
   const document = SwaggerModule.createDocument(app, options);
   SwaggerModule.setup('api-docs', app, document);
 
-  // app.useGlobalFilters(new GlobalExceptionFilter());
+  app.useStaticAssets('uploads', { prefix: '/uploads' });
+
   // Server is running here
-  await app.listen(process.env.PORT || 5000,  () => {
-    console.log('Server started on port 5000.');
+  const PORT = process.env.PORT || 5000;
+  await app.listen(PORT,  () => {
+    console.log(`Server started on port ${PORT}.`);
   });
 }
 
