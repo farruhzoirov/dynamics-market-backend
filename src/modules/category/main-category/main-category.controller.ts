@@ -74,11 +74,4 @@ export class MainCategoryController {
     await this.mainCategoryService.deleteMainCategory(body._id);
     return new DeletedSuccessResponse();
   }
-
-  @Post('upload')
-  @UseInterceptors(FileInterceptor('image'))
-  @Roles(UserRole.superAdmin, UserRole.admin, UserRole.user)
-  async uploadUserImage(@UploadedFiles() file: Express.Multer.File) {
-    console.log(file);
-  }
 }
