@@ -43,7 +43,7 @@ export class MainCategoryController {
   constructor(private readonly mainCategoryService: MainCategoryService) {
   }
 
-  @Post('all')
+  @Post('get-list')
   @HttpCode(HttpStatus.OK)
   @Roles(UserRole.superAdmin, UserRole.admin, UserRole.user)
   async getAllMainCategory(@Body() body: GetMainCategoryDto) {
