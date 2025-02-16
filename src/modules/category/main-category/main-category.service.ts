@@ -85,11 +85,11 @@ export class MainCategoryService {
 
   async deleteMainCategory(_id: string) {
     try {
-
       const findCategoryFromMidCategory = await this.midCategoryModel.findOne({mainCategory: _id}).lean();
       if (findCategoryFromMidCategory) {
-        throw new CantDeleteModelException()
+        return new CantDeleteModelException()
       }
+
       await this.mainCategoryModel.deleteOne({_id});
 
     } catch (err) {

@@ -5,6 +5,7 @@ import * as process from "node:process";
 import {GlobalExceptionFilter} from "./shared/errors/global-exception";
 import {ValidationPipe} from "@nestjs/common";
 import {NestExpressApplication} from "@nestjs/platform-express";
+import {AllExceptionsTo200Interceptor} from "./shared/interceptors/universal-response";
 
 
 async function bootstrap() {
@@ -28,7 +29,7 @@ async function bootstrap() {
   SwaggerModule.setup('api-docs', app, document);
 
   app.useStaticAssets('uploads', { prefix: '/uploads' });
-
+  app.useGlobalInterceptors(new AllExceptionsTo200Interceptor());
   // Server is running here
   const PORT = process.env.PORT || 5000;
   await app.listen(PORT,  () => {
