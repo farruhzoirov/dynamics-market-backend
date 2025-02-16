@@ -3,7 +3,7 @@ import {InjectModel} from "@nestjs/mongoose";
 import {Model} from "mongoose";
 
 import {
-  AddingModelException,
+  AddingModelException, CantDeleteModelException,
   DeletingModelException,
   UpdatingModelException
 } from "../../../shared/errors/model/model-based.exceptions";
@@ -11,14 +11,16 @@ import {
 import {universalSearchSchema} from "../../../shared/helpers/search";
 import {generateUniqueSlug} from "../../../shared/helpers/generate-slugs";
 import {MidCategory, MidCategoryDocument} from "../schemas/mid-category.schema";
-import {CreateMidCategoryDto, GetMidCategoryDto, UpdateMidCategoryDto} from "../dto/min-category.dto";
+import {GetMidCategoryDto} from "../dto/min-category.dto";
 import {IMidCategory} from "../interface/categories";
+import {SubCategory, SubCategoryDocument} from "../schemas/sub-category.schema";
 
 @Injectable()
 export class MidCategoryService {
   constructor(
-      @InjectModel(MidCategory.name)
-      private readonly midCategoryModel: Model<MidCategoryDocument>) {
+      @InjectModel(MidCategory.name) private readonly midCategoryModel: Model<MidCategoryDocument>,
+      @InjectModel(SubCategory.name) private readonly subCategoryModel: Model<SubCategoryDocument>
+  ) {
   }
 
   async getMinCategoriesList(body: GetMidCategoryDto) {
@@ -92,7 +94,12 @@ export class MidCategoryService {
 
   async deleteMidCategory(_id: string) {
     try {
+      const findCategoryFromSubCategory = await this.subCategoryModel.findOne({midCategory: _id}).lean();
+      if (findCategoryFromSubCategory) {
+        throw new CantDeleteModelException()
+      }
       await this.midCategoryModel.deleteOne({_id});
+
     } catch (err) {
       console.log(`deleting midCategory ====>  ${err.message}`);
       throw new DeletingModelException();
