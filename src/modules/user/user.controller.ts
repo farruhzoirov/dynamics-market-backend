@@ -15,7 +15,7 @@ import {Request} from "express";
 
 import {UserService} from "./user.service";
 import {JwtPayload} from "../../shared/interfaces/jwt-payload";
-import {CleanResponseInterceptor} from "../../shared/interceptors/clean-response";
+import {CleanResponseInterceptor} from "../../common/interceptors/clean-response";
 
 import {UpdateUserDto} from "./dto/user.dto";
 

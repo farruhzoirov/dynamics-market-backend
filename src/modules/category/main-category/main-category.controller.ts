@@ -23,7 +23,7 @@ import {
 // Service
 import {MainCategoryService} from "./main-category.service";
 // Decorator
-import {Roles} from "../../../shared/decorator/roles.decarator";
+import {Roles} from "../../../common/decorator/roles.decarator";
 // Enum
 import {UserRole} from "../../user/enums/roles.enum";
 // SuccessResponse
@@ -33,7 +33,7 @@ import {
   UpdatedSuccessResponse
 } from "../../../shared/success/success-responses";
 // Pipe
-import {ValidateObjectIdPipe} from "../../../shared/pipes/object-id.pipe";
+import {ValidateObjectIdPipe} from "../../../common/pipes/object-id.pipe";
 
 
 @Controller('main-category')

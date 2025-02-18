@@ -8,7 +8,7 @@ import {ConfigService} from "@nestjs/config";
 import {User, UserDocument} from "../user/schemas/user.schema";
 // Interfaces
 import {JwtPayload} from "../../shared/interfaces/jwt-payload";
-import {VerifyIdTokenException} from "../../shared/errors/auth/verify-id-token.exception";
+import {VerifyIdTokenException} from "../../common/errors/auth/verify-id-token.exception";
 
 const client = new OAuth2Client();
 
@@ -34,7 +34,7 @@ export class AuthService {
   }
 
   async generateJwtToken(payload: JwtPayload) {
-    return jwt.sign(payload, "JWT_SECRET");
+    return jwt.sign(payload, this.configService.get('CONFIG_JWT').JWT_SECRET_KEY);
   }
 
   async registerOrLoginUser(idToken: string): Promise<string> {

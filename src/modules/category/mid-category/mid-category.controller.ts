@@ -1,6 +1,6 @@
 import {Body, Controller, HttpCode, HttpStatus, Post} from '@nestjs/common';
 import {ApiProperty} from "@nestjs/swagger";
-import {Roles} from "../../../shared/decorator/roles.decarator";
+import {Roles} from "../../../common/decorator/roles.decarator";
 import {UserRole} from "../../user/enums/roles.enum";
 
 import {
@@ -9,7 +9,7 @@ import {
   UpdatedSuccessResponse
 } from "../../../shared/success/success-responses";
 
-import {ValidateObjectIdPipe} from "../../../shared/pipes/object-id.pipe";
+import {ValidateObjectIdPipe} from "../../../common/pipes/object-id.pipe";
 import {MidCategoryService} from "./mid-category.service";
 import {
   CreateMidCategoryDto,

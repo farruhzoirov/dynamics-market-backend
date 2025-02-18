@@ -42,7 +42,6 @@ export class CreateMainCategoryDto {
   @IsNotEmpty()
   nameEn: string;
 
-
   @IsString()
   @IsOptional()
   slugUz?: string;

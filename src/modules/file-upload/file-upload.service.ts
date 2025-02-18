@@ -3,12 +3,10 @@ import {
   FileNotFoundException,
   InvalidFilePathException,
   NoFileUploadedException
-} from "../../shared/errors/file-upload/file-upload.exception";
-import {FilePathDto} from "./dto/file-path.dto";
+} from "../../common/errors/file-upload/file-upload.exception";
 
 import * as path from "node:path";
 import * as fs from "node:fs";
-import * as process from "node:process";
 
 @Injectable()
 export class FileUploadService {

@@ -6,14 +6,14 @@ import {
   AddingModelException, CantDeleteModelException,
   DeletingModelException,
   UpdatingModelException
-} from "../../../shared/errors/model/model-based.exceptions";
+} from "../../../common/errors/model/model-based.exceptions";
 
-import {universalSearchSchema} from "../../../shared/helpers/search";
-import {generateUniqueSlug} from "../../../shared/helpers/generate-slugs";
+import {generateUniqueSlug} from "../../../common/helpers/generate-slugs";
 import {MidCategory, MidCategoryDocument} from "../schemas/mid-category.schema";
 import {GetMidCategoryDto} from "../dto/min-category.dto";
 import {IMidCategory} from "../interface/categories";
 import {SubCategory, SubCategoryDocument} from "../schemas/sub-category.schema";
+import {universalQueryBuilder} from "../../../common/helpers/universal-query-builder";
 
 @Injectable()
 export class MidCategoryService {
@@ -22,22 +22,8 @@ export class MidCategoryService {
       @InjectModel(SubCategory.name) private readonly subCategoryModel: Model<SubCategoryDocument>
   ) {
   }
-
   async getMinCategoriesList(body: GetMidCategoryDto) {
-    const payload = {
-      page: body?.page ? body.page : 1,
-      limit: body?.limit ? body.limit : null,
-      select: body?.select ? body.select.split(",") : null,
-      search: body?.search || null,
-    }
-    const skip = (payload.page - 1) * payload.limit;
-    const filter = await universalSearchSchema(payload.search, ['nameUz', 'nameRu', 'nameEn']);
-    const getMatchingMidCategories = await this.midCategoryModel
-        .find(filter)
-        .skip(skip)
-        .limit(payload.limit)
-        .select(payload.select ? payload.select : "-__v")
-        .lean();
+    const getMatchingMidCategories = await universalQueryBuilder(body, this.midCategoryModel, ['nameUz', 'nameRu', 'nameEn'])
     const total = await this.midCategoryModel.countDocuments();
     return {
       data: getMatchingMidCategories,
@@ -51,11 +37,9 @@ export class MidCategoryService {
       body.slugUz = generateUniqueSlug(nameUz);
       body.slugRu = generateUniqueSlug(nameRu);
       body.slugEn = generateUniqueSlug(nameEn);
-
       if (body.parentId) {
         body.mainCategory = body.parentId;
       }
-
       await this.midCategoryModel.create(body);
     } catch (err) {
       console.log(`adding midCategory ====>  ${err.message}`);

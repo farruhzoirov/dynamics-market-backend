@@ -1,4 +1,4 @@
-export async function universalSearchSchema(
+export async function universalSearchQuery(
     searchText: string, searchableFields: string[],
 ) {
   if (!searchText) return {};

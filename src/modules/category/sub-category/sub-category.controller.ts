@@ -1,6 +1,6 @@
 import {Body, Controller, HttpCode, HttpStatus, Post} from '@nestjs/common';
 import {MidCategoryService} from "../mid-category/mid-category.service";
-import {Roles} from "../../../shared/decorator/roles.decarator";
+import {Roles} from "../../../common/decorator/roles.decarator";
 import {UserRole} from "../../user/enums/roles.enum";
 import {
   CreateMidCategoryDto,
@@ -8,7 +8,7 @@ import {
   GetMidCategoryDto,
   UpdateMidCategoryDto
 } from "../dto/min-category.dto";
-import {ValidateObjectIdPipe} from "../../../shared/pipes/object-id.pipe";
+import {ValidateObjectIdPipe} from "../../../common/pipes/object-id.pipe";
 import {
   CreatedSuccessResponse,
   DeletedSuccessResponse,

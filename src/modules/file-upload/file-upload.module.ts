@@ -8,7 +8,7 @@ import {FileUploadController} from './file-upload.controller';
 import * as fs from "node:fs";
 import * as path from "node:path";
 
-import {FileSizeLargerException, InvalidFileTypeException} from "../../shared/errors/file-upload/file-upload.exception";
+import {FileSizeLargerException, InvalidFileTypeException} from "../../common/errors/file-upload/file-upload.exception";
 
 
 const fileFilter = (req: any, file: Express.Multer.File, cb: Function) => {

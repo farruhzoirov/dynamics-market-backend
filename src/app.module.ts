@@ -1,9 +1,11 @@
-import {MiddlewareConsumer, Module, NestModule, RequestMethod} from '@nestjs/common';
-import {MongooseModule} from "@nestjs/mongoose";
+import {MiddlewareConsumer, Module, NestModule} from '@nestjs/common';
+import {APP_GUARD} from "@nestjs/core";
 import {ConfigModule, ConfigService} from "@nestjs/config";
+import {MongooseModule} from "@nestjs/mongoose";
 // configs
 import databaseConfig, {CONFIG_DATABASE} from "./config/database.config";
 import googleConfig from "./config/google.config";
+import jwtConfig from "./config/jwt.config";
 // Middleware
 import {AuthMiddleware} from "./shared/middleware/auth.middleware";
 // Modules
@@ -13,14 +15,15 @@ import {MainCategoryModule} from './modules/category/main-category/main-category
 import {MidCategoryModule} from './modules/category/mid-category/mid-category.module';
 import {SubCategoryModule} from './modules/category/sub-category/sub-category.module';
 import {CategoryModule} from './modules/category/category.module';
-import {APP_GUARD} from "@nestjs/core";
-import {RolesGuard} from "./shared/guards/roles.guard";
-import { FileUploadModule } from './modules/file-upload/file-upload.module';
+import {FileUploadModule} from './modules/file-upload/file-upload.module';
+import {BrandModule} from './modules/brand/brand.module';
+
+import {RolesGuard} from "./common/guards/roles.guard";
 
 @Module({
   imports: [
     ConfigModule.forRoot({
-      load: [databaseConfig, googleConfig],
+      load: [databaseConfig, googleConfig, jwtConfig],
       envFilePath: '.env',
       isGlobal: true
     }),
@@ -39,6 +42,7 @@ import { FileUploadModule } from './modules/file-upload/file-upload.module';
     MidCategoryModule,
     SubCategoryModule,
     CategoryModule,
+    BrandModule,
     FileUploadModule,
   ],
   providers: [

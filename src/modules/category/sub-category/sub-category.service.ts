@@ -1,16 +1,17 @@
 import { Injectable } from '@nestjs/common';
+import {InjectModel} from "@nestjs/mongoose";
+import {Model} from "mongoose";
 import {GetMidCategoryDto} from "../dto/min-category.dto";
-import {universalSearchSchema} from "../../../shared/helpers/search";
-import {IMidCategory, ISubCategory} from "../interface/categories";
-import {generateUniqueSlug} from "../../../shared/helpers/generate-slugs";
+import {ISubCategory} from "../interface/categories";
+import {generateUniqueSlug} from "../../../common/helpers/generate-slugs";
 import {
   AddingModelException,
   DeletingModelException,
   UpdatingModelException
-} from "../../../shared/errors/model/model-based.exceptions";
-import {InjectModel} from "@nestjs/mongoose";
-import {Model} from "mongoose";
+} from "../../../common/errors/model/model-based.exceptions";
+
 import {SubCategory, SubCategoryDocument} from "../schemas/sub-category.schema";
+import {universalQueryBuilder} from "../../../common/helpers/universal-query-builder";
 
 @Injectable()
 export class SubCategoryService {
@@ -19,22 +20,8 @@ export class SubCategoryService {
       private readonly subCategoryModel: Model<SubCategoryDocument>) {
   }
 
-
   async getSubCategoriesList(body: GetMidCategoryDto) {
-    const payload = {
-      page: body?.page ? body.page : 1,
-      limit: body?.limit ? body.limit : null,
-      select: body?.select ? body.select.split(",") : null,
-      search: body?.search || null,
-    }
-    const skip = (payload.page - 1) * payload.limit;
-    const filter = await universalSearchSchema(payload.search, ['nameUz', 'nameRu', 'nameEn']);
-    const getMatchingSubCategories = await this.subCategoryModel
-        .find(filter)
-        .skip(skip)
-        .limit(payload.limit)
-        .select(payload.select ? payload.select : "-__v")
-        .lean();
+    const getMatchingSubCategories = await universalQueryBuilder(body, this.subCategoryModel, ['nameUz', 'nameRu', 'nameEn'])
     const total = await this.subCategoryModel.countDocuments();
     return {
       data: getMatchingSubCategories,
@@ -48,11 +35,9 @@ export class SubCategoryService {
       body.slugUz = generateUniqueSlug(nameUz);
       body.slugRu = generateUniqueSlug(nameRu);
       body.slugEn = generateUniqueSlug(nameEn);
-
       if (body.parentId) {
         body.midCategory = body.parentId;
       }
-
       await this.subCategoryModel.create(body);
     } catch (err) {
       console.log(`adding midCategory ====>  ${err.message}`);

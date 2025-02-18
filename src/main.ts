@@ -2,10 +2,8 @@ import {NestFactory} from '@nestjs/core';
 import {AppModule} from './app.module';
 import {DocumentBuilder, SwaggerModule} from '@nestjs/swagger';
 import * as process from "node:process";
-import {GlobalExceptionFilter} from "./shared/errors/global-exception";
-import {ValidationPipe} from "@nestjs/common";
 import {NestExpressApplication} from "@nestjs/platform-express";
-import {AllExceptionsTo200Interceptor} from "./shared/interceptors/universal-response";
+import {AllExceptionsTo200Interceptor} from "./common/interceptors/universal-response";
 
 
 async function bootstrap() {
@@ -15,6 +13,7 @@ async function bootstrap() {
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
     allowedHeaders: 'Content-Type, Authorization, Language, Accept',
   });
+
   // Swagger based
   const options = new DocumentBuilder()
       .setTitle('DYNAMICS MARKETS APIS')
@@ -28,11 +27,11 @@ async function bootstrap() {
   const document = SwaggerModule.createDocument(app, options);
   SwaggerModule.setup('api-docs', app, document);
 
-  app.useStaticAssets('uploads', { prefix: '/uploads' });
+  app.useStaticAssets('uploads', {prefix: '/uploads'});
   app.useGlobalInterceptors(new AllExceptionsTo200Interceptor());
   // Server is running here
   const PORT = process.env.PORT || 5000;
-  await app.listen(PORT,  () => {
+  await app.listen(PORT, () => {
     console.log(`Server started on port ${PORT}.`);
   });
 }

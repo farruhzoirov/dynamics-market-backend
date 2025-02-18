@@ -1,4 +1,4 @@
-export interface IMainCategory{
+export interface IMainCategory {
   _id?: string;
   nameUz: string;
   nameRu: string;
@@ -8,7 +8,7 @@ export interface IMainCategory{
   slugEn?: string;
 }
 
-export interface IMidCategory extends IMainCategory{
+export interface IMidCategory extends IMainCategory {
   parentId?: string;
   mainCategory?: string;
 }
@@ -17,3 +17,4 @@ export interface ISubCategory extends IMainCategory {
   parentId?: string;
   midCategory?: string;
 }
+
