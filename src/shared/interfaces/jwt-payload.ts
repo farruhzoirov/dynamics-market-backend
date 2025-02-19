@@ -5,6 +5,7 @@ export interface JwtPayload {
   firstName: string;
   lastName: string;
   email: string;
+  image: string;
   role: string;
   locations?: ILocations[] | [];
   gender?: string | null;

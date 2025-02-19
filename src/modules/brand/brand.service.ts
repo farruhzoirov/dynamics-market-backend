@@ -13,7 +13,7 @@ export class BrandService {
   }
 
   async getBrandsList(body: GetBrandListsDto) {
-    const getMatchesBrandsList = await universalQueryBuilder(body, this.brandModel, ['nameUz', 'nameRu', 'nameEn']);
+    const getMatchesBrandsList = await universalQueryBuilder(body, this.brandModel, ['nameUz', 'nameRu', 'nameEn'], '');
     const total = await this.brandModel.countDocuments();
     return {
       data: getMatchesBrandsList,

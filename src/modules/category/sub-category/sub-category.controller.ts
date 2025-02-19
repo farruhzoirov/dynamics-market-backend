@@ -1,4 +1,4 @@
-import {Body, Controller, HttpCode, HttpStatus, Post} from '@nestjs/common';
+import {Body, Controller, HttpCode, HttpStatus, Post, UsePipes, ValidationPipe} from '@nestjs/common';
 import {Roles} from "../../../common/decorator/roles.decarator";
 import {UserRole} from "../../../shared/enums/roles.enum";
 import {ValidateObjectIdPipe} from "../../../common/pipes/object-id.pipe";
@@ -19,6 +19,7 @@ import {
 
 @ApiBearerAuth()
 @Controller('sub-category')
+@UsePipes(new ValidationPipe({whitelist: true}))
 export class SubCategoryController {
   constructor(private readonly subCategoryService: SubCategoryService) {
   }

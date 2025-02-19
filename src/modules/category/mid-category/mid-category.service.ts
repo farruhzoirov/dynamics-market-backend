@@ -4,8 +4,8 @@ import {Model} from "mongoose";
 
 import {
   AddingModelException,
-  CantDeleteModelException, ModelDataNotFoundByIdException,
-  UpdatingModelException
+  CantDeleteModelException,
+  ModelDataNotFoundByIdException
 } from "../../../common/errors/model/model-based.exceptions";
 
 import {generateUniqueSlug} from "../../../common/helpers/generate-slugs";
@@ -23,16 +23,20 @@ export class MidCategoryService {
   ) {
   }
 
-  async getMinCategoriesList(body: GetMidCategoryDto) {
-    const getMatchingMidCategories = await universalQueryBuilder(body, this.midCategoryModel, ['nameUz', 'nameRu', 'nameEn'])
-    const total = await this.midCategoryModel.countDocuments();
+  async getMidCategoriesList(body: GetMidCategoryDto) {
+    const getMatchingMidCategories = await universalQueryBuilder(body,
+        this.midCategoryModel,
+        ['nameUz', 'nameRu', 'nameEn'],
+        'mainCategory'
+    );
+    const total = getMatchingMidCategories.length;
     return {
       data: getMatchingMidCategories,
       total,
     }
   }
 
-  async addMinCategory(body: IMidCategory) {
+  async addMidCategory(body: IMidCategory) {
     try {
       const {nameUz, nameRu, nameEn} = body;
       body.slugUz = generateUniqueSlug(nameUz);
@@ -49,28 +53,28 @@ export class MidCategoryService {
   }
 
   async updateMidCategory(updateBody: IMidCategory) {
-      if (updateBody.nameUz) {
-        updateBody.slugUz = generateUniqueSlug(updateBody.nameUz);
-      }
-
-      if (updateBody.nameRu) {
-        updateBody.slugRu = generateUniqueSlug(updateBody.nameRu);
-      }
-
-      if (updateBody.nameEn) {
-        updateBody.slugEn = generateUniqueSlug(updateBody.nameEn);
-      }
-
-      const updatedMidCategory= await this.midCategoryModel.findByIdAndUpdate(updateBody._id, {
-        $set: {
-          ...updateBody,
-        }
-      })
-
-      if (!updatedMidCategory) {
-        throw new ModelDataNotFoundByIdException("MidCategory not found");
-      }
+    if (updateBody.nameUz) {
+      updateBody.slugUz = generateUniqueSlug(updateBody.nameUz);
     }
+
+    if (updateBody.nameRu) {
+      updateBody.slugRu = generateUniqueSlug(updateBody.nameRu);
+    }
+
+    if (updateBody.nameEn) {
+      updateBody.slugEn = generateUniqueSlug(updateBody.nameEn);
+    }
+
+    const updatedMidCategory = await this.midCategoryModel.findByIdAndUpdate(updateBody._id, {
+      $set: {
+        ...updateBody,
+      }
+    })
+
+    if (!updatedMidCategory) {
+      throw new ModelDataNotFoundByIdException("MidCategory not found");
+    }
+  }
 
   async deleteMidCategory(_id: string) {
     const findCategoryFromSubCategory = await this.subCategoryModel.findOne({midCategory: _id}).lean();

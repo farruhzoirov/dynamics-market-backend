@@ -22,7 +22,7 @@ export class MainCategoryService {
   }
 
   async getMainCategoriesList(body: GetMainCategoryDto) {
-    const getMatchingMainCategories = await universalQueryBuilder(body, this.mainCategoryModel, ['nameUz', 'nameRu', 'nameEn'])
+    const getMatchingMainCategories = await universalQueryBuilder(body, this.mainCategoryModel, ['nameUz', 'nameRu', 'nameEn'], '')
     const total = await this.mainCategoryModel.countDocuments();
     return {
       data: getMatchingMainCategories,

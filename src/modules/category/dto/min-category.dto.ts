@@ -3,7 +3,12 @@ import {IsArray, IsNotEmpty, IsOptional, IsString} from "class-validator";
 import {UniversalQueryDto} from "../../../shared/dto/universal-query.dto";
 
 // This dto for query parameters
-export class GetMidCategoryDto extends UniversalQueryDto {}
+export class GetMidCategoryDto extends UniversalQueryDto {
+  @ApiProperty()
+  @IsOptional()
+  @IsString()
+  parentId: string;
+}
 
 export class CreateMidCategoryDto {
   @ApiProperty()

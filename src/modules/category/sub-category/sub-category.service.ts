@@ -22,7 +22,11 @@ export class SubCategoryService {
   }
 
   async getSubCategoriesList(body: GetMidCategoryDto) {
-    const getMatchingSubCategories = await universalQueryBuilder(body, this.subCategoryModel, ['nameUz', 'nameRu', 'nameEn'])
+    const getMatchingSubCategories = await universalQueryBuilder(body,
+        this.subCategoryModel,
+        ['nameUz', 'nameRu', 'nameEn'],
+        'midCategory'
+    );
     const total = await this.subCategoryModel.countDocuments();
     return {
       data: getMatchingSubCategories,

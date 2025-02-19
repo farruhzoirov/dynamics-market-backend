@@ -1,4 +1,4 @@
-import {Body, Controller, HttpCode, HttpStatus, Post} from '@nestjs/common';
+import {Body, Controller, HttpCode, HttpStatus, Post, UsePipes, ValidationPipe} from '@nestjs/common';
 import {ApiBearerAuth, ApiProperty} from "@nestjs/swagger";
 
 import {Roles} from "../../../common/decorator/roles.decarator";
@@ -21,6 +21,7 @@ import {
 
 @ApiBearerAuth()
 @Controller('mid-category')
+@UsePipes(new ValidationPipe({whitelist: true}))
 export class MidCategoryController {
   constructor(private readonly midCategoryService: MidCategoryService) {
   }
@@ -28,15 +29,17 @@ export class MidCategoryController {
   @Post('get-list')
   @HttpCode(HttpStatus.OK)
   @Roles(UserRole.superAdmin, UserRole.admin)
-  async getMidCategoriesList(@Body() body: GetMidCategoryDto) {
-    return await this.midCategoryService.getMinCategoriesList(body);
+  async getMidCategoriesList(
+      @Body() body: GetMidCategoryDto,
+      @Body('parentId', ValidateObjectIdPipe) parentId: string) {
+    return await this.midCategoryService.getMidCategoriesList(body);
   }
 
 
   @Post('add')
   @Roles(UserRole.superAdmin, UserRole.admin)
   async addMidCategory(@Body() body: CreateMidCategoryDto, @Body('parentId', ValidateObjectIdPipe) parentId: string) {
-    await this.midCategoryService.addMinCategory(body);
+    await this.midCategoryService.addMidCategory(body);
     return new CreatedSuccessResponse();
   }
 

@@ -40,7 +40,7 @@ export class AuthService {
   async registerOrLoginUser(idToken: string): Promise<string> {
     const payload = await this.verifyToken(idToken);
     let checkUser = await this.userModel.findOne({email: payload.email})
-        .select('-__v -createdAt -updatedAt -image') as any;
+        .select('-__v -createdAt -updatedAt') as any;
 
     if (!checkUser) {
       const newUser = await this.userModel.create({
@@ -55,6 +55,7 @@ export class AuthService {
         lastName: newUser.lastName,
         email: newUser.email,
         role: newUser.role,
+        image: newUser.image,
         locations: [],
         gender: null,
         telegram: null,

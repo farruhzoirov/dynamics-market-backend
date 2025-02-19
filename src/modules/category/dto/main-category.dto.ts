@@ -1,28 +1,11 @@
 import {ApiProperty} from "@nestjs/swagger";
 import {IS_ARRAY, IsArray, IsNotEmpty, IsNumber, IsOptional, IsString} from "class-validator";
+import {UniversalQueryDto} from "../../../shared/dto/universal-query.dto";
 
 
 // This dto for query parameters
-export class GetMainCategoryDto {
-  @ApiProperty()
-  @IsOptional()
-  @IsNumber()
-  page?: number;
+export class GetMainCategoryDto extends UniversalQueryDto{
 
-  @ApiProperty()
-  @IsOptional()
-  @IsNumber()
-  limit?: number;
-
-  @ApiProperty()
-  @IsOptional()
-  @IsString()
-  select?: string;
-
-  @ApiProperty()
-  @IsOptional()
-  @IsString()
-  search?: string;
 }
 
 
