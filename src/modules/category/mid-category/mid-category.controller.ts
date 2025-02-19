@@ -47,7 +47,7 @@ export class MidCategoryController {
   async updateMidCategory(
       @Body() updateBody: UpdateMidCategoryDto,
       @Body('_id', ValidateObjectIdPipe) _id: string,
-      @Body('parentId', ValidateObjectIdPipe) parentId: string
+      @Body('mainCategory', ValidateObjectIdPipe) mainCategory: string
   ) {
     await this.midCategoryService.updateMidCategory(updateBody);
     return new UpdatedSuccessResponse();

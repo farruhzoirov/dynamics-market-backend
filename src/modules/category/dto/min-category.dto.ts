@@ -54,7 +54,7 @@ export class UpdateMidCategoryDto {
   @ApiProperty()
   @IsOptional()
   @IsString()
-  parentId: string;
+  mainCategory: string;
 
   @ApiProperty({example: "Asosiy toifa nomi (uz)", description: "Main category name in Uzbek"})
   @IsString()

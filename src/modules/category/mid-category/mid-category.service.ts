@@ -62,10 +62,6 @@ export class MidCategoryService {
         updateBody.slugEn = generateUniqueSlug(updateBody.nameEn);
       }
 
-      if (updateBody.parentId) {
-        updateBody.mainCategory = updateBody.parentId;
-      }
-
       await this.midCategoryModel.findByIdAndUpdate(updateBody._id, {
         $set: {
           ...updateBody,
