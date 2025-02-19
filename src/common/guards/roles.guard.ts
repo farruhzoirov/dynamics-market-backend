@@ -1,6 +1,6 @@
 import {CanActivate, ExecutionContext, Injectable} from '@nestjs/common';
 import {Reflector} from '@nestjs/core';
-import {UserRole} from "../../modules/user/enums/roles.enum";
+import {UserRole} from "../../shared/enums/roles.enum";
 import {AccessDeniedException} from "../errors/guard/access-based.exception";
 
 

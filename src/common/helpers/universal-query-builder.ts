@@ -1,6 +1,10 @@
 import {universalSearchQuery} from "./universal-search-query";
 
-export const universalQueryBuilder = async (body, currentModel, searchFields: string[],) => {
+export const universalQueryBuilder = async (
+    body,
+    currentModel,
+    searchFields: string[],
+) => {
   const payload = {
     page: body?.page ? body.page : 1,
     limit: body?.limit ? body.limit : null,
@@ -9,8 +13,7 @@ export const universalQueryBuilder = async (body, currentModel, searchFields: st
   }
   const skip = (payload.page - 1) * payload.limit;
   const filter = await universalSearchQuery(payload.search, searchFields);
-  return await currentModel
-      .find(filter)
+  return await currentModel.find(filter)
       .skip(skip)
       .limit(payload.limit)
       .select(payload.select ? payload.select : "-__v")

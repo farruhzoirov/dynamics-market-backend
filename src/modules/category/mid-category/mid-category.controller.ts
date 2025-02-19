@@ -1,7 +1,8 @@
 import {Body, Controller, HttpCode, HttpStatus, Post} from '@nestjs/common';
-import {ApiProperty} from "@nestjs/swagger";
+import {ApiBearerAuth, ApiProperty} from "@nestjs/swagger";
+
 import {Roles} from "../../../common/decorator/roles.decarator";
-import {UserRole} from "../../user/enums/roles.enum";
+import {UserRole} from "../../../shared/enums/roles.enum";
 
 import {
   CreatedSuccessResponse,
@@ -18,6 +19,7 @@ import {
   UpdateMidCategoryDto
 } from "../dto/min-category.dto";
 
+@ApiBearerAuth()
 @Controller('mid-category')
 export class MidCategoryController {
   constructor(private readonly midCategoryService: MidCategoryService) {

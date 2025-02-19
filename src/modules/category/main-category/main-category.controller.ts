@@ -25,7 +25,7 @@ import {MainCategoryService} from "./main-category.service";
 // Decorator
 import {Roles} from "../../../common/decorator/roles.decarator";
 // Enum
-import {UserRole} from "../../user/enums/roles.enum";
+import {UserRole} from "../../../shared/enums/roles.enum";
 // SuccessResponse
 import {
   CreatedSuccessResponse,

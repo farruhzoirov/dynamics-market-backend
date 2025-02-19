@@ -3,8 +3,8 @@ import {InjectModel} from "@nestjs/mongoose";
 import {Model} from "mongoose";
 
 import {
-  AddingModelException, CantDeleteModelException,
-  DeletingModelException,
+  AddingModelException,
+  CantDeleteModelException,
   UpdatingModelException
 } from "../../../common/errors/model/model-based.exceptions";
 
@@ -22,6 +22,7 @@ export class MidCategoryService {
       @InjectModel(SubCategory.name) private readonly subCategoryModel: Model<SubCategoryDocument>
   ) {
   }
+
   async getMinCategoriesList(body: GetMidCategoryDto) {
     const getMatchingMidCategories = await universalQueryBuilder(body, this.midCategoryModel, ['nameUz', 'nameRu', 'nameEn'])
     const total = await this.midCategoryModel.countDocuments();
@@ -77,16 +78,10 @@ export class MidCategoryService {
   }
 
   async deleteMidCategory(_id: string) {
-    try {
-      const findCategoryFromSubCategory = await this.subCategoryModel.findOne({midCategory: _id}).lean();
-      if (findCategoryFromSubCategory) {
-        throw new CantDeleteModelException()
-      }
-      await this.midCategoryModel.deleteOne({_id});
-
-    } catch (err) {
-      console.log(`deleting midCategory ====>  ${err.message}`);
-      throw new DeletingModelException();
+    const findCategoryFromSubCategory = await this.subCategoryModel.findOne({midCategory: _id}).lean();
+    if (findCategoryFromSubCategory) {
+      throw new CantDeleteModelException()
     }
+    await this.midCategoryModel.deleteOne({_id});
   }
 }

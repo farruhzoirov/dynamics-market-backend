@@ -1,29 +1,9 @@
 import {ApiProperty} from "@nestjs/swagger";
-import {IsArray, IsNotEmpty, IsNumber, IsOptional, IsString} from "class-validator";
+import {IsArray, IsNotEmpty, IsOptional, IsString} from "class-validator";
+import {UniversalQueryDto} from "../../../shared/dto/universal-query.dto";
 
 // This dto for query parameters
-export class GetMidCategoryDto {
-  @ApiProperty()
-  @IsOptional()
-  @IsNumber()
-  page?: number;
-
-  @ApiProperty()
-  @IsOptional()
-  @IsNumber()
-  limit?: number;
-
-  @ApiProperty()
-  @IsOptional()
-  @IsString()
-  select?: string;
-
-  @ApiProperty()
-  @IsOptional()
-  @IsString()
-  search?: string;
-}
-
+export class GetMidCategoryDto extends UniversalQueryDto {}
 
 export class CreateMidCategoryDto {
   @ApiProperty()
@@ -113,3 +93,4 @@ export class DeleteMidCategoryDto {
   @IsNotEmpty()
   _id: string;
 }
+

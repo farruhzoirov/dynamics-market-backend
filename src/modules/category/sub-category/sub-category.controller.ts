@@ -1,21 +1,15 @@
 import {Body, Controller, HttpCode, HttpStatus, Post} from '@nestjs/common';
-import {MidCategoryService} from "../mid-category/mid-category.service";
 import {Roles} from "../../../common/decorator/roles.decarator";
-import {UserRole} from "../../user/enums/roles.enum";
-import {
-  CreateMidCategoryDto,
-  DeleteMidCategoryDto,
-  GetMidCategoryDto,
-  UpdateMidCategoryDto
-} from "../dto/min-category.dto";
+import {UserRole} from "../../../shared/enums/roles.enum";
 import {ValidateObjectIdPipe} from "../../../common/pipes/object-id.pipe";
 import {
   CreatedSuccessResponse,
   DeletedSuccessResponse,
   UpdatedSuccessResponse
 } from "../../../shared/success/success-responses";
-import {ApiProperty} from "@nestjs/swagger";
+import {ApiBearerAuth, ApiProperty} from "@nestjs/swagger";
 import {SubCategoryService} from "./sub-category.service";
+
 import {
   CreateSubCategoryDto,
   DeleteSubCategoryDto,
@@ -23,6 +17,7 @@ import {
   UpdateSubCategoryDto
 } from "../dto/sub-category.dto";
 
+@ApiBearerAuth()
 @Controller('sub-category')
 export class SubCategoryController {
   constructor(private readonly subCategoryService: SubCategoryService) {

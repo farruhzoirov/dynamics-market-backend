@@ -4,7 +4,6 @@ import {Model} from "mongoose";
 import {
   AddingModelException,
   CantDeleteModelException,
-  DeletingModelException,
   UpdatingModelException
 } from "../../../common/errors/model/model-based.exceptions";
 
@@ -70,15 +69,10 @@ export class MainCategoryService {
   }
 
   async deleteMainCategory(_id: string) {
-    try {
-      const findCategoryFromMidCategory = await this.midCategoryModel.findOne({mainCategory: _id}).lean();
-      if (findCategoryFromMidCategory) {
-        return new CantDeleteModelException();
-      }
-      await this.mainCategoryModel.deleteOne({_id});
-    } catch (err) {
-      console.log(`deleting mainCategory ====>  ${err.message}`);
-      throw new DeletingModelException();
+    const findCategoryFromMidCategory = await this.midCategoryModel.findOne({mainCategory: _id}).lean();
+    if (findCategoryFromMidCategory) {
+      throw new CantDeleteModelException();
     }
+    await this.mainCategoryModel.deleteOne({_id});
   }
 }
