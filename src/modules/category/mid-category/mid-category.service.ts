@@ -4,7 +4,7 @@ import {Model} from "mongoose";
 
 import {
   AddingModelException,
-  CantDeleteModelException,
+  CantDeleteModelException, ModelDataNotFoundByIdException,
   UpdatingModelException
 } from "../../../common/errors/model/model-based.exceptions";
 
@@ -49,7 +49,6 @@ export class MidCategoryService {
   }
 
   async updateMidCategory(updateBody: IMidCategory) {
-    try {
       if (updateBody.nameUz) {
         updateBody.slugUz = generateUniqueSlug(updateBody.nameUz);
       }
@@ -62,16 +61,16 @@ export class MidCategoryService {
         updateBody.slugEn = generateUniqueSlug(updateBody.nameEn);
       }
 
-      await this.midCategoryModel.findByIdAndUpdate(updateBody._id, {
+      const updatedMidCategory= await this.midCategoryModel.findByIdAndUpdate(updateBody._id, {
         $set: {
           ...updateBody,
         }
       })
-    } catch (err) {
-      console.log(`updating midCategory ====>  ${err.message}`);
-      throw new UpdatingModelException();
+
+      if (!updatedMidCategory) {
+        throw new ModelDataNotFoundByIdException("MidCategory not found");
+      }
     }
-  }
 
   async deleteMidCategory(_id: string) {
     const findCategoryFromSubCategory = await this.subCategoryModel.findOne({midCategory: _id}).lean();

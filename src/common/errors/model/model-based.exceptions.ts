@@ -39,8 +39,6 @@ export class DeletingModelException extends BadRequestException {
 }
 
 
-
-
 export class CantDeleteModelException extends BadRequestException {
   constructor(message: string = "Can't delete model data. It may be linked to other child entities.") {
     super({
@@ -49,4 +47,15 @@ export class CantDeleteModelException extends BadRequestException {
     });
   }
 }
+
+
+export class ModelDataNotFoundByIdException extends BadRequestException {
+  constructor(message: string = "Model data not found by this _id") {
+    super({
+      errorCode: `${ErrorCodes.MODEL_DATA_NOT_FOUND_BY_THIS_ID}`,
+      message: message,
+    });
+  }
+}
+
 

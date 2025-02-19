@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import {Injectable} from '@nestjs/common';
 import {InjectModel} from "@nestjs/mongoose";
 import {Model} from "mongoose";
 import {GetMidCategoryDto} from "../dto/min-category.dto";
@@ -7,6 +7,7 @@ import {generateUniqueSlug} from "../../../common/helpers/generate-slugs";
 import {
   AddingModelException,
   DeletingModelException,
+  ModelDataNotFoundByIdException,
   UpdatingModelException
 } from "../../../common/errors/model/model-based.exceptions";
 
@@ -46,7 +47,6 @@ export class SubCategoryService {
   }
 
   async updateSubCategory(updateBody: ISubCategory) {
-    try {
       if (updateBody.nameUz) {
         updateBody.slugUz = generateUniqueSlug(updateBody.nameUz);
       }
@@ -63,16 +63,15 @@ export class SubCategoryService {
         updateBody.midCategory = updateBody.parentId;
       }
 
-      await this.subCategoryModel.findByIdAndUpdate(updateBody._id, {
+      const updatedSubCategory = await this.subCategoryModel.findByIdAndUpdate(updateBody._id, {
         $set: {
           ...updateBody,
         }
       })
-    } catch (err) {
-      console.log(`updating midCategory ====>  ${err.message}`);
-      throw new UpdatingModelException();
+      if (!updatedSubCategory) {
+        throw new ModelDataNotFoundByIdException("SubCategory not found");
+      }
     }
-  }
 
   async deleteSubCategory(_id: string) {
     try {

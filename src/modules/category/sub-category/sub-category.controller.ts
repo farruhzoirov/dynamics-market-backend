@@ -45,7 +45,7 @@ export class SubCategoryController {
   async updateSubCategory(
       @Body() updateBody: UpdateSubCategoryDto,
       @Body('_id', ValidateObjectIdPipe) _id: string,
-      @Body('parentId', ValidateObjectIdPipe) parentId: string
+      @Body('midCategory', ValidateObjectIdPipe) midCategory: string
   ) {
     await this.subCategoryService.updateSubCategory(updateBody);
     return new UpdatedSuccessResponse();

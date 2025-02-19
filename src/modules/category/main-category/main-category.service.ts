@@ -3,7 +3,7 @@ import {InjectModel} from "@nestjs/mongoose";
 import {Model} from "mongoose";
 import {
   AddingModelException,
-  CantDeleteModelException,
+  CantDeleteModelException, ModelDataNotFoundByIdException,
   UpdatingModelException
 } from "../../../common/errors/model/model-based.exceptions";
 
@@ -44,7 +44,6 @@ export class MainCategoryService {
   }
 
   async updateMainCategory(updateBody: UpdateMainCategoryDto) {
-    try {
       if (updateBody.nameUz) {
         updateBody.slugUz = generateUniqueSlug(updateBody.nameUz);
       }
@@ -57,16 +56,15 @@ export class MainCategoryService {
         updateBody.slugEn = generateUniqueSlug(updateBody.nameEn);
       }
 
-      await this.mainCategoryModel.findByIdAndUpdate(updateBody._id, {
+      const updatedMainCategory =  await this.mainCategoryModel.findByIdAndUpdate(updateBody._id, {
         $set: {
           ...updateBody,
         }
       })
-    } catch (err) {
-      console.log(`updating mainCategory ====>  ${err.message}`);
-      throw new UpdatingModelException();
+      if (!updatedMainCategory) {
+        throw new ModelDataNotFoundByIdException("MainCategory not found");
+      }
     }
-  }
 
   async deleteMainCategory(_id: string) {
     const findCategoryFromMidCategory = await this.midCategoryModel.findOne({mainCategory: _id}).lean();

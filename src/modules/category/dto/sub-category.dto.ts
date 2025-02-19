@@ -74,7 +74,7 @@ export class UpdateSubCategoryDto {
   @ApiProperty()
   @IsOptional()
   @IsString()
-  parentId: string;
+  midCategory: string;
 
   @ApiProperty({example: "Asosiy toifa nomi (uz)", description: "Main category name in Uzbek"})
   @IsString()
