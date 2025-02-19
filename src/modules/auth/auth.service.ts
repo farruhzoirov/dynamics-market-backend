@@ -63,7 +63,10 @@ export class AuthService {
         phone: null,
       });
     }
-    console.log(checkUser)
+
+    if (checkUser) {
+      checkUser._id = checkUser._id.toString();
+    }
     return await this.generateJwtToken(checkUser);
   }
 }
