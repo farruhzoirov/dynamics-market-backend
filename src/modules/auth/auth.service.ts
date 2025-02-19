@@ -40,7 +40,7 @@ export class AuthService {
   async registerOrLoginUser(idToken: string): Promise<string> {
     const payload = await this.verifyToken(idToken);
     const checkUser = await this.userModel.findOne({email: payload.email})
-        .select('-__v -createdAt -updatedAt ');
+        .select('-__v -createdAt -updatedAt ') as JwtPayload;
     if (!checkUser) {
       const newUser = await this.userModel.create({
         firstName: payload.given_name,
@@ -63,7 +63,7 @@ export class AuthService {
         phone: null,
       });
     }
-    return await this.generateJwtToken(checkUser as any);
+    return await this.generateJwtToken(checkUser);
   }
 }
 
