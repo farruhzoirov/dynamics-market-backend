@@ -2,8 +2,10 @@ import {Injectable} from '@nestjs/common';
 import {InjectModel} from "@nestjs/mongoose";
 import {Brand, BrandDocument} from "./schemas/brand.schema";
 import {Model} from "mongoose";
-import {GetBrandListsDto} from "./dto/brand.dto";
+import {AddBrandDto, GetBrandListsDto, UpdateBrandDto} from "./dto/brand.dto";
 import {universalQueryBuilder} from "../../common/helpers/universal-query-builder";
+import {generateUniqueSlug} from "../../common/helpers/generate-slugs";
+import {AddingModelException, UpdatingModelException} from "../../common/errors/model/model-based.exceptions";
 
 @Injectable()
 export class BrandService {
@@ -11,23 +13,53 @@ export class BrandService {
   }
 
   async getBrandsList(body: GetBrandListsDto) {
-    const allBrandsList = await universalQueryBuilder(body, this.brandModel, ['nameUz', 'nameRu', 'nameEn']);
+    const getMatchesBrandsList = await universalQueryBuilder(body, this.brandModel, ['nameUz', 'nameRu', 'nameEn']);
     const total = await this.brandModel.countDocuments();
     return {
-      data: allBrandsList,
+      data: getMatchesBrandsList,
       total
     }
   }
 
-  async addBrand() {
-
+  async addBrand(body: AddBrandDto) {
+    try {
+      const {nameUz, nameRu, nameEn} = body;
+      body.slugUz = generateUniqueSlug(nameUz);
+      body.slugRu = generateUniqueSlug(nameRu);
+      body.slugEn = generateUniqueSlug(nameEn);
+      await this.brandModel.create(body);
+    } catch (err) {
+      console.log(`adding brand ====>  ${err.message}`);
+      throw new AddingModelException();
+    }
   }
 
-  async updateBrand() {
+  async updateBrand(updateBody: UpdateBrandDto) {
+    try {
+      if (updateBody.nameUz) {
+        updateBody.slugUz = generateUniqueSlug(updateBody.nameUz);
+      }
 
+      if (updateBody.nameRu) {
+        updateBody.slugRu = generateUniqueSlug(updateBody.nameRu);
+      }
+
+      if (updateBody.nameEn) {
+        updateBody.slugEn = generateUniqueSlug(updateBody.nameEn);
+      }
+      //
+      // await this.brandModel.findByIdAndUpdate(updateBody._id, {
+      //   $set: {
+      //     ...updateBody,
+      //   }
+      // })
+    } catch (err) {
+      console.log(`updating brand ====>  ${err.message}`);
+      throw new UpdatingModelException();
+    }
   }
 
-  async deleteBrand(id: string) {
-
+  async deleteBrand(_id: string) {
+    await this.brandModel.deleteOne({_id});
   }
 }

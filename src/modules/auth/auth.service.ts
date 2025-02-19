@@ -39,7 +39,8 @@ export class AuthService {
 
   async registerOrLoginUser(idToken: string): Promise<string> {
     const payload = await this.verifyToken(idToken);
-    const checkUser = await this.userModel.findOne({email: payload.email});
+    const checkUser = await this.userModel.findOne({email: payload.email})
+        .select('-__v -createdAt -updatedAt ');
     if (!checkUser) {
       const newUser = await this.userModel.create({
         firstName: payload.given_name,
@@ -62,20 +63,7 @@ export class AuthService {
         phone: null,
       });
     }
-    return await this.generateJwtToken({
-      _id: checkUser._id.toString(),
-      firstName: checkUser.firstName,
-      lastName: checkUser.lastName,
-      email: checkUser.email,
-      role: checkUser.role,
-      locations: [],
-      gender: null,
-      telegram: null,
-      regionId: null,
-      districtId: null,
-      address: null,
-      phone: null,
-    });
+    return await this.generateJwtToken(checkUser as any);
   }
 }
 
