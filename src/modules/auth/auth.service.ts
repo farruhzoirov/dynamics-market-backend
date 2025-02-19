@@ -39,8 +39,9 @@ export class AuthService {
 
   async registerOrLoginUser(idToken: string): Promise<string> {
     const payload = await this.verifyToken(idToken);
-    const checkUser = await this.userModel.findOne({email: payload.email})
-        .select('-__v -createdAt -updatedAt -image') as JwtPayload;
+    let checkUser = await this.userModel.findOne({email: payload.email})
+        .select('-__v -createdAt -updatedAt -image') as any;
+
     if (!checkUser) {
       const newUser = await this.userModel.create({
         firstName: payload.given_name,
@@ -64,10 +65,11 @@ export class AuthService {
       });
     }
 
-    if (checkUser) {
-      checkUser._id = checkUser._id.toString();
-    }
-    return await this.generateJwtToken(checkUser);
+    checkUser = checkUser.toObject();
+    return await this.generateJwtToken({
+      ...checkUser,
+      _id: checkUser._id.toString(),
+    });
   }
 }
 
