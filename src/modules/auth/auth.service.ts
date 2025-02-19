@@ -63,6 +63,7 @@ export class AuthService {
         phone: null,
       });
     }
+    console.log(checkUser)
     return await this.generateJwtToken(checkUser);
   }
 }
