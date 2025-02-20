@@ -1,10 +1,10 @@
 import {Prop, Schema, SchemaFactory} from "@nestjs/mongoose";
-import {HydratedDocument} from "mongoose";
+import mongoose, {HydratedDocument} from "mongoose";
 
-export type MainCategoryDocument = HydratedDocument<MainCategory>;
+export type CategoryDocument = HydratedDocument<Category>;
 
 @Schema({timestamps: true})
-export class MainCategory {
+export class Category {
   @Prop()
   nameUz: string;
 
@@ -23,6 +23,9 @@ export class MainCategory {
   @Prop()
   slugEn: string;
 
+  @Prop({type: mongoose.Schema.Types.ObjectId, ref: "Category", default: null})
+  parentId: string;
+
   @Prop({default: []})
   images: string[];
 
@@ -31,4 +34,4 @@ export class MainCategory {
 }
 
 
-export const MainCategorySchema = SchemaFactory.createForClass(MainCategory);
+export const CategorySchema = SchemaFactory.createForClass(Category);

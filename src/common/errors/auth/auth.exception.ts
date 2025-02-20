@@ -1,5 +1,5 @@
-import {BadRequestException} from "@nestjs/common";
-import {ErrorCodes} from "../error-codes";
+import { BadRequestException } from "@nestjs/common";
+import { ErrorCodes } from "../error-codes";
 
 export class NoTokenProvidedException extends BadRequestException {
   constructor(message: string) {

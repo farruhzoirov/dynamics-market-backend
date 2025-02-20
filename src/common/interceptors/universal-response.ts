@@ -11,8 +11,8 @@ export class AllExceptionsTo200Interceptor implements NestInterceptor {
           const response = ctx.getResponse();
           const errorResponse = {
             success: false,
-            errorCode: error.response?.errorCode || 'UNKNOWN_ERROR',
-            message: error.message || 'Something went wrong',
+            errorCode: error.response?.errorCode | error.errorCode || null,
+            message: error.message || 'Server Side Error',
           };
 
           response.status(200).json(errorResponse);

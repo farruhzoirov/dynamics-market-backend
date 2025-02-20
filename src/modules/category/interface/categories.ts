@@ -17,4 +17,3 @@ export interface ISubCategory extends IMainCategory {
   parentId?: string;
   midCategory?: string;
 }
-

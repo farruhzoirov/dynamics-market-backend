@@ -1,6 +1,6 @@
 import {HttpStatus} from "@nestjs/common";
 
-export class CreatedSuccessResponse {
+export class AddedSuccessResponse {
   readonly statusCode: number;
   readonly message: string;
   readonly errorCode: null;

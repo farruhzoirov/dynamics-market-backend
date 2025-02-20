@@ -50,9 +50,9 @@ export class CantDeleteModelException extends BadRequestException {
 
 
 export class ModelDataNotFoundByIdException extends BadRequestException {
-  constructor(message: string = "Model data not found by this _id") {
+  constructor(message: string = "Model data not found") {
     super({
-      errorCode: `${ErrorCodes.MODEL_DATA_NOT_FOUND_BY_THIS_ID}`,
+      errorCode: `${ErrorCodes.MODEL_DATA_NOT_FOUND_BY_ID}`,
       message: message,
     });
   }

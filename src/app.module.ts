@@ -11,9 +11,6 @@ import {AuthMiddleware} from "./shared/middleware/auth.middleware";
 // Modules
 import {AuthModule} from './modules/auth/auth.module';
 import {UserModule} from "./modules/user/user.module";
-import {MainCategoryModule} from './modules/category/main-category/main-category.module';
-import {MidCategoryModule} from './modules/category/mid-category/mid-category.module';
-import {SubCategoryModule} from './modules/category/sub-category/sub-category.module';
 import {CategoryModule} from './modules/category/category.module';
 import {FileUploadModule} from './modules/file-upload/file-upload.module';
 import {BrandModule} from './modules/brand/brand.module';
@@ -38,9 +35,6 @@ import {RolesGuard} from "./common/guards/roles.guard";
     }),
     AuthModule,
     UserModule,
-    MainCategoryModule,
-    MidCategoryModule,
-    SubCategoryModule,
     CategoryModule,
     BrandModule,
     FileUploadModule,

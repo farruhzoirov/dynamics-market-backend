@@ -1,17 +1,17 @@
-import { Module } from '@nestjs/common';
-
-import {MainCategoryModule} from "./main-category/main-category.module";
-import {SubCategoryModule} from "./sub-category/sub-category.module";
-import {MidCategoryModule} from "./mid-category/mid-category.module";
+import {Module} from "@nestjs/common";
+import {CategoryService} from './category.service';
+import {CategoryController} from './category.controller';
+import {MongooseModule} from "@nestjs/mongoose";
+import {Category, CategorySchema} from "./schemas/category.schema";
 
 @Module({
   imports: [
-      MainCategoryModule,
-      MidCategoryModule,
-      SubCategoryModule
-  ]
+    MongooseModule.forFeature([
+      {name: Category.name, schema: CategorySchema},
+    ]),
+  ],
+  providers: [CategoryService],
+  controllers: [CategoryController],
 })
 export class CategoryModule {
-
 }
-
