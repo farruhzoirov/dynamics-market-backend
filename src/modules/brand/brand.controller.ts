@@ -1,4 +1,4 @@
-import {Body, Controller, Post} from '@nestjs/common';
+import {Body, Controller, Post, UsePipes, ValidationPipe} from '@nestjs/common';
 import {BrandService} from "./brand.service";
 import {AddBrandDto, DeleteBrandDto, GetBrandListsDto, UpdateBrandDto} from "./dto/brand.dto";
 import {ValidateObjectIdPipe} from "../../common/pipes/object-id.pipe";
@@ -12,6 +12,7 @@ import {
 
 @ApiBearerAuth()
 @Controller('brand')
+@UsePipes(new ValidationPipe({whitelist: true}))
 export class BrandController {
   constructor(private readonly brandService: BrandService) {
   }

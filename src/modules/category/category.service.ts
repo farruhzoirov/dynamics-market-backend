@@ -79,7 +79,7 @@ export class CategoryService {
     if (hasChildren) {
       throw new CantDeleteModelException();
     }
-    // const hasProducts = await this.productModel.exists({ categoryId: id });
+    // const hasProducts = await this.productModel.exists({ categoryId: _id });
     // if (hasProducts) {
     //   throw new CantDeleteModelException("Cannot delete category with linked products");
     // }

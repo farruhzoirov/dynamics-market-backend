@@ -72,7 +72,7 @@ export class BrandService {
       throw new ModelDataNotFoundByIdException('Brand not found');
     }
 
-    // const hasProducts = await this.productModel.exists({ brandId: id });
+    // const hasProducts = await this.productModel.exists({ brandId: _id });
     // if (hasProducts) {
     //   throw new CantDeleteModelException("Cannot delete category with linked products");
     // }
