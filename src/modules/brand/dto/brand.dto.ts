@@ -1,8 +1,9 @@
 import {ApiProperty} from "@nestjs/swagger";
-import {IsNotEmpty, IsNumber, IsOptional, IsString, IsUrl} from "class-validator";
+import {IsNotEmpty, IsOptional, IsString, IsUrl} from "class-validator";
 import {UniversalQueryDto} from "../../../shared/dto/universal-query.dto";
 
-export class GetBrandListsDto extends UniversalQueryDto{}
+export class GetBrandListsDto extends UniversalQueryDto {
+}
 
 export class AddBrandDto {
   @ApiProperty({example: "Brand", description: "Brand name in Uzbek"})
@@ -38,6 +39,10 @@ export class AddBrandDto {
 }
 
 export class UpdateBrandDto {
+  @ApiProperty()
+  @IsString()
+  _id: string;
+
   @ApiProperty({example: "Brand", description: "Brand name in Uzbek"})
   @IsString()
   @IsOptional()

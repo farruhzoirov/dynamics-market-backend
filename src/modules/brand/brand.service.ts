@@ -5,7 +5,11 @@ import {Model} from "mongoose";
 import {AddBrandDto, GetBrandListsDto, UpdateBrandDto} from "./dto/brand.dto";
 import {getFilteredResultsWithTotal} from "../../common/helpers/universal-query-builder";
 import {generateUniqueSlug} from "../../common/helpers/generate-slugs";
-import {AddingModelException, UpdatingModelException} from "../../common/errors/model/model-based.exceptions";
+import {
+  AddingModelException, CantDeleteModelException,
+  ModelDataNotFoundByIdException,
+  UpdatingModelException
+} from "../../common/errors/model/model-based.exceptions";
 
 @Injectable()
 export class BrandService {
@@ -13,7 +17,10 @@ export class BrandService {
   }
 
   async getBrandsList(body: GetBrandListsDto): Promise<{data: any, total: number}> {
-    const getMatchesBrandsList = await getFilteredResultsWithTotal(body, this.brandModel, ['nameUz', 'nameRu', 'nameEn']);
+    const getMatchesBrandsList = await getFilteredResultsWithTotal(
+        body,
+        this.brandModel,
+        ['nameUz', 'nameRu', 'nameEn']);
     const total = await this.brandModel.countDocuments();
     return {
       data: getMatchesBrandsList,
@@ -35,31 +42,41 @@ export class BrandService {
   }
 
   async updateBrand(updateBody: UpdateBrandDto) {
-    try {
-      if (updateBody.nameUz) {
-        updateBody.slugUz = generateUniqueSlug(updateBody.nameUz);
-      }
+      const languages = ["Uz", "Ru", "En"];
+      languages.forEach((lang) => {
+        const nameKey = `name${lang}`;
+        const slugKey = `slug${lang}`;
 
-      if (updateBody.nameRu) {
-        updateBody.slugRu = generateUniqueSlug(updateBody.nameRu);
-      }
+        if (updateBody[nameKey]) {
+          updateBody[slugKey] = generateUniqueSlug(updateBody[nameKey]);
+        }
+      });
 
-      if (updateBody.nameEn) {
-        updateBody.slugEn = generateUniqueSlug(updateBody.nameEn);
+      const findBrand = await this.brandModel.findById(updateBody._id);
+
+      if (!findBrand) {
+        throw new ModelDataNotFoundByIdException('Brand not found');
       }
-      //
-      // await this.brandModel.findByIdAndUpdate(updateBody._id, {
-      //   $set: {
-      //     ...updateBody,
-      //   }
-      // })
-    } catch (err) {
-      console.log(`updating brand ====>  ${err.message}`);
-      throw new UpdatingModelException();
+      await this.brandModel.updateOne(
+          {
+            $set: {
+              ...updateBody,
+            },
+          },
+      );
     }
-  }
 
   async deleteBrand(_id: string) {
+    const checkBrand = await this.brandModel.findById(_id);
+    if (!checkBrand) {
+      throw new ModelDataNotFoundByIdException('Brand not found');
+    }
+
+    // const hasProducts = await this.productModel.exists({ brandId: id });
+    // if (hasProducts) {
+    //   throw new CantDeleteModelException("Cannot delete category with linked products");
+    // }
     await this.brandModel.deleteOne({_id});
+
   }
 }
