@@ -5,7 +5,12 @@ import {ValidateObjectIdPipe} from "../../../common/pipes/object-id.pipe";
 
 
 // dto for query
-export class GetCategoryDto extends UniversalQueryDto {}
+export class GetCategoryDto extends UniversalQueryDto {
+  @ApiProperty()
+  @IsOptional()
+  @IsString()
+  parentId: string;
+}
 
 
 export class AddCategoryDto {
