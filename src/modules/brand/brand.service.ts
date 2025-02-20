@@ -5,18 +5,14 @@ import {Model} from "mongoose";
 import {AddBrandDto, GetBrandListsDto, UpdateBrandDto} from "./dto/brand.dto";
 import {getFilteredResultsWithTotal} from "../../common/helpers/universal-query-builder";
 import {generateUniqueSlug} from "../../common/helpers/generate-slugs";
-import {
-  AddingModelException, CantDeleteModelException,
-  ModelDataNotFoundByIdException,
-  UpdatingModelException
-} from "../../common/errors/model/model-based.exceptions";
+import {AddingModelException, ModelDataNotFoundByIdException} from "../../common/errors/model/model-based.exceptions";
 
 @Injectable()
 export class BrandService {
   constructor(@InjectModel(Brand.name) private readonly brandModel: Model<BrandDocument>) {
   }
 
-  async getBrandsList(body: GetBrandListsDto): Promise<{data: any, total: number}> {
+  async getBrandsList(body: GetBrandListsDto): Promise<{ data: any, total: number }> {
     const getMatchesBrandsList = await getFilteredResultsWithTotal(
         body,
         this.brandModel,
@@ -42,29 +38,29 @@ export class BrandService {
   }
 
   async updateBrand(updateBody: UpdateBrandDto) {
-      const languages = ["Uz", "Ru", "En"];
-      languages.forEach((lang) => {
-        const nameKey = `name${lang}`;
-        const slugKey = `slug${lang}`;
+    const languages = ["Uz", "Ru", "En"];
+    languages.forEach((lang) => {
+      const nameKey = `name${lang}`;
+      const slugKey = `slug${lang}`;
 
-        if (updateBody[nameKey]) {
-          updateBody[slugKey] = generateUniqueSlug(updateBody[nameKey]);
-        }
-      });
-
-      const findBrand = await this.brandModel.findById(updateBody._id);
-
-      if (!findBrand) {
-        throw new ModelDataNotFoundByIdException('Brand not found');
+      if (updateBody[nameKey]) {
+        updateBody[slugKey] = generateUniqueSlug(updateBody[nameKey]);
       }
-      await this.brandModel.updateOne(
-          {
-            $set: {
-              ...updateBody,
-            },
-          },
-      );
+    });
+
+    const findBrand = await this.brandModel.findById(updateBody._id);
+
+    if (!findBrand) {
+      throw new ModelDataNotFoundByIdException('Brand not found');
     }
+    await this.brandModel.updateOne(
+        {
+          $set: {
+            ...updateBody,
+          },
+        },
+    );
+  }
 
   async deleteBrand(_id: string) {
     const checkBrand = await this.brandModel.findById(_id);
