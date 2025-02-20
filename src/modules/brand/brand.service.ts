@@ -13,15 +13,15 @@ export class BrandService {
   }
 
   async getBrandsList(body: GetBrandListsDto): Promise<{ data: any, total: number }> {
-    const getMatchesBrandsList = await getFilteredResultsWithTotal(
+    const [data, total] = await getFilteredResultsWithTotal(
         body,
         this.brandModel,
-        ['nameUz', 'nameRu', 'nameEn']);
-    const total = await this.brandModel.countDocuments();
+        ["nameUz", "nameRu", "nameEn"],
+    );
     return {
-      data: getMatchesBrandsList,
-      total
-    }
+      data,
+      total,
+    };
   }
 
   async addBrand(body: AddBrandDto): Promise<void> {
