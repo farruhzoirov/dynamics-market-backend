@@ -59,7 +59,7 @@ export class CategoryService {
     if (!findCategory) {
       throw new ModelDataNotFoundByIdException('Category not found');
     }
-    await this.categoryModel.updateOne(
+    await this.categoryModel.findByIdAndUpdate(updateBody._id,
         {
           $set: {
             ...updateBody,
