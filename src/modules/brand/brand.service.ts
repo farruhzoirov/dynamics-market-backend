@@ -47,7 +47,6 @@ export class BrandService {
         updateBody[slugKey] = generateUniqueSlug(updateBody[nameKey]);
       }
     });
-    console.log(updateBody._id)
 
     const findBrand = await this.brandModel.findById(updateBody._id);
 
