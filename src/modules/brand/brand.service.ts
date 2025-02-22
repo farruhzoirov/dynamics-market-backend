@@ -47,13 +47,15 @@ export class BrandService {
         updateBody[slugKey] = generateUniqueSlug(updateBody[nameKey]);
       }
     });
+    console.log(updateBody._id)
 
     const findBrand = await this.brandModel.findById(updateBody._id);
 
     if (!findBrand) {
       throw new ModelDataNotFoundByIdException('Brand not found');
     }
-    await this.brandModel.updateOne(
+
+    await this.brandModel.findByIdAndUpdate(updateBody._id,
         {
           $set: {
             ...updateBody,
