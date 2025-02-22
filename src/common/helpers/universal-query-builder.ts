@@ -14,7 +14,7 @@ export const getFilteredResultsWithTotal = async <T>(
   const skip = (payload.page - 1) * (payload.limit);
   const filter: Record<string, any> = await universalSearchQuery(payload.search, searchFields as string[]);
 
-  if (!body.parentId) {
+  if (body.parentId) {
     filter.parentId = body.parentId;
   } else {
     filter.parentId = null;
