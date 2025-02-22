@@ -19,6 +19,7 @@ export class AddBrandDto {
   nameEn: string;
 
   @IsString()
+  @IsOptional()
   slugUz?: string;
 
   @IsString()
