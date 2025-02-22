@@ -22,12 +22,15 @@ export class AddBrandDto {
   slugUz?: string;
 
   @IsString()
+  @IsOptional()
   slugRu?: string;
 
   @IsString()
+  @IsOptional()
   slugEn?: string;
 
   @ApiProperty()
+  @IsOptional()
   @IsString()
   logo: string;
 
