@@ -17,6 +17,7 @@ export class FileUploadService {
 
     files.forEach(file => {
       file.size = +(file.size / (1024 * 1024)).toFixed(3);
+      file['extension'] = file.originalname.split('.').pop() || '';
     })
     return {
       message: 'File or files uploaded successfully.',
