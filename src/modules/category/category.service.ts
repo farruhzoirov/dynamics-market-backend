@@ -9,7 +9,7 @@ import {
   CantDeleteModelException,
   ModelDataNotFoundByIdException
 } from "../../common/errors/model/model-based.exceptions";
-import {AddCategoryDto} from "./dto/category.dto";
+import {AddCategoryDto, UpdateCategoryDto} from "./dto/category.dto";
 
 @Injectable()
 export class CategoryService {
@@ -43,7 +43,7 @@ export class CategoryService {
     }
   }
 
-  async updateCategory(updateBody: any) {
+  async updateCategory(updateBody: UpdateCategoryDto) {
     const languages = ["Uz", "Ru", "En"];
     languages.forEach((lang) => {
       const nameKey = `name${lang}`;
