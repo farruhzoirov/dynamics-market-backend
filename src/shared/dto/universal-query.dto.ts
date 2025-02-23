@@ -22,3 +22,4 @@ export class UniversalQueryDto {
   @IsString()
   search?: string;
 }
+

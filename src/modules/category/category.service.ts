@@ -4,12 +4,14 @@ import {Model} from "mongoose";
 import {Category, CategoryDocument} from "./schemas/category.schema";
 import {getFilteredResultsWithTotal} from "../../common/helpers/universal-query-builder";
 import {generateUniqueSlug} from "../../common/helpers/generate-slugs";
+
 import {
   AddingModelException,
   CantDeleteModelException,
   ModelDataNotFoundByIdException
 } from "../../common/errors/model/model-based.exceptions";
-import {AddCategoryDto, UpdateCategoryDto} from "./dto/category.dto";
+
+import {AddCategoryDto, GetCategoryDto, UpdateCategoryDto} from "./dto/category.dto";
 
 @Injectable()
 export class CategoryService {
@@ -18,7 +20,10 @@ export class CategoryService {
   ) {
   }
 
-  async getCategoriesList(body: any) {
+  async getCategoriesList(body: GetCategoryDto) {
+    if (!body.parentId) {
+      body.parentId = null;
+    }
     const [data, total] = await getFilteredResultsWithTotal(
         body,
         this.categoryModel,

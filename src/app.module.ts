@@ -14,6 +14,7 @@ import {UserModule} from "./modules/user/user.module";
 import {CategoryModule} from './modules/category/category.module';
 import {FileUploadModule} from './modules/file-upload/file-upload.module';
 import {BrandModule} from './modules/brand/brand.module';
+import {ProductModule} from './modules/product/product.module';
 
 import {RolesGuard} from "./common/guards/roles.guard";
 
@@ -38,6 +39,7 @@ import {RolesGuard} from "./common/guards/roles.guard";
     CategoryModule,
     BrandModule,
     FileUploadModule,
+    ProductModule,
   ],
   providers: [
     {
