@@ -21,6 +21,7 @@ jobs:
           docker build -t ${{ secrets.DOCKER_USERNAME }}/nestjs-app:latest .
           docker push ${{ secrets.DOCKER_USERNAME }}/nestjs-app:latest
 
+
       - name: SSH to Server and Deploy
         uses: appleboy/ssh-action@master
         with:
