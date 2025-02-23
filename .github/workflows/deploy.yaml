@@ -21,8 +21,6 @@ jobs:
           password: ${{ secrets.SERVER_PASSWORD }}
           script: |
             cd /home/${{ secrets.SERVER_USER }}/Projects
-            
-            echo "${{ secrets.ENV_FILE_CONTENT }}" > .env
 
             if [ ! -d "dynamics-market-backend" ]; then
               git clone https://github.com/farruhzoirov/dynamics-market-backend.git
@@ -31,8 +29,13 @@ jobs:
             cd dynamics-market-backend
             git pull origin main
 
+            # 🔹 .env faylni serverda yaratish
+            echo "PORT=${{ secrets.PORT }}" > .env
+            echo "MONGODB_URI=${{ secrets.MONGODB_URI }}" >> .env
+            echo "GOOGLE_CLIENT_ID=${{ secrets.GOOGLE_CLIENT_ID }}" >> .env
+            echo "JWT_SECRET_KEY=${{ secrets.JWT_SECRET_KEY }}" >> .env
+
             docker stop dynamics-market-backend || true
             docker rm dynamics-market-backend || true
             docker build -t dynamics-market-backend .
             docker run -d --name dynamics-market-backend --env-file .env -p 5000:5000 --restart always dynamics-market-backend
-            
