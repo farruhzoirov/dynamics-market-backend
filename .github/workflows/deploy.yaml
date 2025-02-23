@@ -34,6 +34,5 @@ jobs:
             docker stop dynamics-market-backend || true
             docker rm dynamics-market-backend || true
             docker build -t dynamics-market-backend .
-            docker run -d --name dynamics-market-backend -p 3000:3000 --restart always dynamics-market-backend
-            
+            docker run -d --name dynamics-market-backend --env-file .env -p 5000:5000 --restart always dynamics-market-backend
             
