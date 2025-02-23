@@ -23,7 +23,7 @@ jobs:
             cd /home/${{ secrets.SERVER_USER }}/Projects
 
             if [ ! -d "dynamics-market-backend" ]; then
-              git clone https://github.com/YOUR_GITHUB_USERNAME/YOUR_REPO_NAME.git dynamics-market-backend
+              git clone https://github.com/farruhzoirov/dynamics-market-backend.git
             fi
 
             cd dynamics-market-backend
