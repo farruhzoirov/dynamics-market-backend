@@ -13,23 +13,23 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v3
 
-      - name: Login to Docker Hub
-        run: echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
-
-      - name: Build and Push Docker Image
-        run: |
-          docker build -t ${{ secrets.DOCKER_USERNAME }}/nestjs-app:latest .
-          docker push ${{ secrets.DOCKER_USERNAME }}/nestjs-app:latest
-
-
       - name: SSH to Server and Deploy
         uses: appleboy/ssh-action@master
         with:
           host: ${{ secrets.SERVER_IP }}
           username: ${{ secrets.SERVER_USER }}
-          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          password: ${{ secrets.SERVER_PASSWORD }}
           script: |
-            docker pull ${{ secrets.DOCKER_USERNAME }}/nestjs-app:latest
-            docker stop nestjs-app || true
-            docker rm nestjs-app || true
-            docker run -d --name nestjs-app -p 3000:3000 --restart always ${{ secrets.DOCKER_USERNAME }}/nestjs-app:latest
+            cd /home/${{ secrets.SERVER_USER }}/Projects
+
+            if [ ! -d "dynamics-market-backend" ]; then
+              git clone https://github.com/YOUR_GITHUB_USERNAME/YOUR_REPO_NAME.git dynamics-market-backend
+            fi
+
+            cd dynamics-market-backend
+            git pull origin main
+
+            docker stop dynamics-market-backend || true
+            docker rm dynamics-market-backend || true
+            docker build -t dynamics-market-backend .
+            docker run -d --name dynamics-market-backend -p 3000:3000 --restart always dynamics-market-backend
