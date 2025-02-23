@@ -21,6 +21,8 @@ jobs:
           password: ${{ secrets.SERVER_PASSWORD }}
           script: |
             cd /home/${{ secrets.SERVER_USER }}/Projects
+            
+            echo "${{ secrets.ENV_FILE_CONTENT }}" > .env
 
             if [ ! -d "dynamics-market-backend" ]; then
               git clone https://github.com/farruhzoirov/dynamics-market-backend.git
@@ -33,3 +35,5 @@ jobs:
             docker rm dynamics-market-backend || true
             docker build -t dynamics-market-backend .
             docker run -d --name dynamics-market-backend -p 3000:3000 --restart always dynamics-market-backend
+            
+            
