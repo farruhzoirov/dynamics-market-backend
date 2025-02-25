@@ -1,22 +1,28 @@
-import {Injectable} from '@nestjs/common';
-import {InjectModel} from "@nestjs/mongoose";
-import {Brand, BrandDocument} from "./schemas/brand.schema";
-import {Model} from "mongoose";
-import {AddBrandDto, GetBrandListsDto, UpdateBrandDto} from "./dto/brand.dto";
-import {getFilteredResultsWithTotal} from "../../common/helpers/universal-query-builder";
-import {generateUniqueSlug} from "../../common/helpers/generate-slugs";
-import {AddingModelException, ModelDataNotFoundByIdException} from "../../common/errors/model/model-based.exceptions";
+import { Injectable } from '@nestjs/common';
+import { InjectModel } from '@nestjs/mongoose';
+import { Brand, BrandDocument } from './schemas/brand.schema';
+import { Model } from 'mongoose';
+import { AddBrandDto, GetBrandListsDto, UpdateBrandDto } from './dto/brand.dto';
+import { getFilteredResultsWithTotal } from '../../common/helpers/universal-query-builder';
+import { generateUniqueSlug } from '../../common/helpers/generate-slugs';
+import {
+  AddingModelException,
+  ModelDataNotFoundByIdException,
+} from '../../common/errors/model/model-based.exceptions';
 
 @Injectable()
 export class BrandService {
-  constructor(@InjectModel(Brand.name) private readonly brandModel: Model<BrandDocument>) {
-  }
+  constructor(
+    @InjectModel(Brand.name) private readonly brandModel: Model<BrandDocument>,
+  ) {}
 
-  async getBrandsList(body: GetBrandListsDto): Promise<{ data: any, total: number }> {
+  async getBrandsList(
+    body: GetBrandListsDto,
+  ): Promise<{ data: any; total: number }> {
     const [data, total] = await getFilteredResultsWithTotal(
-        body,
-        this.brandModel,
-        ["nameUz", "nameRu", "nameEn"],
+      body,
+      this.brandModel,
+      ['nameUz', 'nameRu', 'nameEn'],
     );
     return {
       data,
@@ -26,7 +32,7 @@ export class BrandService {
 
   async addBrand(body: AddBrandDto): Promise<void> {
     try {
-      const {nameUz, nameRu, nameEn} = body;
+      const { nameUz, nameRu, nameEn } = body;
       body.slugUz = generateUniqueSlug(nameUz);
       body.slugRu = generateUniqueSlug(nameRu);
       body.slugEn = generateUniqueSlug(nameEn);
@@ -38,7 +44,7 @@ export class BrandService {
   }
 
   async updateBrand(updateBody: UpdateBrandDto) {
-    const languages = ["Uz", "Ru", "En"];
+    const languages = ['Uz', 'Ru', 'En'];
     languages.forEach((lang) => {
       const nameKey = `name${lang}`;
       const slugKey = `slug${lang}`;
@@ -54,13 +60,11 @@ export class BrandService {
       throw new ModelDataNotFoundByIdException('Brand not found');
     }
 
-    await this.brandModel.findByIdAndUpdate(updateBody._id,
-        {
-          $set: {
-            ...updateBody,
-          },
-        },
-    );
+    await this.brandModel.findByIdAndUpdate(updateBody._id, {
+      $set: {
+        ...updateBody,
+      },
+    });
   }
 
   async deleteBrand(_id: string) {
@@ -73,7 +77,6 @@ export class BrandService {
     // if (hasProducts) {
     //   throw new CantDeleteModelException("Cannot delete category with linked products");
     // }
-    await this.brandModel.deleteOne({_id});
-
+    await this.brandModel.deleteOne({ _id });
   }
 }

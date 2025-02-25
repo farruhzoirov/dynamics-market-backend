@@ -1,20 +1,19 @@
-import {ApiProperty} from "@nestjs/swagger";
-import {IsNotEmpty, IsOptional, IsString, IsUrl} from "class-validator";
-import {UniversalQueryDto} from "../../../shared/dto/universal-query.dto";
+import { ApiProperty } from '@nestjs/swagger';
+import { IsNotEmpty, IsOptional, IsString, IsUrl } from 'class-validator';
+import { UniversalQueryDto } from '../../../shared/dto/universal-query.dto';
 
-export class GetBrandListsDto extends UniversalQueryDto {
-}
+export class GetBrandListsDto extends UniversalQueryDto {}
 
 export class AddBrandDto {
-  @ApiProperty({example: "Brand", description: "Brand name in Uzbek"})
+  @ApiProperty({ example: 'Brand', description: 'Brand name in Uzbek' })
   @IsString()
   nameUz: string;
 
-  @ApiProperty({example: "Brand", description: "Brand name in Russian"})
+  @ApiProperty({ example: 'Brand', description: 'Brand name in Russian' })
   @IsString()
   nameRu: string;
 
-  @ApiProperty({example: "Brand", description: "Brand name in English"})
+  @ApiProperty({ example: 'Brand', description: 'Brand name in English' })
   @IsString()
   nameEn: string;
 
@@ -39,7 +38,7 @@ export class AddBrandDto {
   @IsOptional()
   @IsUrl()
   @IsString()
-  website: string
+  website: string;
 }
 
 export class UpdateBrandDto {
@@ -47,17 +46,17 @@ export class UpdateBrandDto {
   @IsString()
   _id: string;
 
-  @ApiProperty({example: "Brand", description: "Brand name in Uzbek"})
+  @ApiProperty({ example: 'Brand', description: 'Brand name in Uzbek' })
   @IsString()
   @IsOptional()
   nameUz: string;
 
-  @ApiProperty({example: "Brand", description: "Brand name in Russian"})
+  @ApiProperty({ example: 'Brand', description: 'Brand name in Russian' })
   @IsString()
   @IsOptional()
   nameRu: string;
 
-  @ApiProperty({example: "Brand", description: "Brand name in English"})
+  @ApiProperty({ example: 'Brand', description: 'Brand name in English' })
   @IsString()
   @IsOptional()
   nameEn: string;
@@ -83,12 +82,11 @@ export class UpdateBrandDto {
   @IsOptional()
   @IsUrl()
   @IsString()
-  website: string
+  website: string;
 }
 
-
 export class DeleteBrandDto {
-  @ApiProperty({required: true})
+  @ApiProperty({ required: true })
   @IsString()
   @IsNotEmpty()
   _id: string;

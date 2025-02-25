@@ -1,8 +1,7 @@
-import {ApiProperty} from "@nestjs/swagger";
-import {IsArray, IsNotEmpty, IsOptional, IsString} from "class-validator";
-import {UniversalQueryDto} from "../../../shared/dto/universal-query.dto";
-import {ValidateObjectIdPipe} from "../../../common/pipes/object-id.pipe";
-
+import { ApiProperty } from '@nestjs/swagger';
+import { IsArray, IsNotEmpty, IsOptional, IsString } from 'class-validator';
+import { UniversalQueryDto } from '../../../shared/dto/universal-query.dto';
+import { ValidateObjectIdPipe } from '../../../common/pipes/object-id.pipe';
 
 // dto for query
 export class GetCategoryDto extends UniversalQueryDto {
@@ -12,19 +11,18 @@ export class GetCategoryDto extends UniversalQueryDto {
   parentId: string;
 }
 
-
 export class AddCategoryDto {
-  @ApiProperty({example: "Asosiy toifa nomi (uz)"})
+  @ApiProperty({ example: 'Asosiy toifa nomi (uz)' })
   @IsString()
   @IsNotEmpty()
   nameUz: string;
 
-  @ApiProperty({example: "Основная категория (ru)"})
+  @ApiProperty({ example: 'Основная категория (ru)' })
   @IsString()
   @IsNotEmpty()
   nameRu: string;
 
-  @ApiProperty({example: "Main category (en)"})
+  @ApiProperty({ example: 'Main category (en)' })
   @IsString()
   @IsNotEmpty()
   nameEn: string;
@@ -57,15 +55,15 @@ export class UpdateCategoryDto {
   @IsString()
   _id: string;
 
-  @ApiProperty({example: "Asosiy toifa nomi (uz)"})
+  @ApiProperty({ example: 'Asosiy toifa nomi (uz)' })
   @IsString()
   nameUz: string;
 
-  @ApiProperty({example: "Основная категория (ru)"})
+  @ApiProperty({ example: 'Основная категория (ru)' })
   @IsString()
   nameRu: string;
 
-  @ApiProperty({example: "Main category (en)"})
+  @ApiProperty({ example: 'Main category (en)' })
   @IsString()
   nameEn: string;
 
@@ -92,9 +90,8 @@ export class UpdateCategoryDto {
   images: string[];
 }
 
-
 export class DeleteCategoryDto {
-  @ApiProperty({required: true})
+  @ApiProperty({ required: true })
   @IsString()
   @IsNotEmpty()
   _id: string;

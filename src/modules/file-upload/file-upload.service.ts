@@ -1,12 +1,12 @@
-import {Injectable} from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import {
   FileNotFoundException,
   InvalidFilePathException,
-  NoFileUploadedException
-} from "../../common/errors/file-upload/file-upload.exception";
+  NoFileUploadedException,
+} from '../../common/errors/file-upload/file-upload.exception';
 
-import * as path from "node:path";
-import * as fs from "node:fs";
+import * as path from 'node:path';
+import * as fs from 'node:fs';
 
 @Injectable()
 export class FileUploadService {
@@ -15,14 +15,14 @@ export class FileUploadService {
       throw new NoFileUploadedException('No file uploaded');
     }
 
-    files.forEach(file => {
+    files.forEach((file) => {
       file.size = +(file.size / (1024 * 1024)).toFixed(3);
       file['extension'] = file.originalname.split('.').pop() || '';
-    })
+    });
     return {
       message: 'File or files uploaded successfully.',
       files,
-    }
+    };
   }
 
   async deleteFile(filePath: string) {

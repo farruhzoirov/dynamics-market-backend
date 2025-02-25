@@ -7,25 +7,24 @@ import {
   Req,
   UseInterceptors,
   UsePipes,
-  ValidationPipe
+  ValidationPipe,
 } from '@nestjs/common';
 
-import {ApiBearerAuth, ApiTags} from "@nestjs/swagger";
-import {Request} from "express";
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
+import { Request } from 'express';
 
-import {UserService} from "./user.service";
-import {JwtPayload} from "../../shared/interfaces/jwt-payload";
-import {CleanResponseInterceptor} from "../../common/interceptors/clean-response";
+import { UserService } from './user.service';
+import { JwtPayload } from '../../shared/interfaces/jwt-payload';
+import { CleanResponseInterceptor } from '../../common/interceptors/clean-response';
 
-import {UpdateUserDto} from "./dto/user.dto";
+import { UpdateUserDto } from './dto/user.dto';
 
 @ApiTags('User')
 @ApiBearerAuth()
 @Controller('user')
 @UseInterceptors(CleanResponseInterceptor)
 export class UserController {
-  constructor(private readonly userService: UserService) {
-  }
+  constructor(private readonly userService: UserService) {}
 
   @HttpCode(HttpStatus.OK)
   @Post('get-user-by-token')
@@ -37,14 +36,15 @@ export class UserController {
 
   @HttpCode(HttpStatus.OK)
   @Post('update')
-  @UsePipes(new ValidationPipe({whitelist: true}))
-  async updateUserById(
-      @Req() req: Request,
-      @Body() body: UpdateUserDto) {
+  @UsePipes(new ValidationPipe({ whitelist: true }))
+  async updateUserById(@Req() req: Request, @Body() body: UpdateUserDto) {
     const user = req.user as JwtPayload;
-    const regeneratedJwtToken = await this.userService.updateUserById(user._id, body);
+    const regeneratedJwtToken = await this.userService.updateUserById(
+      user._id,
+      body,
+    );
     return {
       token: regeneratedJwtToken,
-    }
+    };
   }
 }

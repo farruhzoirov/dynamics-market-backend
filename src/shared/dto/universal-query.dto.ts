@@ -1,5 +1,5 @@
-import {ApiProperty} from "@nestjs/swagger";
-import {IsNumber, IsOptional, IsString} from "class-validator";
+import { ApiProperty } from '@nestjs/swagger';
+import { IsNumber, IsOptional, IsString } from 'class-validator';
 
 export class UniversalQueryDto {
   @ApiProperty()
@@ -22,4 +22,3 @@ export class UniversalQueryDto {
   @IsString()
   search?: string;
 }
-

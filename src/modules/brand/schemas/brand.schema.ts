@@ -1,9 +1,9 @@
-import {Prop, Schema, SchemaFactory} from "@nestjs/mongoose";
-import {HydratedDocument} from "mongoose";
+import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
+import { HydratedDocument } from 'mongoose';
 
 export type BrandDocument = HydratedDocument<Brand>;
 
-@Schema({timestamps: true})
+@Schema({ timestamps: true })
 export class Brand {
   @Prop()
   nameUz: string;
@@ -23,13 +23,13 @@ export class Brand {
   @Prop()
   slugEn: string;
 
-  @Prop({default: null})
+  @Prop({ default: null })
   website: string;
 
   @Prop()
   logo: string;
 
-  @Prop({default: 1})
+  @Prop({ default: 1 })
   status: number;
 }
 

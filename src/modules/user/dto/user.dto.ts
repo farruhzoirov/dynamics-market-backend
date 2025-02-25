@@ -1,16 +1,24 @@
-import {Type} from "class-transformer";
-import {IsArray, IsEmail, IsNotEmpty, IsNumber, IsOptional, IsString, ValidateNested} from "class-validator";
-import {ApiProperty} from "@nestjs/swagger";
-import {ILocations} from "../../../shared/interfaces/location";
-import {Gender} from "../enums/gender.enum";
+import { Type } from 'class-transformer';
+import {
+  IsArray,
+  IsEmail,
+  IsNotEmpty,
+  IsNumber,
+  IsOptional,
+  IsString,
+  ValidateNested,
+} from 'class-validator';
+import { ApiProperty } from '@nestjs/swagger';
+import { ILocations } from '../../../shared/interfaces/location';
+import { Gender } from '../enums/gender.enum';
 
 export class UpdateUserDto {
-  @ApiProperty({required: true})
+  @ApiProperty({ required: true })
   @IsString()
   @IsNotEmpty()
   firstName: string;
 
-  @ApiProperty({required: true})
+  @ApiProperty({ required: true })
   @IsString()
   @IsNotEmpty()
   lastName: string;
@@ -23,59 +31,62 @@ export class UpdateUserDto {
   @ApiProperty({
     required: false,
     type: 'array',
-    items: {type: 'object', properties: {long: {type: 'number'}, lat: {type: 'number'}}},
+    items: {
+      type: 'object',
+      properties: { long: { type: 'number' }, lat: { type: 'number' } },
+    },
     description: 'Array of location objects with long and lat',
   })
   @IsOptional()
   @IsArray()
   @ValidateNested({ each: true })
   @Type(() => LocationsDto)
-  locations: ILocations[]
+  locations: ILocations[];
 
   @ApiProperty({
     required: false,
-    description: "it will be user's telegram username"
+    description: "it will be user's telegram username",
   })
   @IsString()
   @IsOptional()
-  telegram: String
+  telegram: string;
 
   @ApiProperty({
     required: false,
     enum: Gender,
-    description: "User gender (male or female)"
+    description: 'User gender (male or female)',
   })
   @IsString()
   @IsNotEmpty()
-  gender: Gender
+  gender: Gender;
 
   @ApiProperty({
     required: false,
   })
   @IsString()
   @IsOptional()
-  regionId: String
+  regionId: string;
 
   @ApiProperty({
     required: false,
   })
   @IsString()
   @IsOptional()
-  districtId: String
+  districtId: string;
 
   @ApiProperty({
     required: false,
   })
   @IsString()
   @IsOptional()
-  address: String
+  address: string;
 
   @ApiProperty({
     required: false,
   })
   @IsString()
   @IsOptional()
-  phone: String
+  phone: string;
 }
 
 export class LocationsDto {

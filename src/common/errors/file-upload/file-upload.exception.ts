@@ -1,5 +1,5 @@
-import {BadRequestException} from "@nestjs/common";
-import {ErrorCodes} from "../error-codes";
+import { BadRequestException } from '@nestjs/common';
+import { ErrorCodes } from '../error-codes';
 
 export class NoFileUploadedException extends BadRequestException {
   constructor(message: string) {
@@ -19,7 +19,6 @@ export class InvalidFileTypeException extends BadRequestException {
   }
 }
 
-
 export class FileSizeLargerException extends BadRequestException {
   constructor(message: string) {
     super({
@@ -38,7 +37,6 @@ export class FileNotFoundException extends BadRequestException {
   }
 }
 
-
 export class InvalidFilePathException extends BadRequestException {
   constructor(message: string) {
     super({
@@ -47,7 +45,3 @@ export class InvalidFilePathException extends BadRequestException {
     });
   }
 }
-
-
-
-

@@ -1,24 +1,23 @@
-import {Injectable} from '@nestjs/common';
-import {InjectModel} from "@nestjs/mongoose";
-import {Model} from "mongoose";
+import { Injectable } from '@nestjs/common';
+import { InjectModel } from '@nestjs/mongoose';
+import { Model } from 'mongoose';
 import * as jwt from 'jsonwebtoken';
-import {OAuth2Client} from 'google-auth-library';
-import {ConfigService} from "@nestjs/config";
+import { OAuth2Client } from 'google-auth-library';
+import { ConfigService } from '@nestjs/config';
 // Schemas
-import {User, UserDocument} from "../user/schemas/user.schema";
+import { User, UserDocument } from '../user/schemas/user.schema';
 // Interfaces
-import {JwtPayload} from "../../shared/interfaces/jwt-payload";
-import {VerifyIdTokenException} from "../../common/errors/auth/verify-id-token.exception";
+import { JwtPayload } from '../../shared/interfaces/jwt-payload';
+import { VerifyIdTokenException } from '../../common/errors/auth/verify-id-token.exception';
 
 const client = new OAuth2Client();
 
 @Injectable()
 export class AuthService {
   constructor(
-      private readonly configService: ConfigService,
-      @InjectModel(User.name) private readonly userModel: Model<UserDocument>,
-  ) {
-  }
+    private readonly configService: ConfigService,
+    @InjectModel(User.name) private readonly userModel: Model<UserDocument>,
+  ) {}
 
   async verifyToken(id_token: string) {
     try {
@@ -29,18 +28,24 @@ export class AuthService {
       const payload = ticket.getPayload();
       return payload;
     } catch (error) {
-      throw new VerifyIdTokenException("Error verifying id token");
+      console.log('Error verifying token', error.message);
+      throw new VerifyIdTokenException('Error verifying id token');
     }
   }
 
   async generateJwtToken(payload: JwtPayload) {
-    return jwt.sign(payload, this.configService.get('CONFIG_JWT').JWT_SECRET_KEY);
+    return jwt.sign(
+      payload,
+      this.configService.get('CONFIG_JWT').JWT_SECRET_KEY,
+    );
   }
 
   async registerOrLoginUser(idToken: string): Promise<string> {
     const payload = await this.verifyToken(idToken);
-    let checkUser = await this.userModel.findOne({email: payload.email})
-        .select('-__v -createdAt -updatedAt') as any;
+    const checkUser = await this.userModel
+      .findOne({ email: payload.email })
+      .select('-__v -createdAt -updatedAt')
+      .lean();
 
     if (!checkUser) {
       const newUser = await this.userModel.create({
@@ -49,6 +54,7 @@ export class AuthService {
         email: payload.email,
         image: payload.picture,
       });
+
       return await this.generateJwtToken({
         _id: newUser._id.toString(),
         firstName: newUser.firstName,
@@ -66,14 +72,9 @@ export class AuthService {
       });
     }
 
-    checkUser = checkUser.toObject();
     return await this.generateJwtToken({
       ...checkUser,
       _id: checkUser._id.toString(),
     });
   }
 }
-
-
-
-
