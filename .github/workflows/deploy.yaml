@@ -35,7 +35,10 @@ jobs:
             echo "GOOGLE_CLIENT_ID=${{ secrets.GOOGLE_CLIENT_ID }}" >> .env
             echo "JWT_SECRET_KEY=${{ secrets.JWT_SECRET_KEY }}" >> .env
 
-            docker stop dynamics-market-backend || true
-            docker rm dynamics-market-backend || true
-            docker build -t dynamics-market-backend .
-            docker run -d --name dynamics-market-backend --env-file .env -p 5000:5000 --restart always dynamics-market-backend
+#            docker stop dynamics-market-backend || true
+#            docker rm dynamics-market-backend || true
+#            docker build -t dynamics-market-backend .
+#            docker run -d --name dynamics-market-backend --env-file .env -p 5000:5000 --restart always dynamics-market-backend
+            
+            docker compose down
+            docker compose up -d --build

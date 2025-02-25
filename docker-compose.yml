@@ -1,0 +1,14 @@
+version: "3.8"
+
+services:
+  app:
+    image: dynamics-market-backend
+    container_name: dynamics-market-backend
+    build: .
+    ports:
+      - "5000:5000"
+    env_file:
+      - .env
+    restart: always
+    volumes:
+      - ./uploads:/usr/src/app/uploads
