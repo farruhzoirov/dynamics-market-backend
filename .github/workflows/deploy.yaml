@@ -39,5 +39,6 @@ jobs:
             JWT_SECRET_KEY=${{ secrets.JWT_SECRET_KEY }}
             EOL
             
+            
             docker compose down
             docker-compose up -d --build
