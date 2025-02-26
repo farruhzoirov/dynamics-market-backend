@@ -31,6 +31,7 @@ jobs:
             git reset --hard HEAD
             git pull origin main
 
+
             # 🔹 .env faylni yaratish
             cat > .env <<EOL
             PORT=${{ secrets.PORT }}
