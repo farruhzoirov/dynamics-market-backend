@@ -38,5 +38,6 @@ jobs:
             GOOGLE_CLIENT_ID=${{ secrets.GOOGLE_CLIENT_ID }}
             JWT_SECRET_KEY=${{ secrets.JWT_SECRET_KEY }}
             EOL
-
+            
+            docker compose down
             docker-compose up -d --build
