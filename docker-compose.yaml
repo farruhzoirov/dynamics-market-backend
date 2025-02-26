@@ -9,4 +9,4 @@ services:
     ports:
       - "5000:5000"
     volumes:
-      - /home/${{ secrets.SERVER_USER }}/Projects/dynamics-market-backend/uploads:/usr/src/app/uploads
+      - /home/root/Projects/dynamics-market-backend/uploads:/usr/src/app/uploads
