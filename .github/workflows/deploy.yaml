@@ -23,10 +23,12 @@ jobs:
             cd /home/${{ secrets.SERVER_USER }}/Projects
 
             if [ ! -d "dynamics-market-backend" ]; then
+              rm -rf dynamics-market-backend
               git clone https://github.com/farruhzoirov/dynamics-market-backend.git
             fi
 
             cd dynamics-market-backend
+            git reset --hard HEAD
             git pull origin main
 
             # 🔹 .env faylni yaratish
