@@ -7,6 +7,7 @@ export class ProductController {
 
   @Post('add')
   async addProduct(@Body() body: any) {}
+
   @Post('update')
   async updateProduct(@Body() updateBody: any) {}
 

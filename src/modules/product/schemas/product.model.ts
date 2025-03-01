@@ -67,7 +67,11 @@ export class Product {
   })
   categoryId: string;
 
-  @Prop({ type: mongoose.Schema.Types.ObjectId, ref: 'Brand', default: null })
+  @Prop({
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Brand',
+    default: null,
+  })
   brandId: string;
 
   @Prop({ default: [] })
@@ -78,3 +82,8 @@ export class Product {
 }
 
 export const ProductSchema = SchemaFactory.createForClass(Product);
+ProductSchema.index({ slugUz: 1 });
+ProductSchema.index({ slugRu: 1 });
+ProductSchema.index({ slugEn: 1 });
+ProductSchema.index({ nameUz: 1, nameRu: 1, nameEn: 1 });
+ProductSchema.index({ categoryId: 1, brandId: 1 });
