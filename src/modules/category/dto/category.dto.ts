@@ -1,7 +1,10 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsArray, IsNotEmpty, IsOptional, IsString } from 'class-validator';
-import { UniversalQueryDto } from '../../../shared/dto/universal-query.dto';
-import { ValidateObjectIdPipe } from '../../../common/pipes/object-id.pipe';
+import {
+  UniversalQueryDto,
+  UpdateBaseModelDto,
+  DeleteBaseModelDto,
+} from 'src/shared/dto/base-model.dto';
 
 // dto for query
 export class GetCategoryDto extends UniversalQueryDto {
@@ -50,35 +53,7 @@ export class AddCategoryDto {
   slugEn?: string;
 }
 
-export class UpdateCategoryDto {
-  @ApiProperty()
-  @IsString()
-  _id: string;
-
-  @ApiProperty({ example: 'Asosiy toifa nomi (uz)' })
-  @IsString()
-  nameUz: string;
-
-  @ApiProperty({ example: 'Основная категория (ru)' })
-  @IsString()
-  nameRu: string;
-
-  @ApiProperty({ example: 'Main category (en)' })
-  @IsString()
-  nameEn: string;
-
-  @IsString()
-  @IsOptional()
-  slugUz?: string;
-
-  @IsString()
-  @IsOptional()
-  slugRu?: string;
-
-  @IsString()
-  @IsOptional()
-  slugEn?: string;
-
+export class UpdateCategoryDto extends UpdateBaseModelDto {
   @ApiProperty()
   @IsOptional()
   @IsString()
@@ -90,9 +65,4 @@ export class UpdateCategoryDto {
   images: string[];
 }
 
-export class DeleteCategoryDto {
-  @ApiProperty({ required: true })
-  @IsString()
-  @IsNotEmpty()
-  _id: string;
-}
+export class DeleteCategoryDto extends DeleteBaseModelDto {}

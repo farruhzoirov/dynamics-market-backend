@@ -1,34 +1,15 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsNotEmpty, IsOptional, IsString, IsUrl } from 'class-validator';
-import { UniversalQueryDto } from '../../../shared/dto/universal-query.dto';
+import {
+  UniversalQueryDto,
+  BaseModelDto,
+  UpdateBaseModelDto,
+  DeleteBaseModelDto,
+} from '../../../shared/dto/base-model.dto';
 
 export class GetBrandListsDto extends UniversalQueryDto {}
 
-export class AddBrandDto {
-  @ApiProperty({ example: 'Brand', description: 'Brand name in Uzbek' })
-  @IsString()
-  nameUz: string;
-
-  @ApiProperty({ example: 'Brand', description: 'Brand name in Russian' })
-  @IsString()
-  nameRu: string;
-
-  @ApiProperty({ example: 'Brand', description: 'Brand name in English' })
-  @IsString()
-  nameEn: string;
-
-  @IsString()
-  @IsOptional()
-  slugUz?: string;
-
-  @IsString()
-  @IsOptional()
-  slugRu?: string;
-
-  @IsString()
-  @IsOptional()
-  slugEn?: string;
-
+export class AddBrandDto extends BaseModelDto {
   @ApiProperty()
   @IsOptional()
   @IsString()
@@ -41,38 +22,7 @@ export class AddBrandDto {
   website: string;
 }
 
-export class UpdateBrandDto {
-  @ApiProperty()
-  @IsString()
-  _id: string;
-
-  @ApiProperty({ example: 'Brand', description: 'Brand name in Uzbek' })
-  @IsString()
-  @IsOptional()
-  nameUz: string;
-
-  @ApiProperty({ example: 'Brand', description: 'Brand name in Russian' })
-  @IsString()
-  @IsOptional()
-  nameRu: string;
-
-  @ApiProperty({ example: 'Brand', description: 'Brand name in English' })
-  @IsString()
-  @IsOptional()
-  nameEn: string;
-
-  @IsString()
-  @IsOptional()
-  slugUz?: string;
-
-  @IsString()
-  @IsOptional()
-  slugRu?: string;
-
-  @IsString()
-  @IsOptional()
-  slugEn?: string;
-
+export class UpdateBrandDto extends UpdateBaseModelDto {
   @ApiProperty()
   @IsOptional()
   @IsString()
@@ -85,9 +35,4 @@ export class UpdateBrandDto {
   website: string;
 }
 
-export class DeleteBrandDto {
-  @ApiProperty({ required: true })
-  @IsString()
-  @IsNotEmpty()
-  _id: string;
-}
+export class DeleteBrandDto extends DeleteBaseModelDto {}

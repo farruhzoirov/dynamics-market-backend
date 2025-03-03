@@ -1,7 +1,6 @@
 import { Type } from 'class-transformer';
 import {
   IsArray,
-  IsEmail,
   IsNotEmpty,
   IsNumber,
   IsOptional,
@@ -22,11 +21,6 @@ export class UpdateUserDto {
   @IsString()
   @IsNotEmpty()
   lastName: string;
-
-  // @ApiProperty({required: false})
-  // @IsEmail()
-  // @IsNotEmpty()
-  // email: String
 
   @ApiProperty({
     required: false,
