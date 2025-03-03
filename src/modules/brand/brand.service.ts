@@ -8,12 +8,17 @@ import { generateUniqueSlug } from '../../common/helpers/generate-slugs';
 import {
   AddingModelException,
   ModelDataNotFoundByIdException,
+  CantDeleteModelException,
 } from '../../common/errors/model/model-based.exceptions';
+import { Product, ProductDocument } from '../product/schemas/product.model';
 
 @Injectable()
 export class BrandService {
   constructor(
-    @InjectModel(Brand.name) private readonly brandModel: Model<BrandDocument>,
+    @InjectModel(Brand.name)
+    private readonly brandModel: Model<BrandDocument>,
+    @InjectModel(Product.name)
+    private readonly productModel: Model<ProductDocument>,
   ) {}
 
   async getBrandsList(
@@ -73,10 +78,12 @@ export class BrandService {
       throw new ModelDataNotFoundByIdException('Brand not found');
     }
 
-    // const hasProducts = await this.productModel.exists({ brandId: _id });
-    // if (hasProducts) {
-    //   throw new CantDeleteModelException("Cannot delete category with linked products");
-    // }
+    const hasProducts = await this.productModel.exists({ brandId: _id });
+    if (hasProducts) {
+      throw new CantDeleteModelException(
+        'Cannot delete category with linked products',
+      );
+    }
     await this.brandModel.deleteOne({ _id });
   }
 }

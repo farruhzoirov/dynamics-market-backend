@@ -3,6 +3,7 @@ import {
   AddProductDto,
   DeleteProductDto,
   GetProductDto,
+  UpdateProductDto,
 } from './dto/product.dto';
 import { ProductService } from './product.service';
 
@@ -21,8 +22,12 @@ export class ProductController {
   }
 
   @Post('update')
-  async updateProduct(@Body() updateBody: any) {}
+  async updateProduct(@Body() updateBody: UpdateProductDto) {
+    await this.productService.updateProduct(updateBody);
+  }
 
   @Post('delete')
-  async deleteProduct(@Body() body: DeleteProductDto) {}
+  async deleteProduct(@Body() body: DeleteProductDto) {
+    await this.productService.deleteProduct(body);
+  }
 }

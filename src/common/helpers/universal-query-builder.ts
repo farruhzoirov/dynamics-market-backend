@@ -1,13 +1,8 @@
+import { IUniversalQuery } from 'src/shared/interfaces/query-based';
 import { universalSearchQuery } from './universal-search-query';
 
 export const getFilteredResultsWithTotal = async <T>(
-  body: {
-    page?: number;
-    limit?: number;
-    select?: string;
-    search?: string;
-    parentId?: string;
-  },
+  body: IUniversalQuery,
   currentModel: any,
   searchFields: (keyof T)[],
 ) => {
@@ -24,6 +19,12 @@ export const getFilteredResultsWithTotal = async <T>(
   );
   if (body.parentId || body.parentId === null) {
     filter.parentId = body.parentId;
+  }
+  if (body.categoryId) {
+    filter.categoryId = body.categoryId;
+  }
+  if (body.brandId) {
+    filter.brandId = body.brandId;
   }
   return await Promise.all([
     await currentModel
