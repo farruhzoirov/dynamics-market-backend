@@ -54,10 +54,12 @@ class AttributeDto {
 
 export class GetProductDto extends UniversalQueryDto {
   @ApiProperty()
+  @IsOptional()
   @IsString()
   categoryId: string;
 
   @ApiProperty()
+  @IsOptional()
   @IsString()
   brandId: string;
 }
