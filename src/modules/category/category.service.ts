@@ -16,12 +16,15 @@ import {
   GetCategoryDto,
   UpdateCategoryDto,
 } from './dto/category.dto';
+import { Product, ProductDocument } from '../product/schemas/product.model';
 
 @Injectable()
 export class CategoryService {
   constructor(
     @InjectModel(Category.name)
     private readonly categoryModel: Model<CategoryDocument>,
+    @InjectModel(Product.name)
+    private readonly productModel: Model<ProductDocument>,
   ) {}
 
   async getCategoriesForFront(language: string) {}
@@ -88,10 +91,12 @@ export class CategoryService {
     if (hasChildren) {
       throw new CantDeleteModelException();
     }
-    // const hasProducts = await this.productModel.exists({ categoryId: _id });
-    // if (hasProducts) {
-    //   throw new CantDeleteModelException("Cannot delete category with linked products");
-    // }
+    const hasProducts = await this.productModel.exists({ categoryId: _id });
+    if (hasProducts) {
+      throw new CantDeleteModelException(
+        'Cannot delete category with linked products',
+      );
+    }
     await this.categoryModel.deleteOne({ _id });
   }
 }
