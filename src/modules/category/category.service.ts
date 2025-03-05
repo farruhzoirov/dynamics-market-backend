@@ -17,6 +17,7 @@ import {
   UpdateCategoryDto,
 } from './dto/category.dto';
 import { Product, ProductDocument } from '../product/schemas/product.model';
+import { LanguagesEnum } from '../user/enums/language.enum';
 
 @Injectable()
 export class CategoryService {
@@ -27,7 +28,56 @@ export class CategoryService {
     private readonly productModel: Model<ProductDocument>,
   ) {}
 
-  async getCategoriesForFront(language: string) {}
+  async getCategoriesForFront(language: string) {
+    let select: string;
+
+    if (!Object.values(LanguagesEnum).includes(language as LanguagesEnum)) {
+      return {};
+    }
+
+    switch (language) {
+      case LanguagesEnum.UZ:
+        select = '$nameUz';
+        break;
+      case LanguagesEnum.RU:
+        select = '$nameRu';
+        break;
+      case LanguagesEnum.EN:
+        select = '$nameEn';
+        break;
+      default:
+        select = `$nameUz`;
+    }
+
+    const categories = await this.categoryModel.aggregate([
+      {
+        $graphLookup: {
+          from: 'categories',
+          startWith: '$_id',
+          connectFromField: '_id',
+          connectToField: 'parentId',
+          as: 'children',
+        },
+      },
+      {
+        $project: {
+          _id: 1,
+          name: select,
+          parentId: 1,
+          children: {
+            _id: 1,
+            name: select,
+            parentId: 1,
+          },
+        },
+      },
+      {
+        $match: { parentId: null },
+      },
+    ]);
+
+    return categories;
+  }
 
   async getCategoriesList(body: GetCategoryDto) {
     if (!body.parentId) {
@@ -85,7 +135,6 @@ export class CategoryService {
     if (!checkCategory) {
       throw new ModelDataNotFoundByIdException('Category not found');
     }
-
     const hasChildren = await this.categoryModel.exists({ parentId: _id });
 
     if (hasChildren) {

@@ -11,7 +11,7 @@ import {
   Res,
 } from '@nestjs/common';
 import { CategoryService } from './category.service';
-import { ApiBearerAuth } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiHeader } from '@nestjs/swagger';
 import { Roles } from '../../common/decorator/roles.decarator';
 import { UserRole } from '../../shared/enums/roles.enum';
 import {
@@ -34,10 +34,20 @@ import { Request, Response } from 'express';
 export class CategoryController {
   constructor(private readonly categoryService: CategoryService) {}
 
+  @ApiHeader({
+    name: 'Language',
+    description: 'Tilni yuborish (uz, ru, en)',
+    required: true,
+    schema: { type: 'string', enum: ['uz', 'ru', 'en'], default: 'uz' },
+  })
   @Get('get-all-for-front')
   async getCategoriesForFront(@Req() req: Request, @Res() res: Response) {
-    const language = req.headers['Language'] as string | 'uz';
-    return await this.categoryService.getCategoriesForFront(language);
+    const language = (req.headers?.Language as string | undefined) ?? 'uz';
+    const categories =
+      await this.categoryService.getCategoriesForFront(language);
+    return res.status(200).json({
+      data: categories,
+    });
   }
 
   @Post('get-list')
