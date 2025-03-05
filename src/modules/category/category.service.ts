@@ -31,7 +31,10 @@ export class CategoryService {
   async getCategoriesForFront(language: string) {
     let select: string;
 
-    if (!Object.values(LanguagesEnum).includes(language as LanguagesEnum)) {
+    if (
+      language &&
+      !Object.values(LanguagesEnum).includes(language as LanguagesEnum)
+    ) {
       return {};
     }
 
