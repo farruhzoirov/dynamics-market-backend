@@ -1,5 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsNotEmpty, IsOptional, IsString, IsUrl } from 'class-validator';
+import { IsObject, IsOptional, IsString, IsUrl } from 'class-validator';
+import { Type } from 'class-transformer';
 import {
   UniversalQueryDto,
   BaseModelDto,
@@ -7,13 +8,15 @@ import {
   DeleteBaseModelDto,
 } from '../../../shared/dto/base-model.dto';
 
+import { FileMetadataDto } from '../../../shared/dto/file-meta.dto';
+
 export class GetBrandListsDto extends UniversalQueryDto {}
 
 export class AddBrandDto extends BaseModelDto {
-  @ApiProperty()
-  @IsOptional()
-  @IsString()
-  logo: string;
+  @ApiProperty({ type: FileMetadataDto })
+  @IsObject()
+  @Type(() => FileMetadataDto)
+  logo: FileMetadataDto;
 
   @ApiProperty()
   @IsOptional()
@@ -23,10 +26,11 @@ export class AddBrandDto extends BaseModelDto {
 }
 
 export class UpdateBrandDto extends UpdateBaseModelDto {
-  @ApiProperty()
+  @ApiProperty({ type: FileMetadataDto })
   @IsOptional()
-  @IsString()
-  logo: string;
+  @IsObject()
+  @Type(() => FileMetadataDto)
+  logo: FileMetadataDto;
 
   @ApiProperty()
   @IsOptional()

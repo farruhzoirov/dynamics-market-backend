@@ -24,6 +24,8 @@ export class CategoryService {
     private readonly categoryModel: Model<CategoryDocument>,
   ) {}
 
+  async getCategoriesForFront(language: string) {}
+
   async getCategoriesList(body: GetCategoryDto) {
     if (!body.parentId) {
       body.parentId = null;

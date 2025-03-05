@@ -1,5 +1,6 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { HydratedDocument } from 'mongoose';
+import { FileMetadata } from 'src/common/schema/file-meta.schema';
 
 export type BrandDocument = HydratedDocument<Brand>;
 
@@ -26,8 +27,8 @@ export class Brand {
   @Prop({ default: null })
   website: string;
 
-  @Prop()
-  logo: string;
+  @Prop({ type: FileMetadata, default: null })
+  logo: FileMetadata;
 
   @Prop({ default: 1 })
   status: number;

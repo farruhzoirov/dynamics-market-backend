@@ -1,5 +1,6 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import mongoose, { HydratedDocument } from 'mongoose';
+import { FileMetadata } from 'src/common/schema/file-meta.schema';
 
 export type ProductDocument = HydratedDocument<Product>;
 
@@ -74,8 +75,8 @@ export class Product {
   })
   brandId: string;
 
-  @Prop({ default: [] })
-  images: string[];
+  @Prop({ type: [FileMetadata], default: [] })
+  images: FileMetadata[];
 
   @Prop({ default: 1 })
   status: number;
@@ -86,4 +87,5 @@ ProductSchema.index({ slugUz: 1 });
 ProductSchema.index({ slugRu: 1 });
 ProductSchema.index({ slugEn: 1 });
 ProductSchema.index({ nameUz: 1, nameRu: 1, nameEn: 1 });
-ProductSchema.index({ categoryId: 1, brandId: 1 });
+ProductSchema.index({ categoryId: 1 });
+ProductSchema.index({ brandId: 1 });

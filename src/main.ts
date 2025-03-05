@@ -4,11 +4,12 @@ import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import * as process from 'node:process';
 import { NestExpressApplication } from '@nestjs/platform-express';
 import { AllExceptionsTo200Interceptor } from './common/interceptors/universal-response';
-import { BadRequestException, ValidationPipe } from '@nestjs/common';
+import { ValidationPipe } from '@nestjs/common';
 import { ErrorCodes } from './common/errors/error-codes';
 
 async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule);
+
   app.enableCors({
     origin: '*',
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
@@ -21,10 +22,7 @@ async function bootstrap() {
     .setDescription('These apis for dynamics market')
     .setVersion('1.0')
     .addServer(`http://localhost:5000`, 'Local environment')
-    .addServer(
-      'https://dynamics-market-437742f0667d.herokuapp.com',
-      'Production',
-    )
+    .addServer('https://api.farruhzoirov.uz', 'Production')
     .addBearerAuth()
     .build();
 

@@ -1,11 +1,14 @@
 import {
   Body,
+  Post,
+  Get,
   Controller,
   HttpCode,
   HttpStatus,
-  Post,
   UsePipes,
   ValidationPipe,
+  Req,
+  Res,
 } from '@nestjs/common';
 import { CategoryService } from './category.service';
 import { ApiBearerAuth } from '@nestjs/swagger';
@@ -23,12 +26,19 @@ import {
   DeletedSuccessResponse,
   UpdatedSuccessResponse,
 } from '../../shared/success/success-responses';
+import { Request, Response } from 'express';
 
 @Controller('category')
 @ApiBearerAuth()
 @UsePipes(new ValidationPipe({ whitelist: true }))
 export class CategoryController {
   constructor(private readonly categoryService: CategoryService) {}
+
+  @Get('get-all-for-front')
+  async getCategoriesForFront(@Req() req: Request, @Res() res: Response) {
+    const language = req.headers['Language'] as string | 'uz';
+    return await this.categoryService.getCategoriesForFront(language);
+  }
 
   @Post('get-list')
   @HttpCode(HttpStatus.OK)

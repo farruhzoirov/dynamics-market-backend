@@ -8,12 +8,15 @@ import {
   ValidateNested,
   IsObject,
 } from 'class-validator';
+
 import {
   UniversalQueryDto,
   BaseModelDto,
   UpdateBaseModelDto,
   DeleteBaseModelDto,
 } from 'src/shared/dto/base-model.dto';
+
+import { FileMetadataDto } from 'src/shared/dto/file-meta.dto';
 
 // ------ Attribute based
 class AttributeValueDto {
@@ -96,10 +99,11 @@ export class AddProductDto extends BaseModelDto {
   @Type(() => AttributeDto)
   attributes: AttributeDto[];
 
-  @ApiProperty()
-  @IsOptional()
+  @ApiProperty({ type: [FileMetadataDto] })
   @IsArray()
-  images: string[];
+  @ValidateNested({ each: true })
+  @Type(() => FileMetadataDto)
+  images: FileMetadataDto[];
 }
 
 export class UpdateProductDto extends UpdateBaseModelDto {
@@ -137,10 +141,12 @@ export class UpdateProductDto extends UpdateBaseModelDto {
   @Type(() => AttributeDto)
   attributes: AttributeDto[];
 
-  @ApiProperty()
+  @ApiProperty({ type: [FileMetadataDto] })
   @IsOptional()
   @IsArray()
-  images: string[];
+  @ValidateNested({ each: true })
+  @Type(() => FileMetadataDto)
+  images: FileMetadataDto[];
 }
 
 export class DeleteProductDto extends DeleteBaseModelDto {}

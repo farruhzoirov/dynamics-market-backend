@@ -20,7 +20,7 @@ export class FileUploadService {
       file['extension'] = file.originalname.split('.').pop() || '';
     });
     return {
-      message: 'File or files uploaded successfully.',
+      message: 'Uploaded successfully.',
       files,
     };
   }

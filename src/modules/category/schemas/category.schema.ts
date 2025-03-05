@@ -1,5 +1,6 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import mongoose, { HydratedDocument } from 'mongoose';
+import { FileMetadata } from 'src/common/schema/file-meta.schema';
 
 export type CategoryDocument = HydratedDocument<Category>;
 
@@ -30,8 +31,8 @@ export class Category {
   })
   parentId: string;
 
-  @Prop({ default: [] })
-  images: string[];
+  @Prop({ type: [FileMetadata], default: [] })
+  images: FileMetadata[];
 
   @Prop({ default: 1 })
   status: number;

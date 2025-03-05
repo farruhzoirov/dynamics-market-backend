@@ -1,11 +1,14 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsArray, IsNotEmpty, IsOptional, IsString } from 'class-validator';
+import { IsArray, IsOptional, IsString, ValidateNested } from 'class-validator';
+import { Type } from 'class-transformer';
 import {
   UniversalQueryDto,
   UpdateBaseModelDto,
   DeleteBaseModelDto,
   BaseModelDto,
 } from 'src/shared/dto/base-model.dto';
+
+import { FileMetadataDto } from 'src/shared/dto/file-meta.dto';
 
 // dto for query
 export class GetCategoryDto extends UniversalQueryDto {
@@ -33,10 +36,11 @@ export class UpdateCategoryDto extends UpdateBaseModelDto {
   @IsString()
   parentId: string;
 
-  @ApiProperty()
-  @IsOptional()
+  @ApiProperty({ type: [FileMetadataDto] })
   @IsArray()
-  images: string[];
+  @ValidateNested({ each: true })
+  @Type(() => FileMetadataDto)
+  images: FileMetadataDto[];
 }
 
 export class DeleteCategoryDto extends DeleteBaseModelDto {}
