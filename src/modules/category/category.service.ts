@@ -139,13 +139,19 @@ export class CategoryService {
     if (!checkCategory) {
       throw new ModelDataNotFoundByIdException('Category not found');
     }
-    const hasChildren = await this.categoryModel.exists({ parentId: _id });
+    const hasChildren = await this.categoryModel.exists({
+      parentId: _id,
+      isDeleted: false,
+    });
 
     if (hasChildren) {
       throw new CantDeleteModelException();
     }
 
-    const hasProducts = await this.productModel.exists({ categoryId: _id });
+    const hasProducts = await this.productModel.exists({
+      categoryId: _id,
+      isDeleted: false,
+    });
     if (hasProducts) {
       throw new CantDeleteModelException(
         'Cannot delete category with linked products',

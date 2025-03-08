@@ -48,7 +48,7 @@ export class BrandService {
     }
   }
 
-  async updateBrand(updateBody: UpdateBrandDto) {
+  async updateBrand(updateBody: UpdateBrandDto): Promise<void> {
     const languages = ['Uz', 'Ru', 'En'];
     languages.forEach((lang) => {
       const nameKey = `name${lang}`;
@@ -72,13 +72,17 @@ export class BrandService {
     });
   }
 
-  async deleteBrand(_id: string) {
+  async deleteBrand(_id: string): Promise<void> {
     const checkBrand = await this.brandModel.findById(_id);
     if (!checkBrand) {
       throw new ModelDataNotFoundByIdException('Brand not found');
     }
 
-    const hasProducts = await this.productModel.exists({ brandId: _id });
+    const hasProducts = await this.productModel.exists({
+      brandId: _id,
+      isDeleted: false,
+    });
+
     if (hasProducts) {
       throw new CantDeleteModelException(
         'Cannot delete category with linked products',
