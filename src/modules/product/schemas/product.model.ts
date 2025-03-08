@@ -101,6 +101,9 @@ export class Product {
 
   @Prop({ default: false })
   isDeleted: boolean;
+
+  @Prop({ type: mongoose.Schema.Types.Mixed })
+  details: any;
 }
 
 export const ProductSchema = SchemaFactory.createForClass(Product);

@@ -123,6 +123,10 @@ export class AddProductDto extends BaseModelDto {
   @Type(() => FileMetadataDto)
   images: FileMetadataDto[];
 
+  @ApiProperty()
+  @IsOptional()
+  details: any;
+
   sku?: string;
 }
 
@@ -169,6 +173,10 @@ export class UpdateProductDto extends UpdateBaseModelDto {
   @ApiProperty()
   @IsString()
   brandId: string;
+
+  @ApiProperty()
+  @IsOptional()
+  details: any;
 
   @ApiProperty({ type: [AttributeDto] })
   @IsArray()
