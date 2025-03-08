@@ -25,6 +25,7 @@ export class AddCategoryDto extends BaseModelDto {
   parentId: string;
 
   @ApiProperty({ type: [FileMetadataDto] })
+  @IsOptional()
   @IsArray()
   @ValidateNested({ each: true })
   @Type(() => FileMetadataDto)
@@ -38,6 +39,7 @@ export class UpdateCategoryDto extends UpdateBaseModelDto {
   parentId: string;
 
   @ApiProperty({ type: [FileMetadataDto] })
+  @IsOptional()
   @IsArray()
   @ValidateNested({ each: true })
   @Type(() => FileMetadataDto)

@@ -6,6 +6,7 @@ import { NestExpressApplication } from '@nestjs/platform-express';
 import { AllExceptionsTo200Interceptor } from './common/interceptors/universal-response';
 import { ValidationPipe } from '@nestjs/common';
 import { ErrorCodes } from './common/errors/error-codes';
+import { ValidationError } from 'class-validator';
 
 async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule);
@@ -32,8 +33,8 @@ async function bootstrap() {
   app.useGlobalPipes(
     new ValidationPipe({
       whitelist: true,
-      exceptionFactory: (errors: any) => {
-        const formattedErrors = errors.map((err) => ({
+      exceptionFactory: (errors: ValidationError[]) => {
+        const formattedErrors = errors.map((err: ValidationError) => ({
           field: err.property,
           message: Object.values(err.constraints || {}).join(', '),
         }));
