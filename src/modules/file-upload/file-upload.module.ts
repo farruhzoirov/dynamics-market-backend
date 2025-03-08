@@ -1,19 +1,17 @@
 import { Module } from '@nestjs/common';
 import { MulterModule } from '@nestjs/platform-express';
 import { diskStorage } from 'multer';
-
-import { FileUploadService } from './file-upload.service';
-import { FileUploadController } from './file-upload.controller';
-
+import { Request } from 'express';
 import * as fs from 'node:fs';
 import * as path from 'node:path';
-
+import { FileUploadService } from './file-upload.service';
+import { FileUploadController } from './file-upload.controller';
 import {
   FileSizeLargerException,
   InvalidFileTypeException,
 } from '../../common/errors/file-upload/file-upload.exception';
 
-const fileFilter = (req: any, file: Express.Multer.File, cb: Function) => {
+const fileFilter = (req: Request, file: Express.Multer.File, cb: Function) => {
   const allowMimeTypes = [
     'image/jpeg',
     'image/jpg',
@@ -25,7 +23,9 @@ const fileFilter = (req: any, file: Express.Multer.File, cb: Function) => {
     return cb(new InvalidFileTypeException('Invalid file type'), false);
   }
   const maxSize = 5 * 1024 * 1024;
+  console.log(file.size);
   if (file.size > maxSize) {
+    console.log('ok');
     return cb(
       new FileSizeLargerException('File size larger than limit!'),
       false,

@@ -14,6 +14,7 @@ export class AllExceptionsTo200Interceptor implements NestInterceptor {
       catchError((error) => {
         const ctx = context.switchToHttp();
         const response = ctx.getResponse();
+        console.log('error', error);
         const errorResponse = {
           success: false,
           errorCode: error.response?.errorCode | error.errorCode || null,
