@@ -11,6 +11,7 @@ import {
 } from './dto/product.dto';
 
 import { generateUniqueSlug } from 'src/common/helpers/generate-slugs';
+
 import {
   AddingModelException,
   ModelDataNotFoundByIdException,
