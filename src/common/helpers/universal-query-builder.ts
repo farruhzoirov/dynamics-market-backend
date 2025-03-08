@@ -17,9 +17,13 @@ export const getFilteredResultsWithTotal = async <T>(
     payload.search,
     searchFields as string[],
   );
+
+  filter.isDeleted = false;
+
   if (body.parentId || body.parentId === null) {
     filter.parentId = body.parentId;
   }
+
   if (body.categoryId) {
     filter.categoryId = body.categoryId;
   }

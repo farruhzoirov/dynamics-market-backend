@@ -32,6 +32,9 @@ export class Brand {
 
   @Prop({ default: 1 })
   status: number;
+
+  @Prop({ default: false })
+  isDeleted: boolean;
 }
 
 export const BrandSchema = SchemaFactory.createForClass(Brand);

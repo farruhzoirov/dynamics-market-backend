@@ -84,6 +84,6 @@ export class BrandService {
         'Cannot delete category with linked products',
       );
     }
-    await this.brandModel.deleteOne({ _id });
+    await this.brandModel.updateOne({ _isDeleted: true });
   }
 }

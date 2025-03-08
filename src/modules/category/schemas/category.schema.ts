@@ -31,6 +31,9 @@ export class Category {
   })
   parentId: string;
 
+  @Prop({ default: false })
+  isDeleted: boolean;
+
   @Prop({ type: [FileMetadata], default: [] })
   images: FileMetadata[];
 

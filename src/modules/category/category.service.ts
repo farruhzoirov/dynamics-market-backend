@@ -143,12 +143,13 @@ export class CategoryService {
     if (hasChildren) {
       throw new CantDeleteModelException();
     }
+
     const hasProducts = await this.productModel.exists({ categoryId: _id });
     if (hasProducts) {
       throw new CantDeleteModelException(
         'Cannot delete category with linked products',
       );
     }
-    await this.categoryModel.deleteOne({ _id });
+    await this.categoryModel.updateOne({ isDeleted: true });
   }
 }

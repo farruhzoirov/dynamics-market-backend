@@ -77,6 +77,6 @@ export class ProductService {
     if (!checkProduct) {
       throw new ModelDataNotFoundByIdException('Product not found');
     }
-    await this.productModel.deleteOne({ _id: body._id });
+    await this.productModel.updateOne({ isDeleted: true });
   }
 }

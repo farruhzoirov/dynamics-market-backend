@@ -80,6 +80,9 @@ export class Product {
 
   @Prop({ default: 1 })
   status: number;
+
+  @Prop({ default: false })
+  isDeleted: boolean;
 }
 
 export const ProductSchema = SchemaFactory.createForClass(Product);
