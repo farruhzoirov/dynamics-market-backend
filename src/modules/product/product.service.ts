@@ -10,12 +10,13 @@ import {
   UpdateProductDto,
 } from './dto/product.dto';
 
-import { generateUniqueSlug } from 'src/common/helpers/generate-slugs';
+import { generateUniqueSlug } from 'src/common/helpers/generate-slug';
 
 import {
   AddingModelException,
   ModelDataNotFoundByIdException,
 } from 'src/common/errors/model/model-based.exceptions';
+import { generateUniqueSKU } from 'src/common/helpers/generate-sku';
 
 @Injectable()
 export class ProductService {
@@ -42,6 +43,7 @@ export class ProductService {
       body.slugUz = generateUniqueSlug(nameUz);
       body.slugRu = generateUniqueSlug(nameRu);
       body.slugEn = generateUniqueSlug(nameEn);
+      body.sku = await generateUniqueSKU(this.productModel);
       await this.productModel.create(body);
     } catch (err) {
       console.log(`adding product ====>  ${err.message}`);
@@ -78,6 +80,6 @@ export class ProductService {
     if (!checkProduct) {
       throw new ModelDataNotFoundByIdException('Product not found');
     }
-    await this.productModel.updateOne({ isDeleted: true });
+    await this.productModel.updateOne({ _id: body._id }, { isDeleted: true });
   }
 }

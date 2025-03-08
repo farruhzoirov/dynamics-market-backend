@@ -27,9 +27,11 @@ export const getFilteredResultsWithTotal = async <T>(
   if (body.categoryId) {
     filter.categoryId = body.categoryId;
   }
+
   if (body.brandId) {
     filter.brandId = body.brandId;
   }
+
   return await Promise.all([
     await currentModel
       .find(filter)

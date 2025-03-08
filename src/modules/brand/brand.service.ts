@@ -4,7 +4,7 @@ import { Brand, BrandDocument } from './schemas/brand.schema';
 import { Model } from 'mongoose';
 import { AddBrandDto, GetBrandListsDto, UpdateBrandDto } from './dto/brand.dto';
 import { getFilteredResultsWithTotal } from '../../common/helpers/universal-query-builder';
-import { generateUniqueSlug } from '../../common/helpers/generate-slugs';
+import { generateUniqueSlug } from '../../common/helpers/generate-slug';
 import {
   AddingModelException,
   ModelDataNotFoundByIdException,
@@ -84,6 +84,6 @@ export class BrandService {
         'Cannot delete category with linked products',
       );
     }
-    await this.brandModel.updateOne({ _isDeleted: true });
+    await this.brandModel.updateOne({ _id }, { isDeleted: true });
   }
 }

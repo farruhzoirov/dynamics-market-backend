@@ -6,22 +6,31 @@ export type ProductDocument = HydratedDocument<Product>;
 
 @Schema({ timestamps: true })
 export class Product {
-  @Prop()
+  @Prop({ required: true })
   nameUz: string;
 
-  @Prop()
+  @Prop({ required: true })
   nameRu: string;
 
-  @Prop()
+  @Prop({ required: true })
   nameEn: string;
 
-  @Prop()
+  @Prop({ default: '' })
+  descriptionUz: string;
+
+  @Prop({ default: '' })
+  descriptionRu: string;
+
+  @Prop({ default: '' })
+  descriptionEn: string;
+
+  @Prop({ required: true })
   slugUz: string;
 
-  @Prop()
+  @Prop({ required: true })
   slugRu: string;
 
-  @Prop()
+  @Prop({ required: true })
   slugEn: string;
 
   @Prop({
@@ -37,6 +46,7 @@ export class Product {
         },
       },
     ],
+    required: true,
   })
   attributes: {
     nameUz: string;
@@ -49,22 +59,29 @@ export class Product {
     };
   }[];
 
-  @Prop()
+  @Prop({ required: true })
+  count: number;
+
+  @Prop({ required: true })
+  sku: string;
+
+  @Prop({ default: 0 })
   oldPrice: number;
 
-  @Prop()
+  @Prop({ default: 0, required: true })
   currentPrice: number;
 
-  @Prop()
+  @Prop({ default: 0 })
   quantity: number;
 
-  @Prop()
+  @Prop({ default: 0 })
   rate: number;
 
   @Prop({
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Category',
     default: null,
+    required: true,
   })
   categoryId: string;
 
@@ -72,6 +89,7 @@ export class Product {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Brand',
     default: null,
+    required: true,
   })
   brandId: string;
 

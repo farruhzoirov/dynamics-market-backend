@@ -69,6 +69,18 @@ export class GetProductDto extends UniversalQueryDto {
 
 export class AddProductDto extends BaseModelDto {
   @ApiProperty()
+  @IsString()
+  descriptionUz: string;
+
+  @ApiProperty()
+  @IsString()
+  descriptionRu: string;
+
+  @ApiProperty()
+  @IsString()
+  descriptionEn: string;
+
+  @ApiProperty()
   @IsNumber()
   @IsOptional()
   oldPrice: number;
@@ -79,9 +91,15 @@ export class AddProductDto extends BaseModelDto {
 
   @ApiProperty()
   @IsNumber()
+  count: number;
+
+  @ApiProperty()
+  @IsOptional()
+  @IsNumber()
   quantity: number;
 
   @ApiProperty()
+  @IsOptional()
   @IsNumber()
   rate: number;
 
@@ -104,16 +122,29 @@ export class AddProductDto extends BaseModelDto {
   @ValidateNested({ each: true })
   @Type(() => FileMetadataDto)
   images: FileMetadataDto[];
+
+  sku?: string;
 }
 
 export class UpdateProductDto extends UpdateBaseModelDto {
+  @ApiProperty()
+  @IsString()
+  descriptionUz: string;
+
+  @ApiProperty()
+  @IsString()
+  descriptionRu: string;
+
+  @ApiProperty()
+  @IsString()
+  descriptionEn: string;
+
   @ApiProperty()
   @IsNumber()
   @IsOptional()
   oldPrice: number;
 
   @ApiProperty()
-  @IsOptional()
   @IsNumber()
   currentPrice: number;
 
@@ -121,6 +152,10 @@ export class UpdateProductDto extends UpdateBaseModelDto {
   @IsOptional()
   @IsNumber()
   quantity: number;
+
+  @ApiProperty()
+  @IsNumber()
+  count: number;
 
   @ApiProperty()
   @IsOptional()

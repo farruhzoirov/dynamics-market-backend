@@ -3,7 +3,7 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { Category, CategoryDocument } from './schemas/category.schema';
 import { getFilteredResultsWithTotal } from '../../common/helpers/universal-query-builder';
-import { generateUniqueSlug } from '../../common/helpers/generate-slugs';
+import { generateUniqueSlug } from '../../common/helpers/generate-slug';
 
 import {
   AddingModelException,
@@ -151,6 +151,6 @@ export class CategoryService {
         'Cannot delete category with linked products',
       );
     }
-    await this.categoryModel.updateOne({ isDeleted: true });
+    await this.categoryModel.updateOne({ _id }, { isDeleted: true });
   }
 }
