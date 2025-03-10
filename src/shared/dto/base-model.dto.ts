@@ -36,17 +36,14 @@ export class BaseModelDto {
   @IsString()
   nameEn: string;
 
-  @ApiProperty({ example: 'slug-uz', required: false })
   @IsOptional()
   @IsString()
   slugUz?: string;
 
-  @ApiProperty({ example: 'slug-ru', required: false })
   @IsOptional()
   @IsString()
   slugRu?: string;
 
-  @ApiProperty({ example: 'slug-en', required: false })
   @IsOptional()
   @IsString()
   slugEn?: string;
@@ -72,17 +69,14 @@ export class UpdateBaseModelDto {
   @IsString()
   nameEn: string;
 
-  @ApiProperty({ example: 'slug-uz', required: false })
   @IsOptional()
   @IsString()
   slugUz?: string;
 
-  @ApiProperty({ example: 'slug-ru', required: false })
   @IsOptional()
   @IsString()
   slugRu?: string;
 
-  @ApiProperty({ example: 'slug-en', required: false })
   @IsOptional()
   @IsString()
   slugEn?: string;
