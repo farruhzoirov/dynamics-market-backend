@@ -52,15 +52,10 @@ export class Product {
     nameUz: string;
     nameRu: string;
     nameEn: string;
-    value: {
-      valueUz: string;
-      valueRu: string;
-      valueEn: string;
-    };
+    valueUz: string;
+    valueRu: string;
+    valueEn: string;
   }[];
-
-  @Prop({ required: true })
-  count: number;
 
   @Prop({ required: true })
   sku: string;

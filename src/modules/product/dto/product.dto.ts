@@ -19,19 +19,19 @@ import {
 import { FileMetadataDto } from 'src/shared/dto/file-meta.dto';
 
 // ------ Attribute based
-class AttributeValueDto {
-  @ApiProperty()
-  @IsString()
-  valueUz: string;
+// class AttributeValueDto {
+//   @ApiProperty()
+//   @IsString()
+//   valueUz: string;
 
-  @ApiProperty()
-  @IsString()
-  valueRu: string;
+//   @ApiProperty()
+//   @IsString()
+//   valueRu: string;
 
-  @ApiProperty()
-  @IsString()
-  valueEn: string;
-}
+//   @ApiProperty()
+//   @IsString()
+//   valueEn: string;
+// }
 
 class AttributeDto {
   @ApiProperty()
@@ -46,11 +46,17 @@ class AttributeDto {
   @IsString()
   nameEn: string;
 
-  @ApiProperty({ type: AttributeValueDto })
-  @IsObject()
-  @ValidateNested()
-  @Type(() => AttributeValueDto)
-  value: AttributeValueDto;
+  @ApiProperty()
+  @IsString()
+  valueUz: string;
+
+  @ApiProperty()
+  @IsString()
+  valueRu: string;
+
+  @ApiProperty()
+  @IsString()
+  valueEn: string;
 }
 
 // ------ Attribute based
@@ -88,10 +94,6 @@ export class AddProductDto extends BaseModelDto {
   @ApiProperty()
   @IsNumber()
   currentPrice: number;
-
-  @ApiProperty()
-  @IsNumber()
-  count: number;
 
   @ApiProperty()
   @IsOptional()
@@ -156,10 +158,6 @@ export class UpdateProductDto extends UpdateBaseModelDto {
   @IsOptional()
   @IsNumber()
   quantity: number;
-
-  @ApiProperty()
-  @IsNumber()
-  count: number;
 
   @ApiProperty()
   @IsOptional()
