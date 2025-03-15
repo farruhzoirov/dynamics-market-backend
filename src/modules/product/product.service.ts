@@ -10,9 +10,7 @@ import {
   GetProductsListDto,
   UpdateProductDto,
 } from './dto/product.dto';
-
 import { generateUniqueSlug } from 'src/common/helpers/generate-slug';
-
 import {
   AddingModelException,
   ModelDataNotFoundByIdException,
@@ -101,6 +99,8 @@ export class ProductService {
           },
         },
       ]);
+
+      console.log(categoryHierarchy);
 
       body.categoryHierarchy = categoryHierarchy;
       await this.productModel.create(body);
