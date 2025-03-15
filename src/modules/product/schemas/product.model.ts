@@ -97,6 +97,9 @@ export class Product {
   @Prop({ default: false })
   isDeleted: boolean;
 
+  @Prop({ type: [String], default: [] })
+  keywords: string[];
+
   @Prop({ type: mongoose.Schema.Types.Mixed })
   details: any;
 }

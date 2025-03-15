@@ -7,6 +7,7 @@ import {
   IsNumber,
   ValidateNested,
   IsObject,
+  ArrayMinSize,
 } from 'class-validator';
 
 import {
@@ -113,6 +114,12 @@ export class AddProductDto extends BaseModelDto {
   @IsString()
   brandId: string;
 
+  @ApiProperty({ type: [String], description: 'Array of keywords' })
+  @IsArray()
+  @IsString({ each: true })
+  @ArrayMinSize(1)
+  keywords: string[];
+
   @ApiProperty({ type: [AttributeDto] })
   @IsArray()
   @ValidateNested({ each: true })
@@ -172,9 +179,11 @@ export class UpdateProductDto extends UpdateBaseModelDto {
   @IsString()
   brandId: string;
 
-  @ApiProperty()
+  @ApiProperty({ type: [String], description: 'Array of keywords' })
   @IsOptional()
-  details: any;
+  @IsArray()
+  @IsString({ each: true })
+  keywords: string[];
 
   @ApiProperty({ type: [AttributeDto] })
   @IsArray()
@@ -188,6 +197,10 @@ export class UpdateProductDto extends UpdateBaseModelDto {
   @ValidateNested({ each: true })
   @Type(() => FileMetadataDto)
   images: FileMetadataDto[];
+
+  @ApiProperty()
+  @IsOptional()
+  details: any;
 }
 
 export class DeleteProductDto extends DeleteBaseModelDto {}
