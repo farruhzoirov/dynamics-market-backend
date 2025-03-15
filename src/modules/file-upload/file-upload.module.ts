@@ -23,9 +23,7 @@ const fileFilter = (req: Request, file: Express.Multer.File, cb: Function) => {
     return cb(new InvalidFileTypeException('Invalid file type'), false);
   }
   const maxSize = 5 * 1024 * 1024;
-  console.log(file.size);
   if (file.size > maxSize) {
-    console.log('ok');
     return cb(
       new FileSizeLargerException('File size larger than limit!'),
       false,

@@ -47,6 +47,9 @@ import { RolesGuard } from './common/guards/roles.guard';
 })
 export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {
-    consumer.apply(AuthMiddleware).exclude('/auth/google', '/').forRoutes('*');
+    consumer
+      .apply(AuthMiddleware)
+      .exclude('/auth/google', '/', '/user/oggi')
+      .forRoutes('*');
   }
 }

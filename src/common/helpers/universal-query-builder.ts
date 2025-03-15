@@ -1,9 +1,10 @@
 import { IUniversalQuery } from 'src/shared/interfaces/query-based';
 import { universalSearchQuery } from './universal-search-query';
+import { Model } from 'mongoose';
 
 export const getFilteredResultsWithTotal = async <T>(
   body: IUniversalQuery,
-  currentModel: any,
+  currentModel: Model<any>,
   searchFields: (keyof T)[],
 ) => {
   const payload = {

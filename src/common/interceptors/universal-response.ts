@@ -4,17 +4,24 @@ import {
   Injectable,
   NestInterceptor,
 } from '@nestjs/common';
-import { Observable, throwError } from 'rxjs';
+import { Observable, throwError, map } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 
 @Injectable()
 export class AllExceptionsTo200Interceptor implements NestInterceptor {
   intercept(context: ExecutionContext, next: CallHandler): Observable<any> {
+    const ctx = context.switchToHttp();
+    const response = ctx.getResponse();
     return next.handle().pipe(
+      // map((data) => {
+      //   const successResponse = {
+      //     success: true,
+      //     ...data,
+      //   };
+      //   response.status(200).json(successResponse);
+      // }),
+
       catchError((error) => {
-        const ctx = context.switchToHttp();
-        const response = ctx.getResponse();
-        console.log('error', error);
         const errorResponse = {
           success: false,
           errorCode: error.response?.errorCode | error.errorCode || null,

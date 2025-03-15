@@ -1,11 +1,13 @@
-import { Request } from 'express';
+import { Request, Response } from 'express';
 import {
   Body,
   Controller,
+  Get,
   HttpCode,
   HttpStatus,
   Post,
   Req,
+  Res,
   UsePipes,
   ValidationPipe,
 } from '@nestjs/common';
