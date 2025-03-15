@@ -6,7 +6,6 @@ import {
   IsArray,
   IsNumber,
   ValidateNested,
-  IsObject,
   ArrayMinSize,
 } from 'class-validator';
 
@@ -18,21 +17,6 @@ import {
 } from 'src/shared/dto/base-model.dto';
 
 import { FileMetadataDto } from 'src/shared/dto/file-meta.dto';
-
-// ------ Attribute based
-// class AttributeValueDto {
-//   @ApiProperty()
-//   @IsString()
-//   valueUz: string;
-
-//   @ApiProperty()
-//   @IsString()
-//   valueRu: string;
-
-//   @ApiProperty()
-//   @IsString()
-//   valueEn: string;
-// }
 
 class AttributeDto {
   @ApiProperty()
@@ -60,9 +44,7 @@ class AttributeDto {
   valueEn: string;
 }
 
-// ------ Attribute based
-
-export class GetProductDto extends UniversalQueryDto {
+export class GetProductsListDto extends UniversalQueryDto {
   @ApiProperty()
   @IsOptional()
   @IsString()
@@ -72,6 +54,23 @@ export class GetProductDto extends UniversalQueryDto {
   @IsOptional()
   @IsString()
   brandId: string;
+}
+
+export class GetProductBySlugDto {
+  @ApiProperty()
+  @IsOptional()
+  @IsString()
+  slugUz: string;
+
+  @ApiProperty()
+  @IsOptional()
+  @IsString()
+  slugRu: string;
+
+  @ApiProperty()
+  @IsOptional()
+  @IsString()
+  slugEn: string;
 }
 
 export class AddProductDto extends BaseModelDto {
@@ -116,8 +115,6 @@ export class AddProductDto extends BaseModelDto {
 
   @ApiProperty({ type: [String], description: 'Array of keywords' })
   @IsArray()
-  @IsString({ each: true })
-  @ArrayMinSize(1)
   keywords: string[];
 
   @ApiProperty({ type: [AttributeDto] })
@@ -182,7 +179,6 @@ export class UpdateProductDto extends UpdateBaseModelDto {
   @ApiProperty({ type: [String], description: 'Array of keywords' })
   @IsOptional()
   @IsArray()
-  @IsString({ each: true })
   keywords: string[];
 
   @ApiProperty({ type: [AttributeDto] })
