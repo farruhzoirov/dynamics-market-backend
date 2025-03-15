@@ -68,31 +68,41 @@ export class ProductService {
       body.slugRu = generateUniqueSlug(nameRu);
       body.slugEn = generateUniqueSlug(nameEn);
       body.sku = await generateUniqueSKU(this.productModel);
+      const categoryHierarchy = await this.categoryModel.aggregate([
+        {
+          $match: { _id: categoryId },
+        },
+        {
+          $graphLookup: {
+            from: 'categories',
+            startWith: '$parentId',
+            connectFromField: 'parentId',
+            connectToField: '_id',
+            as: 'hierarchy',
+            depthField: 'level',
+          },
+        },
+        { $unwind: '$hierarchy' },
+        { $sort: { 'hierarchy.level': 1 } },
+        {
+          $group: {
+            _id: '$_id',
+            hierarchy: {
+              $push: {
+                categoryId: '$hierarchy._id',
+                categorySlugUz: '$hierarchy.slugUz',
+                categorySlugRu: '$hierarchy.slugRu',
+                categorySlugEn: '$hierarchy.slugEn',
+                categoryNameUz: '$hierarchy.nameUz',
+                categoryNameRu: '$hierarchy.nameRu',
+                categoryNameEn: '$hierarchy.nameEn',
+              },
+            },
+          },
+        },
+      ]);
 
-      const hierarchy = [];
-
-      let currentCategory = await this.categoryModel.findById(categoryId);
-
-      while (currentCategory) {
-        hierarchy.unshift({
-          categoryId: currentCategory._id,
-          categorySlugUz: currentCategory.slugUz,
-          categorySlugRu: currentCategory.slugRu,
-          categorySlugEn: currentCategory.slugEn,
-          categoryNameUz: currentCategory.nameUz,
-          categoryNameRu: currentCategory.nameRu,
-          categoryNameEn: currentCategory.nameEn,
-        });
-
-        if (!currentCategory.parentId) break;
-
-        currentCategory = await this.categoryModel.findById(
-          currentCategory.parentId,
-        );
-      }
-
-      body.hierarchy = hierarchy;
-
+      body.categoryHierarchy = categoryHierarchy;
       await this.productModel.create(body);
     } catch (err) {
       console.log(`adding product ====>  ${err.message}`);
