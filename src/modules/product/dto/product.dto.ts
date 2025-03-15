@@ -125,6 +125,8 @@ export class AddProductDto extends BaseModelDto {
   @IsOptional()
   details: any;
 
+  hierarchy: any;
+
   sku?: string;
 }
 

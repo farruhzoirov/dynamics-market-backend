@@ -19,12 +19,18 @@ import {
 } from 'src/common/errors/model/model-based.exceptions';
 import { generateUniqueSKU } from 'src/common/helpers/generate-sku';
 import { universalSearchQuery } from 'src/common/helpers/universal-search-query';
+import {
+  Category,
+  CategoryDocument,
+} from '../category/schemas/category.schema';
 
 @Injectable()
 export class ProductService {
   constructor(
     @InjectModel(Product.name)
     private readonly productModel: Model<ProductDocument>,
+    @InjectModel(Category.name)
+    private readonly categoryModel: Model<CategoryDocument>,
   ) {}
 
   async getProductList(body: GetProductsListDto) {
@@ -45,9 +51,7 @@ export class ProductService {
     }
 
     const searchableFields = ['slugUz', 'slugRu', 'slugEn'];
-
     const filter = await universalSearchQuery(body.slug, searchableFields);
-
     const findProduct = await this.productModel.findOne(filter);
 
     if (!findProduct) {
@@ -59,11 +63,35 @@ export class ProductService {
 
   async addProduct(body: AddProductDto) {
     try {
-      const { nameUz, nameRu, nameEn } = body;
+      const { nameUz, nameRu, nameEn, categoryId } = body;
       body.slugUz = generateUniqueSlug(nameUz);
       body.slugRu = generateUniqueSlug(nameRu);
       body.slugEn = generateUniqueSlug(nameEn);
       body.sku = await generateUniqueSKU(this.productModel);
+
+      const hierarchy = [];
+
+      let currentCategory = await this.categoryModel.findById(categoryId);
+
+      while (currentCategory) {
+        hierarchy.unshift({
+          categoryId: currentCategory._id,
+          categorySlugUz: currentCategory.slugUz,
+          categorySlugRu: currentCategory.slugRu,
+          categorySlugEn: currentCategory.slugEn,
+          categoryNameUz: currentCategory.nameUz,
+          categoryNameRu: currentCategory.nameRu,
+          categoryNameEn: currentCategory.nameEn,
+        });
+
+        if (!currentCategory.parentId) break;
+
+        currentCategory = await this.categoryModel.findById(
+          currentCategory.parentId,
+        );
+      }
+
+      body.hierarchy = hierarchy;
 
       await this.productModel.create(body);
     } catch (err) {
