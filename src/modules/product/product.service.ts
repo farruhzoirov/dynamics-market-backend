@@ -99,10 +99,8 @@ export class ProductService {
           },
         },
       ]);
-
-      console.log(categoryHierarchy);
-
-      body.categoryHierarchy = categoryHierarchy;
+      console.log(categoryHierarchy[0].hierarchy);
+      body.hierarchy = categoryHierarchy[0].hierarchy;
       await this.productModel.create(body);
     } catch (err) {
       console.log(`adding product ====>  ${err.message}`);
