@@ -1,3 +1,4 @@
+import { Optional } from '@nestjs/common';
 import { ApiProperty } from '@nestjs/swagger';
 import { Type } from 'class-transformer';
 import {
@@ -103,9 +104,10 @@ export class AddProductDto extends BaseModelDto {
   @IsString()
   brandId: string;
 
-  @ApiProperty({ type: [String], description: 'Array of keywords' })
-  @IsArray()
-  keywords: string[];
+  @ApiProperty({ description: 'Array of keywords' })
+  @Optional()
+  @IsString()
+  keywords: string;
 
   @ApiProperty({ type: [AttributeDto] })
   @IsArray()
@@ -166,10 +168,10 @@ export class UpdateProductDto extends UpdateBaseModelDto {
   @IsString()
   brandId: string;
 
-  @ApiProperty({ type: [String], description: 'Array of keywords' })
-  @IsOptional()
-  @IsArray()
-  keywords: string[];
+  @ApiProperty({ description: 'Array of keywords' })
+  @Optional()
+  @IsString()
+  keywords: string;
 
   @ApiProperty({ type: [AttributeDto] })
   @IsArray()

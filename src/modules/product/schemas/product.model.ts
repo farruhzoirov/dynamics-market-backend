@@ -95,8 +95,8 @@ export class Product {
   @Prop({ default: false })
   isDeleted: boolean;
 
-  @Prop({ type: [String], default: [] })
-  keywords: string[];
+  @Prop({ default: null })
+  keywords: string;
 
   @Prop()
   hierarchy: [
