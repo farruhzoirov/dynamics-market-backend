@@ -18,6 +18,7 @@ import {
   ModelDataNotFoundByIdException,
 } from 'src/common/errors/model/model-based.exceptions';
 import { generateUniqueSKU } from 'src/common/helpers/generate-sku';
+import { universalSearchQuery } from 'src/common/helpers/universal-search-query';
 
 @Injectable()
 export class ProductService {
@@ -39,19 +40,13 @@ export class ProductService {
   }
 
   async getProductBySlug(body: GetProductBySlugDto) {
-    if (!body.slugUz || !body.slugRu || !body.slugEn) {
+    if (!body.slug) {
       return {};
     }
 
-    const filter: Partial<{
-      slugUz: string;
-      slugRu: string;
-      slugEn: string;
-    }> = {};
+    const searchableFields = ['slugUz', 'slugRu', 'slugEn'];
 
-    if (body.slugUz) filter.slugUz = body.slugUz;
-    if (body.slugRu) filter.slugRu = body.slugRu;
-    if (body.slugEn) filter.slugEn = body.slugEn;
+    const filter = await universalSearchQuery(body.slug, searchableFields);
 
     const findProduct = await this.productModel.findOne(filter);
 
@@ -69,6 +64,7 @@ export class ProductService {
       body.slugRu = generateUniqueSlug(nameRu);
       body.slugEn = generateUniqueSlug(nameEn);
       body.sku = await generateUniqueSKU(this.productModel);
+
       await this.productModel.create(body);
     } catch (err) {
       console.log(`adding product ====>  ${err.message}`);

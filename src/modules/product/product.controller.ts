@@ -1,4 +1,4 @@
-import { Body, Controller, Post } from '@nestjs/common';
+import { Body, Controller, HttpCode, HttpStatus, Post } from '@nestjs/common';
 import {
   AddProductDto,
   DeleteProductDto,
@@ -18,13 +18,16 @@ import {
 @ApiBearerAuth()
 export class ProductController {
   constructor(private readonly productService: ProductService) {}
+
+  @HttpCode(HttpStatus.OK)
   @Post('get-list')
   async getProductsLIst(@Body() body: GetProductsListDto) {
     const productsList = await this.productService.getProductList(body);
     return productsList;
   }
 
-  @Post('get-product-by-slug')
+  @HttpCode(HttpStatus.OK)
+  @Post('get-product')
   async getProductBySlug(@Body() body: GetProductBySlugDto) {
     const product = await this.productService.getProductBySlug(body);
     return product;
@@ -36,12 +39,14 @@ export class ProductController {
     return new AddedSuccessResponse();
   }
 
+  @HttpCode(HttpStatus.OK)
   @Post('update')
   async updateProduct(@Body() updateBody: UpdateProductDto) {
     await this.productService.updateProduct(updateBody);
     return new UpdatedSuccessResponse();
   }
 
+  @HttpCode(HttpStatus.OK)
   @Post('delete')
   async deleteProduct(@Body() body: DeleteProductDto) {
     await this.productService.deleteProduct(body);

@@ -60,17 +60,7 @@ export class GetProductBySlugDto {
   @ApiProperty()
   @IsOptional()
   @IsString()
-  slugUz: string;
-
-  @ApiProperty()
-  @IsOptional()
-  @IsString()
-  slugRu: string;
-
-  @ApiProperty()
-  @IsOptional()
-  @IsString()
-  slugEn: string;
+  slug: string;
 }
 
 export class AddProductDto extends BaseModelDto {

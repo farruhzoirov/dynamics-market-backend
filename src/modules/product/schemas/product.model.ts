@@ -39,11 +39,9 @@ export class Product {
         nameUz: String,
         nameRu: String,
         nameEn: String,
-        value: {
-          valueUz: String,
-          valueRu: String,
-          valueEn: String,
-        },
+        valueUz: String,
+        valueRu: String,
+        valueEn: String,
       },
     ],
     required: true,
@@ -99,6 +97,17 @@ export class Product {
 
   @Prop({ type: [String], default: [] })
   keywords: string[];
+
+  @Prop()
+  hierarchy: [
+    {
+      categorySlugUz: string;
+      categorySlugRu: string;
+      categoryHierarchyUz: string;
+      categoryHierarchyRu: string;
+      categoryHierarchyEn: string;
+    },
+  ];
 
   @Prop({ type: mongoose.Schema.Types.Mixed })
   details: any;
