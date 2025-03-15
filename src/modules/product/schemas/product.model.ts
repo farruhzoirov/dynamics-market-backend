@@ -112,7 +112,7 @@ export class Product {
     ],
     default: [],
   })
-  categoryHierarchy: [
+  hierarchy: [
     {
       categoryId: string;
       categorySlugUz: string;
