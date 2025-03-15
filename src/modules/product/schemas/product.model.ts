@@ -58,7 +58,7 @@ export class Product {
   @Prop({ required: true })
   sku: string;
 
-  @Prop({ default: 0 })
+  @Prop({ default: null })
   oldPrice: number;
 
   @Prop({ default: 0, required: true })
@@ -98,14 +98,29 @@ export class Product {
   @Prop({ default: null })
   keywords: string;
 
-  @Prop()
+  @Prop({
+    type: [
+      {
+        categoryId: String,
+        categorySlugUz: String,
+        categorySlugRu: String,
+        categorySlugEn: String,
+        categoryNameUz: String,
+        categoryNameRu: String,
+        categoryNameEn: String,
+      },
+    ],
+    default: [],
+  })
   hierarchy: [
     {
+      categoryId: string;
       categorySlugUz: string;
       categorySlugRu: string;
-      categoryHierarchyUz: string;
-      categoryHierarchyRu: string;
-      categoryHierarchyEn: string;
+      categorySlugEn: string;
+      categoryNameUz: string;
+      categoryNameRu: string;
+      categoryNameEn: string;
     },
   ];
 
