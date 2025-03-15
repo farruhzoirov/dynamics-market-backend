@@ -49,7 +49,7 @@ async function bootstrap() {
   app.useStaticAssets('uploads', { prefix: '/uploads' });
   app.useGlobalInterceptors(new AllExceptionsTo200Interceptor());
   const PORT = process.env.PORT || 5000;
-  app.listen(PORT, () => {
+  app.listen(PORT, '0.0.0.0', () => {
     console.log(`Server started on port ${PORT}.`);
   });
 }

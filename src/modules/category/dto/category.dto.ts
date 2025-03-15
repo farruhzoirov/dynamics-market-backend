@@ -1,5 +1,11 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsArray, IsOptional, IsString, ValidateNested } from 'class-validator';
+import {
+  IsArray,
+  IsNumber,
+  IsOptional,
+  IsString,
+  ValidateNested,
+} from 'class-validator';
 import { Type } from 'class-transformer';
 import {
   UniversalQueryDto,
@@ -37,6 +43,10 @@ export class UpdateCategoryDto extends UpdateBaseModelDto {
   @IsOptional()
   @IsString()
   parentId: string;
+
+  @IsOptional()
+  @IsNumber()
+  status: number;
 
   @ApiProperty({ type: [FileMetadataDto] })
   @IsOptional()

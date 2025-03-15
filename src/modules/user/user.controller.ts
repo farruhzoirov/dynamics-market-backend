@@ -25,7 +25,7 @@ export class UserController {
   constructor(private readonly userService: UserService) {}
 
   @HttpCode(HttpStatus.OK)
-  @Post('get-user-by-token')
+  @Post('get-user')
   async getUserByToken(@Req() req: Request) {
     return req.user as JwtPayload;
   }

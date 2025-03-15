@@ -13,6 +13,7 @@ export const getFilteredResultsWithTotal = async <T>(
     select: body?.select ? body.select.split(',') : null,
     search: body?.search || null,
   };
+
   const skip = (payload.page - 1) * payload.limit;
   const filter: Record<string, any> = await universalSearchQuery(
     payload.search,

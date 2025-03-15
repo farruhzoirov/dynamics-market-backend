@@ -1,5 +1,11 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsObject, IsOptional, IsString, IsUrl } from 'class-validator';
+import {
+  IsNumber,
+  IsObject,
+  IsOptional,
+  IsString,
+  IsUrl,
+} from 'class-validator';
 import { Type } from 'class-transformer';
 import {
   UniversalQueryDto,
@@ -31,6 +37,10 @@ export class UpdateBrandDto extends UpdateBaseModelDto {
   @IsObject()
   @Type(() => FileMetadataDto)
   logo: FileMetadataDto;
+
+  @IsOptional()
+  @IsNumber()
+  status: number;
 
   @ApiProperty()
   @IsOptional()
