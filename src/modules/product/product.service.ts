@@ -6,7 +6,8 @@ import { getFilteredResultsWithTotal } from 'src/common/helpers/universal-query-
 import {
   AddProductDto,
   DeleteProductDto,
-  GetProductDto,
+  GetProductBySlugDto,
+  GetProductsListDto,
   UpdateProductDto,
 } from './dto/product.dto';
 
@@ -25,7 +26,7 @@ export class ProductService {
     private readonly productModel: Model<ProductDocument>,
   ) {}
 
-  async getProductList(body: GetProductDto) {
+  async getProductList(body: GetProductsListDto) {
     const [data, total] = await getFilteredResultsWithTotal(
       body,
       this.productModel,
@@ -35,6 +36,30 @@ export class ProductService {
       data,
       total,
     };
+  }
+
+  async getProductBySlug(body: GetProductBySlugDto) {
+    if (!body.slugUz || !body.slugRu || !body.slugEn) {
+      return {};
+    }
+
+    const filter: Partial<{
+      slugUz: string;
+      slugRu: string;
+      slugEn: string;
+    }> = {};
+
+    if (body.slugUz) filter.slugUz = body.slugUz;
+    if (body.slugRu) filter.slugRu = body.slugRu;
+    if (body.slugEn) filter.slugEn = body.slugEn;
+
+    const findProduct = await this.productModel.findOne(filter);
+
+    if (!findProduct) {
+      return {};
+    }
+
+    return findProduct;
   }
 
   async addProduct(body: AddProductDto) {

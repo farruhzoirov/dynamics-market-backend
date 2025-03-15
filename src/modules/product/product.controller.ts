@@ -2,7 +2,8 @@ import { Body, Controller, Post } from '@nestjs/common';
 import {
   AddProductDto,
   DeleteProductDto,
-  GetProductDto,
+  GetProductBySlugDto,
+  GetProductsListDto,
   UpdateProductDto,
 } from './dto/product.dto';
 import { ProductService } from './product.service';
@@ -18,9 +19,15 @@ import {
 export class ProductController {
   constructor(private readonly productService: ProductService) {}
   @Post('get-list')
-  async getProductsLIst(@Body() body: GetProductDto) {
+  async getProductsLIst(@Body() body: GetProductsListDto) {
     const productsList = await this.productService.getProductList(body);
     return productsList;
+  }
+
+  @Post('get-product-by-slug')
+  async getProductBySlug(@Body() body: GetProductBySlugDto) {
+    const product = await this.productService.getProductBySlug(body);
+    return product;
   }
 
   @Post('add')
