@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { Model } from 'mongoose';
+import mongoose, { Model } from 'mongoose';
 import { Product, ProductDocument } from './schemas/product.model';
 import { getFilteredResultsWithTotal } from 'src/common/helpers/universal-query-builder';
 import {
@@ -68,7 +68,7 @@ export class ProductService {
       body.sku = await generateUniqueSKU(this.productModel);
       const categoryHierarchy = await this.categoryModel.aggregate([
         {
-          $match: { _id: categoryId },
+          $match: { _id: new mongoose.Types.ObjectId(categoryId) },
         },
         {
           $graphLookup: {
