@@ -5,6 +5,7 @@ export class AcceptLanguagePipe implements PipeTransform {
   readonly allowedLanguages = ['uz', 'ru', 'en'];
 
   transform(value: any) {
+    console.log(value)
     if (!value) return 'Uz';
     if (!this.allowedLanguages.includes(value)) {
       throw new BadRequestException(

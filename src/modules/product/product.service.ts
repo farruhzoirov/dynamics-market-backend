@@ -35,6 +35,8 @@ export class ProductService {
       `hierarchy.categorySlug${lang}`,
     ].join(' ');
 
+    lang = 'Uz';
+
     const [data, total] = await getFilteredResultsWithTotal(
         body,
         this.productModel,

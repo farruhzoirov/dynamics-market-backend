@@ -13,7 +13,6 @@ import {
   DeletedSuccessResponse,
   UpdatedSuccessResponse,
 } from 'src/shared/success/success-responses';
-import {AcceptLanguagePipe} from "../../common/decorator/accept-language.decarator";
 
 @Controller('product')
 @ApiBearerAuth()
@@ -33,7 +32,7 @@ export class ProductController {
       @Headers('accept-language') lang: string,
       @Body() body: GetProductsListDto
   ) {
-    lang = new AcceptLanguagePipe().transform(lang);
+    // lang = new AcceptLanguagePipe().transform(lang);
     const productsList = await this.productService.getProductList(body, lang);
     return productsList;
   }
