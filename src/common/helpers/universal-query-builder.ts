@@ -34,34 +34,6 @@ export const getFilteredResultsWithTotal = async (
     filter.brandId = body.brandId;
   }
 
-  // const lang = 'Uz';
-
-  // const pipeline = [
-  //   {$match: filter},
-  //   {$skip: skip},
-  //   {$limit: payload.limit},
-  //   {
-  //     $project: {
-  //       nameUz: 1,
-  //       nameRu: 1,
-  //       nameEn: 1,
-  //       hierarchy: {
-  //         $map: {
-  //           input: '$hierarchy',
-  //           as: 'category',
-  //           in: {
-  //             categoryId: '$$category.categoryId',
-  //             [`categorySlug${lang}`]: `$$category.categorySlug${lang}`,
-  //             [`categoryName${lang}`]: `$$category.categoryName${lang}`,
-  //           },
-  //         },
-  //       },
-  //     },
-  //   },
-  // ];
-  //
-  // const products = await currentModel.aggregate(pipeline).exec();
-  // console.log(products[0].hierarchy);
 
   return await Promise.all([
     await currentModel

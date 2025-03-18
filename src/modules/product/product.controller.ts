@@ -1,4 +1,4 @@
-import {Body, Controller, Headers, HttpCode, HttpStatus, Post} from '@nestjs/common';
+import {Body, Controller, Headers, HttpCode, HttpStatus, Post, UsePipes, ValidationPipe} from '@nestjs/common';
 import {
   AddProductDto,
   DeleteProductDto,
@@ -13,15 +13,18 @@ import {
   DeletedSuccessResponse,
   UpdatedSuccessResponse,
 } from 'src/shared/success/success-responses';
+import {AcceptLanguagePipe} from "../../common/decorator/accept-language.decarator";
+import {ValidateObjectIdPipe} from "../../common/pipes/object-id.pipe";
 
 @Controller('product')
 @ApiBearerAuth()
+@UsePipes(new ValidationPipe({whitelist: true}))
 export class ProductController {
   constructor(private readonly productService: ProductService) {
   }
 
   @ApiHeader({
-    name: 'accept-language',
+    name: 'Accept-Language',
     enum: ['uz', 'ru', 'en'],
     description: 'Tilni ko‘rsatish kerak: uz, ru yoki en',
     required: false
@@ -29,10 +32,10 @@ export class ProductController {
   @HttpCode(HttpStatus.OK)
   @Post('get-list')
   async getProductsList(
-      @Headers('accept-language') lang: string,
+      @Headers('Accept-Language') lang: string,
       @Body() body: GetProductsListDto
   ) {
-    // lang = new AcceptLanguagePipe().transform(lang);
+    lang = new AcceptLanguagePipe().transform(lang);
     const productsList = await this.productService.getProductList(body, lang);
     return productsList;
   }
@@ -45,7 +48,11 @@ export class ProductController {
   }
 
   @Post('add')
-  async addProduct(@Body() body: AddProductDto) {
+  async addProduct(
+      @Body() body: AddProductDto,
+      @Body('categoryId', ValidateObjectIdPipe) categoryId: string,
+      @Body('brandId', ValidateObjectIdPipe) brandId: string,
+  ) {
     await this.productService.addProduct(body);
     return new AddedSuccessResponse();
   }

@@ -20,19 +20,14 @@ export class CategoryController {
   }
 
   @ApiHeader({
-    name: 'Language',
-    description: 'Tilni yuborish (uz, ru, en)',
+    name: 'Accept-Language',
+    description: 'Sending language (uz, ru, en)',
     required: true,
     schema: {type: 'string', enum: ['uz', 'ru', 'en'], default: 'uz'},
   })
   @Get('get-all-for-front')
   async getCategoriesForFront(@Req() req: Request, @Res() res: Response) {
-    const language = (req.headers?.Language as string | undefined) ?? 'uz';
-    const categories =
-        await this.categoryService.getCategoriesForFront(language);
-    return res.status(200).json({
-      data: categories,
-    });
+
   }
 
   @Post('get-list')

@@ -1,8 +1,8 @@
-import {BadRequestException, Injectable} from '@nestjs/common';
-import {InjectModel} from '@nestjs/mongoose';
-import {Model} from 'mongoose';
-import {Product, ProductDocument} from './schemas/product.model';
-import {getFilteredResultsWithTotal} from 'src/common/helpers/universal-query-builder';
+import { BadRequestException, Injectable } from '@nestjs/common';
+import { InjectModel } from '@nestjs/mongoose';
+import { Model } from 'mongoose';
+import { Product, ProductDocument } from './schemas/product.model';
+import { getFilteredResultsWithTotal } from 'src/common/helpers/universal-query-builder';
 import {
   AddProductDto,
   DeleteProductDto,
@@ -10,48 +10,46 @@ import {
   GetProductsListDto,
   UpdateProductDto,
 } from './dto/product.dto';
-import {generateUniqueSlug} from 'src/common/helpers/generate-slug';
-import {AddingModelException, ModelDataNotFoundByIdException} from 'src/common/errors/model/model-based.exceptions';
-import {generateUniqueSKU} from 'src/common/helpers/generate-sku';
-import {universalSearchQuery} from 'src/common/helpers/universal-search-query';
-import {CategoryService} from '../category/category.service';
-import {Category, CategoryDocument,} from '../category/schemas/category.schema';
+import { generateUniqueSlug } from 'src/common/helpers/generate-slug';
+import {
+  AddingModelException,
+  ModelDataNotFoundByIdException,
+} from 'src/common/errors/model/model-based.exceptions';
+import { generateUniqueSKU } from 'src/common/helpers/generate-sku';
+import { universalSearchQuery } from 'src/common/helpers/universal-search-query';
+import { CategoryService } from '../category/category.service';
+import {
+  Category,
+  CategoryDocument,
+} from '../category/schemas/category.schema';
 
 @Injectable()
 export class ProductService {
   constructor(
-      @InjectModel(Product.name)
-      private readonly productModel: Model<ProductDocument>,
-      @InjectModel(Category.name)
-      private readonly categoryModel: Model<CategoryDocument>,
-      private readonly categoryService: CategoryService,
-  ) {
-  }
+    @InjectModel(Product.name)
+    private readonly productModel: Model<ProductDocument>,
+    @InjectModel(Category.name)
+    private readonly categoryModel: Model<CategoryDocument>,
+    private readonly categoryService: CategoryService,
+  ) {}
 
   async getProductList(body: GetProductsListDto, lang: string) {
-    const selectedFields = [
-      `hierarchy.categoryId`,
-      `hierarchy.categoryName${lang}`,
-      `hierarchy.categorySlug${lang}`,
-    ].join(' ');
-
-    lang = 'Uz';
-
     const [data, total] = await getFilteredResultsWithTotal(
-        body,
-        this.productModel,
-        ['nameUz', 'nameRu', 'nameEn'],
-        selectedFields,
+      body,
+      this.productModel,
+      ['nameUz', 'nameRu', 'nameEn'],
     );
 
-    const formattedData = Array.isArray(data) ? data.map((product) => ({
-      ...product,
-      hierarchy: product.hierarchy.map((category) => ({
-        categoryId: category.categoryId,
-        categorySlug: category[`categorySlug${lang}`],
-        categoryName: category[`categoryName${lang}`],
-      })),
-    })) : [];
+    const formattedData = Array.isArray(data)
+      ? data.map((product) => ({
+          ...product,
+          hierarchy: product.hierarchy.map((category) => ({
+            categoryId: category.categoryId,
+            categorySlug: category[`categorySlug${lang}`],
+            categoryName: category[`categoryName${lang}`],
+          })),
+        }))
+      : [];
 
     return {
       data: formattedData,
@@ -76,18 +74,20 @@ export class ProductService {
 
   async addProduct(body: AddProductDto) {
     try {
-      const {nameUz, nameRu, nameEn, categoryId} = body;
+      const { nameUz, nameRu, nameEn, categoryId } = body;
       body.slugUz = generateUniqueSlug(nameUz);
       body.slugRu = generateUniqueSlug(nameRu);
       body.slugEn = generateUniqueSlug(nameEn);
       body.sku = await generateUniqueSKU(this.productModel);
 
       const findCategory = await this.categoryModel.findById(categoryId).lean();
+
       if (!findCategory) {
         throw new BadRequestException('Category not found');
       }
 
-      const {hierarchy, hierarchyPath} = await this.categoryService.buildCategoryHierarchy(categoryId);
+      const { hierarchyPath, hierarchy } =
+        await this.categoryService.buildCategoryHierarchy(categoryId);
       body.hierarchy = hierarchy;
       body.hierarchyPath = hierarchyPath;
       await this.productModel.create(body);
@@ -126,6 +126,6 @@ export class ProductService {
     if (!checkProduct) {
       throw new ModelDataNotFoundByIdException('Product not found');
     }
-    await this.productModel.updateOne({_id: body._id}, {isDeleted: true});
+    await this.productModel.updateOne({ _id: body._id }, { isDeleted: true });
   }
 }

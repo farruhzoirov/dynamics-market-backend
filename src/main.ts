@@ -14,7 +14,7 @@ async function bootstrap() {
   app.enableCors({
     origin: '*',
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
-    allowedHeaders: 'Content-Type, Authorization, accept-language, Accept',
+    allowedHeaders: 'Content-Type, Authorization, Accept-Language, Accept',
   });
 
   // Swagger based
@@ -23,7 +23,7 @@ async function bootstrap() {
       .setDescription('These apis for dynamics market')
       .setVersion('1.0')
       .addServer(`http://localhost:5000`, 'Local environment')
-      .addServer('https://api.farruhzoirov.uz', 'Production')
+      .addServer('https://api.dynamics-market.uz', 'Production')
       .addBearerAuth()
       .build();
 

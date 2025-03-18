@@ -2,7 +2,7 @@ import {Injectable, NestMiddleware} from '@nestjs/common';
 import {ConfigService} from '@nestjs/config';
 import {NextFunction, Request, Response} from 'express';
 import * as jwt from 'jsonwebtoken';
-import {IJwtPayload} from '../../shared/interfaces/jwt-payload';
+import {IJwtPayload} from '../interfaces/jwt-payload';
 
 import {InvalidTokenException, NoTokenProvidedException,} from '../../common/errors/auth/auth.exception';
 

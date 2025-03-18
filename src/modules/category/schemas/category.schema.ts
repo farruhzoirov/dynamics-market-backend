@@ -38,7 +38,7 @@ export class Category {
   images: FileMetadata[];
 
   @Prop({type: [String], default: []})
-  hierarchy: string[];
+  hierarchyPath: string[];
 
   @Prop({default: 1})
   status: number;

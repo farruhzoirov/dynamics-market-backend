@@ -4,17 +4,13 @@ import {Model} from 'mongoose';
 import {Category, CategoryDocument} from './schemas/category.schema';
 import {getFilteredResultsWithTotal} from '../../common/helpers/universal-query-builder';
 import {generateUniqueSlug} from '../../common/helpers/generate-slug';
-
 import {
   AddingModelException,
   CantDeleteModelException,
   ModelDataNotFoundByIdException,
 } from '../../common/errors/model/model-based.exceptions';
-
 import {AddCategoryDto, GetCategoryDto, UpdateCategoryDto,} from './dto/category.dto';
-
 import {Product, ProductDocument} from '../product/schemas/product.model';
-import {LanguagesEnum} from '../user/enums/language.enum';
 import {IHierarchyPayload} from 'src/shared/interfaces/hierarchy-payload';
 
 @Injectable()
@@ -28,57 +24,6 @@ export class CategoryService {
   }
 
   async getCategoriesForFront(language: string) {
-    let select: string;
-
-    if (
-        language &&
-        !Object.values(LanguagesEnum).includes(language as LanguagesEnum)
-    ) {
-      return {};
-    }
-
-    switch (language) {
-      case LanguagesEnum.UZ:
-        select = '$nameUz';
-        break;
-      case LanguagesEnum.RU:
-        select = '$nameRu';
-        break;
-      case LanguagesEnum.EN:
-        select = '$nameEn';
-        break;
-      default:
-        select = `$nameUz`;
-    }
-
-    const categories = await this.categoryModel.aggregate([
-      {
-        $graphLookup: {
-          from: 'categories',
-          startWith: '$_id',
-          connectFromField: '_id',
-          connectToField: 'parentId',
-          as: 'children',
-        },
-      },
-      {
-        $project: {
-          _id: 1,
-          name: select,
-          parentId: 1,
-          children: {
-            _id: 1,
-            name: select,
-            parentId: 1,
-          },
-        },
-      },
-      {
-        $match: {parentId: null},
-      },
-    ]);
-
-    return categories;
   }
 
   async getCategoriesList(body: GetCategoryDto) {
@@ -104,9 +49,10 @@ export class CategoryService {
       body.slugRu = generateUniqueSlug(nameRu);
       body.slugEn = generateUniqueSlug(nameEn);
       const newCategory = await this.categoryModel.create(body);
-      // newCategory.hierarchy = await this.buildCategoryHierarchy(
-      //   newCategory._id.toString(),
-      // );
+      const {hierarchyPath} = await this.buildCategoryHierarchy(
+          newCategory._id.toString(),
+      );
+      newCategory.hierarchyPath = hierarchyPath;
       await newCategory.save();
     } catch (err) {
       console.log(`adding mainCategory ====>  ${err.message}`);
@@ -169,7 +115,6 @@ export class CategoryService {
   }> {
     const hierarchy: IHierarchyPayload[] = [];
     const hierarchyPath: string[] = [];
-
     let currentCategory: CategoryDocument | null = await this.categoryModel
         .findById(categoryId)
         .exec();
@@ -202,8 +147,8 @@ export class CategoryService {
     }
 
     return {
-      hierarchy,
       hierarchyPath,
+      hierarchy,
     };
   }
 }
