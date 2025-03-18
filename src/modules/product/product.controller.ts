@@ -1,4 +1,4 @@
-import { Body, Controller, HttpCode, HttpStatus, Post } from '@nestjs/common';
+import {Body, Controller, Headers, HttpCode, HttpStatus, Post} from '@nestjs/common';
 import {
   AddProductDto,
   DeleteProductDto,
@@ -6,23 +6,35 @@ import {
   GetProductsListDto,
   UpdateProductDto,
 } from './dto/product.dto';
-import { ProductService } from './product.service';
-import { ApiBearerAuth } from '@nestjs/swagger';
+import {ProductService} from './product.service';
+import {ApiBearerAuth, ApiHeader} from '@nestjs/swagger';
 import {
   AddedSuccessResponse,
   DeletedSuccessResponse,
   UpdatedSuccessResponse,
 } from 'src/shared/success/success-responses';
+import {AcceptLanguagePipe} from "../../common/decorator/accept-language.decarator";
 
 @Controller('product')
 @ApiBearerAuth()
 export class ProductController {
-  constructor(private readonly productService: ProductService) {}
+  constructor(private readonly productService: ProductService) {
+  }
 
+  @ApiHeader({
+    name: 'accept-language',
+    enum: ['uz', 'ru', 'en'],
+    description: 'Tilni ko‘rsatish kerak: uz, ru yoki en',
+    required: false
+  })
   @HttpCode(HttpStatus.OK)
   @Post('get-list')
-  async getProductsLIst(@Body() body: GetProductsListDto) {
-    const productsList = await this.productService.getProductList(body);
+  async getProductsList(
+      @Headers('accept-language') lang: string,
+      @Body() body: GetProductsListDto
+  ) {
+    lang = new AcceptLanguagePipe().transform(lang);
+    const productsList = await this.productService.getProductList(body, lang);
     return productsList;
   }
 

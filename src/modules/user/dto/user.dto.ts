@@ -1,23 +1,16 @@
-import { Type } from 'class-transformer';
-import {
-  IsArray,
-  IsNotEmpty,
-  IsNumber,
-  IsOptional,
-  IsString,
-  ValidateNested,
-} from 'class-validator';
-import { ApiProperty } from '@nestjs/swagger';
-import { ILocations } from '../../../shared/interfaces/location';
-import { Gender } from '../enums/gender.enum';
+import {Type} from 'class-transformer';
+import {IsArray, IsNotEmpty, IsNumber, IsOptional, IsString, ValidateNested,} from 'class-validator';
+import {ApiProperty} from '@nestjs/swagger';
+import {ILocations} from '../../../shared/interfaces/location';
+import {Gender} from '../enums/gender.enum';
 
 export class UpdateUserDto {
-  @ApiProperty({ required: true })
+  @ApiProperty({required: true})
   @IsString()
   @IsNotEmpty()
   firstName: string;
 
-  @ApiProperty({ required: true })
+  @ApiProperty({required: true})
   @IsString()
   @IsNotEmpty()
   lastName: string;
@@ -27,13 +20,13 @@ export class UpdateUserDto {
     type: 'array',
     items: {
       type: 'object',
-      properties: { long: { type: 'number' }, lat: { type: 'number' } },
+      properties: {long: {type: 'number'}, lat: {type: 'number'}},
     },
     description: 'Array of location objects with long and lat',
   })
   @IsOptional()
   @IsArray()
-  @ValidateNested({ each: true })
+  @ValidateNested({each: true})
   @Type(() => LocationsDto)
   locations: ILocations[];
 

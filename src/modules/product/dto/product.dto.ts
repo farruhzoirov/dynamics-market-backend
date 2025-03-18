@@ -1,23 +1,11 @@
-import { Optional } from '@nestjs/common';
-import { ApiProperty } from '@nestjs/swagger';
-import { Type } from 'class-transformer';
-import {
-  IsString,
-  IsOptional,
-  IsArray,
-  IsNumber,
-  ValidateNested,
-  ArrayMinSize,
-} from 'class-validator';
+import {Optional} from '@nestjs/common';
+import {ApiProperty} from '@nestjs/swagger';
+import {Type} from 'class-transformer';
+import {IsArray, IsNumber, IsOptional, IsString, ValidateNested,} from 'class-validator';
 
-import {
-  UniversalQueryDto,
-  BaseModelDto,
-  UpdateBaseModelDto,
-  DeleteBaseModelDto,
-} from 'src/shared/dto/base-model.dto';
+import {BaseModelDto, DeleteBaseModelDto, UniversalQueryDto, UpdateBaseModelDto,} from 'src/shared/dto/base-model.dto';
 
-import { FileMetadataDto } from 'src/shared/dto/file-meta.dto';
+import {FileMetadataDto} from 'src/shared/dto/file-meta.dto';
 
 class AttributeDto {
   @ApiProperty()
@@ -104,20 +92,20 @@ export class AddProductDto extends BaseModelDto {
   @IsString()
   brandId: string;
 
-  @ApiProperty({ description: 'Array of keywords' })
+  @ApiProperty({description: 'Array of keywords'})
   @Optional()
   @IsString()
   keywords: string;
 
-  @ApiProperty({ type: [AttributeDto] })
+  @ApiProperty({type: [AttributeDto]})
   @IsArray()
-  @ValidateNested({ each: true })
+  @ValidateNested({each: true})
   @Type(() => AttributeDto)
   attributes: AttributeDto[];
 
-  @ApiProperty({ type: [FileMetadataDto] })
+  @ApiProperty({type: [FileMetadataDto]})
   @IsArray()
-  @ValidateNested({ each: true })
+  @ValidateNested({each: true})
   @Type(() => FileMetadataDto)
   images: FileMetadataDto[];
 
@@ -127,19 +115,23 @@ export class AddProductDto extends BaseModelDto {
 
   hierarchy: any;
 
+  hierarchyPath: any;
   sku?: string;
 }
 
 export class UpdateProductDto extends UpdateBaseModelDto {
   @ApiProperty()
+  @IsOptional()
   @IsString()
   descriptionUz: string;
 
   @ApiProperty()
+  @IsOptional()
   @IsString()
   descriptionRu: string;
 
   @ApiProperty()
+  @IsOptional()
   @IsString()
   descriptionEn: string;
 
@@ -149,6 +141,7 @@ export class UpdateProductDto extends UpdateBaseModelDto {
   oldPrice: number;
 
   @ApiProperty()
+  @IsOptional()
   @IsNumber()
   currentPrice: number;
 
@@ -163,34 +156,43 @@ export class UpdateProductDto extends UpdateBaseModelDto {
   rate: number;
 
   @ApiProperty()
+  @IsOptional()
   @IsString()
   categoryId: string;
 
   @ApiProperty()
+  @IsOptional()
   @IsString()
   brandId: string;
 
-  @ApiProperty({ description: 'Array of keywords' })
-  @Optional()
+  @ApiProperty({description: 'Array of keywords'})
+  @IsOptional()
   @IsString()
   keywords: string;
 
-  @ApiProperty({ type: [AttributeDto] })
+  @ApiProperty({type: [AttributeDto]})
+  @IsOptional()
   @IsArray()
-  @ValidateNested({ each: true })
+  @ValidateNested({each: true})
   @Type(() => AttributeDto)
   attributes: AttributeDto[];
 
-  @ApiProperty({ type: [FileMetadataDto] })
+  @ApiProperty({type: [FileMetadataDto]})
   @IsOptional()
   @IsArray()
-  @ValidateNested({ each: true })
+  @ValidateNested({each: true})
   @Type(() => FileMetadataDto)
   images: FileMetadataDto[];
+
+  @IsOptional()
+  @IsNumber()
+  status: number;
 
   @ApiProperty()
   @IsOptional()
   details: any;
 }
 
-export class DeleteProductDto extends DeleteBaseModelDto {}
+export class DeleteProductDto extends DeleteBaseModelDto {
+}
+

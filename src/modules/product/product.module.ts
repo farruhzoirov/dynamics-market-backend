@@ -1,9 +1,10 @@
-import { Module } from '@nestjs/common';
-import { ProductService } from './product.service';
-import { ProductController } from './product.controller';
-import { MongooseModule } from '@nestjs/mongoose';
-import { Product, ProductSchema } from './schemas/product.model';
-import { Category, CategorySchema } from '../category/schemas/category.schema';
+import {Module} from '@nestjs/common';
+import {ProductService} from './product.service';
+import {ProductController} from './product.controller';
+import {MongooseModule} from '@nestjs/mongoose';
+import {Product, ProductSchema} from './schemas/product.model';
+import {CategoryService} from '../category/category.service';
+import {Category, CategorySchema} from '../category/schemas/category.schema';
 
 @Module({
   imports: [
@@ -15,10 +16,11 @@ import { Category, CategorySchema } from '../category/schemas/category.schema';
       {
         name: Category.name,
         schema: CategorySchema,
-      },
+      }
     ]),
   ],
-  providers: [ProductService],
+  providers: [ProductService, CategoryService],
   controllers: [ProductController],
 })
-export class ProductModule {}
+export class ProductModule {
+}

@@ -1,22 +1,15 @@
-import {
-  Body,
-  Controller,
-  HttpCode,
-  HttpStatus,
-  Post,
-  UploadedFiles,
-  UseInterceptors,
-} from '@nestjs/common';
-import { FilesInterceptor } from '@nestjs/platform-express';
-import { FileUploadService } from './file-upload.service';
-import { ApiBearerAuth, ApiBody, ApiConsumes } from '@nestjs/swagger';
-import { FilePathDto } from './dto/file-path.dto';
-import { FileDeletedSuccessResponse } from '../../shared/success/success-responses';
+import {Body, Controller, HttpCode, HttpStatus, Post, UploadedFiles, UseInterceptors,} from '@nestjs/common';
+import {FilesInterceptor} from '@nestjs/platform-express';
+import {FileUploadService} from './file-upload.service';
+import {ApiBearerAuth, ApiBody, ApiConsumes} from '@nestjs/swagger';
+import {FilePathDto} from './dto/file-path.dto';
+import {FileDeletedSuccessResponse} from '../../shared/success/success-responses';
 
 @ApiBearerAuth()
 @Controller('file-upload')
 export class FileUploadController {
-  constructor(private readonly fileUploadService: FileUploadService) {}
+  constructor(private readonly fileUploadService: FileUploadService) {
+  }
 
   @HttpCode(HttpStatus.OK)
   @Post('delete-file')
@@ -32,7 +25,7 @@ export class FileUploadController {
       properties: {
         file: {
           type: 'array',
-          items: { type: 'string', format: 'binary' },
+          items: {type: 'string', format: 'binary'},
           description: 'Array of files to upload (up to 10 files)',
         },
       },

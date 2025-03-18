@@ -1,5 +1,5 @@
-import { BadRequestException } from '@nestjs/common';
-import { ErrorCodes } from '../error-codes';
+import {BadRequestException} from '@nestjs/common';
+import {ErrorCodes} from '../error-codes';
 
 export class ObjectIDException extends BadRequestException {
   constructor(message: string = 'Invalid Mongodb ObjectId!') {

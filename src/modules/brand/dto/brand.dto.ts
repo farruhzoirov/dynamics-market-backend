@@ -1,25 +1,20 @@
-import { ApiProperty } from '@nestjs/swagger';
+import {ApiProperty} from '@nestjs/swagger';
+import {IsNumber, IsObject, IsOptional, IsString, IsUrl,} from 'class-validator';
+import {Type} from 'class-transformer';
 import {
-  IsNumber,
-  IsObject,
-  IsOptional,
-  IsString,
-  IsUrl,
-} from 'class-validator';
-import { Type } from 'class-transformer';
-import {
-  UniversalQueryDto,
   BaseModelDto,
-  UpdateBaseModelDto,
   DeleteBaseModelDto,
+  UniversalQueryDto,
+  UpdateBaseModelDto,
 } from '../../../shared/dto/base-model.dto';
 
-import { FileMetadataDto } from '../../../shared/dto/file-meta.dto';
+import {FileMetadataDto} from '../../../shared/dto/file-meta.dto';
 
-export class GetBrandListsDto extends UniversalQueryDto {}
+export class GetBrandListsDto extends UniversalQueryDto {
+}
 
 export class AddBrandDto extends BaseModelDto {
-  @ApiProperty({ type: FileMetadataDto })
+  @ApiProperty({type: FileMetadataDto})
   @IsObject()
   @Type(() => FileMetadataDto)
   logo: FileMetadataDto;
@@ -32,7 +27,7 @@ export class AddBrandDto extends BaseModelDto {
 }
 
 export class UpdateBrandDto extends UpdateBaseModelDto {
-  @ApiProperty({ type: FileMetadataDto })
+  @ApiProperty({type: FileMetadataDto})
   @IsOptional()
   @IsObject()
   @Type(() => FileMetadataDto)
@@ -49,4 +44,5 @@ export class UpdateBrandDto extends UpdateBaseModelDto {
   website: string;
 }
 
-export class DeleteBrandDto extends DeleteBaseModelDto {}
+export class DeleteBrandDto extends DeleteBaseModelDto {
+}

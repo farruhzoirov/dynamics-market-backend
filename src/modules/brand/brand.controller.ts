@@ -1,19 +1,8 @@
-import {
-  Body,
-  Controller,
-  Post,
-  UsePipes,
-  ValidationPipe,
-} from '@nestjs/common';
-import { BrandService } from './brand.service';
-import {
-  AddBrandDto,
-  DeleteBrandDto,
-  GetBrandListsDto,
-  UpdateBrandDto,
-} from './dto/brand.dto';
-import { ValidateObjectIdPipe } from '../../common/pipes/object-id.pipe';
-import { ApiBearerAuth } from '@nestjs/swagger';
+import {Body, Controller, Post, UsePipes, ValidationPipe,} from '@nestjs/common';
+import {BrandService} from './brand.service';
+import {AddBrandDto, DeleteBrandDto, GetBrandListsDto, UpdateBrandDto,} from './dto/brand.dto';
+import {ValidateObjectIdPipe} from '../../common/pipes/object-id.pipe';
+import {ApiBearerAuth} from '@nestjs/swagger';
 import {
   AddedSuccessResponse,
   DeletedSuccessResponse,
@@ -22,9 +11,10 @@ import {
 
 @ApiBearerAuth()
 @Controller('brand')
-@UsePipes(new ValidationPipe({ whitelist: true }))
+@UsePipes(new ValidationPipe({whitelist: true}))
 export class BrandController {
-  constructor(private readonly brandService: BrandService) {}
+  constructor(private readonly brandService: BrandService) {
+  }
 
   @Post('get-list')
   async getBrandsList(@Body() body: GetBrandListsDto) {
@@ -45,8 +35,8 @@ export class BrandController {
 
   @Post('delete')
   async deleteBrand(
-    @Body() body: DeleteBrandDto,
-    @Body('_id', ValidateObjectIdPipe) _id: string,
+      @Body() body: DeleteBrandDto,
+      @Body('_id', ValidateObjectIdPipe) _id: string,
   ) {
     await this.brandService.deleteBrand(body._id);
     return new DeletedSuccessResponse();

@@ -1,10 +1,10 @@
-import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { HydratedDocument } from 'mongoose';
-import { FileMetadata } from 'src/common/schema/file-meta.schema';
+import {Prop, Schema, SchemaFactory} from '@nestjs/mongoose';
+import {HydratedDocument} from 'mongoose';
+import {FileMetadata} from 'src/common/schema/file-meta.schema';
 
 export type BrandDocument = HydratedDocument<Brand>;
 
-@Schema({ timestamps: true })
+@Schema({timestamps: true})
 export class Brand {
   @Prop()
   nameUz: string;
@@ -24,21 +24,21 @@ export class Brand {
   @Prop()
   slugEn: string;
 
-  @Prop({ default: null })
+  @Prop({default: null})
   website: string;
 
-  @Prop({ type: FileMetadata, default: null })
+  @Prop({type: FileMetadata, default: null})
   logo: FileMetadata;
 
-  @Prop({ default: 1 })
+  @Prop({default: 1})
   status: number;
 
-  @Prop({ default: false })
+  @Prop({default: false})
   isDeleted: boolean;
 }
 
 export const BrandSchema = SchemaFactory.createForClass(Brand);
-BrandSchema.index({ slugUz: 1 });
-BrandSchema.index({ slugRu: 1 });
-BrandSchema.index({ slugEn: 1 });
-BrandSchema.index({ nameUz: 1, nameRu: 1, nameEn: 1 });
+BrandSchema.index({slugUz: 1});
+BrandSchema.index({slugRu: 1});
+BrandSchema.index({slugEn: 1});
+BrandSchema.index({nameUz: 1, nameRu: 1, nameEn: 1});

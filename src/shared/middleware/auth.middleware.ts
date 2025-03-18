@@ -1,16 +1,15 @@
-import { Injectable, NestMiddleware } from '@nestjs/common';
-import { ConfigService } from '@nestjs/config';
-import { NextFunction, Request, Response } from 'express';
+import {Injectable, NestMiddleware} from '@nestjs/common';
+import {ConfigService} from '@nestjs/config';
+import {NextFunction, Request, Response} from 'express';
 import * as jwt from 'jsonwebtoken';
-import { JwtPayload } from 'jsonwebtoken';
-import {
-  InvalidTokenException,
-  NoTokenProvidedException,
-} from '../../common/errors/auth/auth.exception';
+import {IJwtPayload} from '../../shared/interfaces/jwt-payload';
+
+import {InvalidTokenException, NoTokenProvidedException,} from '../../common/errors/auth/auth.exception';
 
 @Injectable()
 export class AuthMiddleware implements NestMiddleware {
-  constructor(private readonly configService: ConfigService) {}
+  constructor(private readonly configService: ConfigService) {
+  }
 
   use(req: Request, res: Response, next: NextFunction) {
     const bearerToken = req.headers?.authorization;
@@ -22,11 +21,11 @@ export class AuthMiddleware implements NestMiddleware {
 
     try {
       const payload = jwt.verify(
-        extractToken,
-        this.configService.get('CONFIG_JWT').JWT_SECRET_KEY,
+          extractToken,
+          this.configService.get('CONFIG_JWT').JWT_SECRET_KEY,
       );
 
-      req.user = payload as JwtPayload;
+      req.user = payload as IJwtPayload;
       next();
     } catch (e) {
       throw new InvalidTokenException('Invalid token');
