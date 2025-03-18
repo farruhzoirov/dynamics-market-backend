@@ -112,11 +112,6 @@ export class AddProductDto extends BaseModelDto {
   @ApiProperty()
   @IsOptional()
   details: any;
-
-  hierarchy: any;
-
-  hierarchyPath: any;
-  sku?: string;
 }
 
 export class UpdateProductDto extends UpdateBaseModelDto {

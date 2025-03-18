@@ -78,7 +78,7 @@ export class CategoryService {
     }
     await this.categoryModel.findByIdAndUpdate(updateBody._id, {
       $set: {
-        ...updateBody,
+        updateBody,
       },
     });
   }

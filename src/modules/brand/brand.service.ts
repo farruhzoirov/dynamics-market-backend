@@ -68,7 +68,7 @@ export class BrandService {
 
     await this.brandModel.findByIdAndUpdate(updateBody._id, {
       $set: {
-        ...updateBody,
+        updateBody,
       },
     });
   }
