@@ -35,19 +35,8 @@ export class ProductService {
         ['nameUz', 'nameRu', 'nameEn'],
     );
 
-    const formattedData = Array.isArray(data)
-        ? data.map((product) => ({
-          ...product,
-          hierarchy: product.hierarchy.map((category) => ({
-            categoryId: category.categoryId,
-            categorySlug: category[`categorySlug${lang}`],
-            categoryName: category[`categoryName${lang}`],
-          })),
-        }))
-        : [];
-
     return {
-      data: formattedData,
+      data: data,
       total,
     };
   }

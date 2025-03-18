@@ -18,7 +18,7 @@ export class AuthMiddleware implements NestMiddleware {
     if (!bearerToken || !extractToken) {
       throw new NoTokenProvidedException('No token provided');
     }
-
+    
     try {
       const payload = jwt.verify(
           extractToken,
