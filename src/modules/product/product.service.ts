@@ -10,6 +10,7 @@ import {
   GetProductsListDto,
   UpdateProductDto,
 } from './dto/product.dto';
+
 import {generateUniqueSlug} from 'src/common/helpers/generate-slug';
 import {AddingModelException, ModelDataNotFoundByIdException,} from 'src/common/errors/model/model-based.exceptions';
 import {generateUniqueSKU} from 'src/common/helpers/generate-sku';
@@ -32,9 +33,8 @@ export class ProductService {
     const [data, total] = await getFilteredResultsWithTotal(
         body,
         this.productModel,
-        ['nameUz', 'nameRu', 'nameEn'],
+        ['nameUz', 'nameRu', 'nameEn', 'sku'],
     );
-
     return {
       data: data,
       total,
@@ -110,7 +110,7 @@ export class ProductService {
     }
     await this.productModel.findByIdAndUpdate(updateBody._id, {
       $set: {
-        ...updatingBody,
+        updatingBody,
       },
     });
   }
