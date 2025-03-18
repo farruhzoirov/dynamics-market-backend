@@ -45,10 +45,18 @@ export class CategoryService {
   async addCategory(body: AddCategoryDto) {
     try {
       const {nameUz, nameRu, nameEn} = body;
-      body.slugUz = generateUniqueSlug(nameUz);
-      body.slugRu = generateUniqueSlug(nameRu);
-      body.slugEn = generateUniqueSlug(nameEn);
-      const newCategory = await this.categoryModel.create(body);
+      const slugUz = generateUniqueSlug(nameUz);
+      const slugRu = generateUniqueSlug(nameRu);
+      const slugEn = generateUniqueSlug(nameEn);
+
+      const createBody = {
+        ...body,
+        slugUz,
+        slugRu,
+        slugEn,
+      }
+
+      const newCategory = await this.categoryModel.create(createBody);
       const {hierarchyPath} = await this.buildCategoryHierarchy(
           newCategory._id.toString(),
       );
@@ -61,24 +69,27 @@ export class CategoryService {
   }
 
   async updateCategory(updateBody: UpdateCategoryDto) {
-    const languages = ['Uz', 'Ru', 'En'];
-    languages.forEach((lang) => {
-      const nameKey = `name${lang}`;
-      const slugKey = `slug${lang}`;
-
-      if (updateBody[nameKey]) {
-        updateBody[slugKey] = generateUniqueSlug(updateBody[nameKey]);
-      }
-    });
-
     const findCategory = await this.categoryModel.findById(updateBody._id);
 
     if (!findCategory) {
       throw new ModelDataNotFoundByIdException('Category not found');
     }
+
+    const {nameUz, nameRu, nameEn} = updateBody;
+    const slugUz = generateUniqueSlug(nameUz);
+    const slugRu = generateUniqueSlug(nameRu);
+    const slugEn = generateUniqueSlug(nameEn);
+
+    const forUpdateBody = {
+      ...updateBody,
+      slugUz,
+      slugRu,
+      slugEn,
+    }
+    
     await this.categoryModel.findByIdAndUpdate(updateBody._id, {
       $set: {
-        updateBody,
+        ...forUpdateBody,
       },
     });
   }

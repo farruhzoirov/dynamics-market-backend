@@ -39,10 +39,19 @@ export class BrandService {
   async addBrand(body: AddBrandDto): Promise<void> {
     try {
       const {nameUz, nameRu, nameEn} = body;
-      body.slugUz = generateUniqueSlug(nameUz);
-      body.slugRu = generateUniqueSlug(nameRu);
-      body.slugEn = generateUniqueSlug(nameEn);
-      await this.brandModel.create(body);
+
+      const slugUz = generateUniqueSlug(nameUz);
+      const slugRu = generateUniqueSlug(nameRu);
+      const slugEn = generateUniqueSlug(nameEn);
+
+      const createBody = {
+        ...body,
+        slugUz,
+        slugRu,
+        slugEn,
+      }
+
+      await this.brandModel.create(createBody);
     } catch (err) {
       console.log(`adding brand ====>  ${err.message}`);
       throw new AddingModelException();
@@ -50,25 +59,27 @@ export class BrandService {
   }
 
   async updateBrand(updateBody: UpdateBrandDto): Promise<void> {
-    const languages = ['Uz', 'Ru', 'En'];
-    languages.forEach((lang) => {
-      const nameKey = `name${lang}`;
-      const slugKey = `slug${lang}`;
-
-      if (updateBody[nameKey]) {
-        updateBody[slugKey] = generateUniqueSlug(updateBody[nameKey]);
-      }
-    });
-
     const findBrand = await this.brandModel.findById(updateBody._id);
 
     if (!findBrand) {
       throw new ModelDataNotFoundByIdException('Brand not found');
     }
 
+    const {nameUz, nameRu, nameEn} = updateBody;
+    const slugUz = generateUniqueSlug(nameUz);
+    const slugRu = generateUniqueSlug(nameRu);
+    const slugEn = generateUniqueSlug(nameEn);
+
+    const forUpdateBody = {
+      ...updateBody,
+      slugUz,
+      slugRu,
+      slugEn,
+    }
+
     await this.brandModel.findByIdAndUpdate(updateBody._id, {
       $set: {
-        updateBody,
+        ...forUpdateBody,
       },
     });
   }

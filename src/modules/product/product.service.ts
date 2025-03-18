@@ -70,24 +70,27 @@ export class ProductService {
   async addProduct(body: AddProductDto) {
     try {
       const {nameUz, nameRu, nameEn, categoryId} = body;
-      body.slugUz = generateUniqueSlug(nameUz);
-      body.slugRu = generateUniqueSlug(nameRu);
-      body.slugEn = generateUniqueSlug(nameEn);
-      const sku = await generateUniqueSKU(this.productModel);
-
       const findCategory = await this.categoryModel.findById(categoryId).lean();
 
       if (!findCategory) {
         throw new BadRequestException('Category not found');
       }
 
+      const slugUz = generateUniqueSlug(nameUz);
+      const slugRu = generateUniqueSlug(nameRu);
+      const slugEn = generateUniqueSlug(nameEn);
+      const sku = await generateUniqueSKU(this.productModel);
       const {hierarchyPath, hierarchy} = await this.categoryService.buildCategoryHierarchy(categoryId);
-      await this.productModel.create({
+      const createBody = {
         ...body,
-        hierarchyPath,
+        slugUz,
+        slugRu,
+        slugEn,
+        sku,
         hierarchy,
-        sku
-      });
+        hierarchyPath,
+      }
+      await this.productModel.create(createBody);
     } catch (err) {
       console.log(`adding product ====>  ${err}`);
       throw new AddingModelException(err.message);
@@ -95,28 +98,30 @@ export class ProductService {
   }
 
   async updateProduct(updateBody: UpdateProductDto) {
-    const languages = ['Uz', 'Ru', 'En'];
-    languages.forEach((lang) => {
-      const nameKey = `name${lang}`;
-      const slugKey = `slug${lang}`;
-      if (updateBody[nameKey]) {
-        updateBody[slugKey] = generateUniqueSlug(updateBody[nameKey]);
-      }
-    });
-
     const findProduct = await this.productModel.findById(updateBody._id);
-
     if (!findProduct) {
       throw new ModelDataNotFoundByIdException('Product not found');
     }
+    const {nameUz, nameRu, nameEn} = updateBody;
+
+    const slugUz = generateUniqueSlug(nameUz);
+    const slugRu = generateUniqueSlug(nameRu);
+    const slugEn = generateUniqueSlug(nameEn);
+
     const {hierarchyPath, hierarchy} =
         await this.categoryService.buildCategoryHierarchy(updateBody._id);
 
+    const updatingBody = {
+      ...updateBody,
+      slugUz,
+      slugRu,
+      slugEn,
+      hierarchy,
+      hierarchyPath,
+    }
     await this.productModel.findByIdAndUpdate(updateBody._id, {
       $set: {
-        ...updateBody,
-        hierarchy,
-        hierarchyPath,
+        ...updatingBody,
       },
     });
   }

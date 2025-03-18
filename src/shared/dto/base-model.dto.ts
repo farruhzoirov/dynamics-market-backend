@@ -35,18 +35,6 @@ export class BaseModelDto {
   @ApiProperty({example: 'Nomi EN'})
   @IsString()
   nameEn: string;
-
-  @IsOptional()
-  @IsString()
-  slugUz?: string;
-
-  @IsOptional()
-  @IsString()
-  slugRu?: string;
-
-  @IsOptional()
-  @IsString()
-  slugEn?: string;
 }
 
 export class UpdateBaseModelDto {
@@ -68,18 +56,6 @@ export class UpdateBaseModelDto {
   @IsOptional()
   @IsString()
   nameEn: string;
-
-  @IsOptional()
-  @IsString()
-  slugUz?: string;
-
-  @IsOptional()
-  @IsString()
-  slugRu?: string;
-
-  @IsOptional()
-  @IsString()
-  slugEn?: string;
 }
 
 export class DeleteBaseModelDto {
