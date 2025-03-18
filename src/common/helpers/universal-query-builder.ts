@@ -27,7 +27,7 @@ export const getFilteredResultsWithTotal = async (
   }
 
   if (body.categoryId) {
-    filter.hierarchy = body.categoryId;
+    filter.hierarchyPath = body.categoryId;
   }
 
   if (body.brandId) {
