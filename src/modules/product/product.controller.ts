@@ -1,4 +1,13 @@
-import {Body, Controller, Headers, HttpCode, HttpStatus, Post, UsePipes, ValidationPipe} from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Headers,
+  HttpCode,
+  HttpStatus,
+  Post,
+  UsePipes,
+  ValidationPipe,
+} from '@nestjs/common';
 import {
   AddProductDto,
   DeleteProductDto,
@@ -6,34 +15,33 @@ import {
   GetProductsListDto,
   UpdateProductDto,
 } from './dto/product.dto';
-import {ProductService} from './product.service';
-import {ApiBearerAuth, ApiHeader} from '@nestjs/swagger';
+import { ProductService } from './product.service';
+import { ApiBearerAuth, ApiHeader } from '@nestjs/swagger';
 import {
   AddedSuccessResponse,
   DeletedSuccessResponse,
   UpdatedSuccessResponse,
 } from 'src/shared/success/success-responses';
-import {AcceptLanguagePipe} from "../../common/decorator/accept-language.decarator";
-import {ValidateObjectIdPipe} from "../../common/pipes/object-id.pipe";
+import { AcceptLanguagePipe } from '../../common/pipes/language.pipe';
+import { ValidateObjectIdPipe } from '../../common/pipes/object-id.pipe';
 
 @Controller('product')
 @ApiBearerAuth()
-@UsePipes(new ValidationPipe({whitelist: true}))
+@UsePipes(new ValidationPipe({ whitelist: true }))
 export class ProductController {
-  constructor(private readonly productService: ProductService) {
-  }
+  constructor(private readonly productService: ProductService) {}
 
   @ApiHeader({
     name: 'Accept-Language',
     enum: ['uz', 'ru', 'en'],
     description: 'Tilni ko‘rsatish kerak: uz, ru yoki en',
-    required: false
+    required: false,
   })
   @HttpCode(HttpStatus.OK)
   @Post('get-list')
   async getProductsList(
-      @Headers('Accept-Language') lang: string,
-      @Body() body: GetProductsListDto
+    @Headers('Accept-Language') lang: string,
+    @Body() body: GetProductsListDto,
   ) {
     lang = new AcceptLanguagePipe().transform(lang);
     const productsList = await this.productService.getProductList(body, lang);
@@ -49,9 +57,9 @@ export class ProductController {
 
   @Post('add')
   async addProduct(
-      @Body() body: AddProductDto,
-      @Body('categoryId', ValidateObjectIdPipe) categoryId: string,
-      @Body('brandId', ValidateObjectIdPipe) brandId: string,
+    @Body() body: AddProductDto,
+    @Body('categoryId', ValidateObjectIdPipe) categoryId: string,
+    @Body('brandId', ValidateObjectIdPipe) brandId: string,
   ) {
     await this.productService.addProduct(body);
     return new AddedSuccessResponse();

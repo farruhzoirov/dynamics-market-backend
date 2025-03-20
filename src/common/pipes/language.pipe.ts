@@ -1,4 +1,4 @@
-import {Injectable, PipeTransform} from '@nestjs/common';
+import { Injectable, PipeTransform } from '@nestjs/common';
 
 @Injectable()
 export class AcceptLanguagePipe implements PipeTransform {
@@ -9,7 +9,8 @@ export class AcceptLanguagePipe implements PipeTransform {
     if (value && !this.allowedLanguages.includes(value)) {
       return 'Uz';
     }
-    const normalizedValue = value.charAt(0).toUpperCase() + value.slice(1).toLowerCase();
+    const normalizedValue =
+      value.charAt(0).toUpperCase() + value.slice(1).toLowerCase();
     return normalizedValue;
   }
 }

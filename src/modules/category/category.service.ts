@@ -1,29 +1,88 @@
-import {Injectable} from '@nestjs/common';
-import {InjectModel} from '@nestjs/mongoose';
-import {Model} from 'mongoose';
-import {Category, CategoryDocument} from './schemas/category.schema';
-import {getFilteredResultsWithTotal} from '../../common/helpers/universal-query-builder';
-import {generateUniqueSlug} from '../../common/helpers/generate-slug';
+import { Inject, Injectable } from '@nestjs/common';
+import { CACHE_MANAGER } from '@nestjs/cache-manager';
+import { InjectModel } from '@nestjs/mongoose';
+import mongoose, { Model } from 'mongoose';
+import { Category, CategoryDocument } from './schemas/category.schema';
+import { getFilteredResultsWithTotal } from '../../common/helpers/universal-query-builder';
+import { generateUniqueSlug } from '../../common/helpers/generate-slug';
 import {
   AddingModelException,
   CantDeleteModelException,
   ModelDataNotFoundByIdException,
 } from '../../common/errors/model/model-based.exceptions';
-import {AddCategoryDto, GetCategoryDto, UpdateCategoryDto,} from './dto/category.dto';
-import {Product, ProductDocument} from '../product/schemas/product.model';
-import {IHierarchyPayload} from 'src/shared/interfaces/hierarchy-payload';
+import {
+  AddCategoryDto,
+  GetCategoryDto,
+  UpdateCategoryDto,
+} from './dto/category.dto';
+import { Product, ProductDocument } from '../product/schemas/product.model';
+import { Cache } from 'cache-manager';
+
+import { IHierarchyPayload } from 'src/shared/interfaces/hierarchy-payload';
 
 @Injectable()
 export class CategoryService {
   constructor(
-      @InjectModel(Category.name)
-      private readonly categoryModel: Model<CategoryDocument>,
-      @InjectModel(Product.name)
-      private readonly productModel: Model<ProductDocument>,
-  ) {
-  }
+    @InjectModel(Category.name)
+    private readonly categoryModel: Model<CategoryDocument>,
+    @InjectModel(Product.name)
+    private readonly productModel: Model<ProductDocument>,
+    // @Inject(CACHE_MANAGER) private cacheManager: Cache,
+  ) {}
 
-  async getCategoriesForFront(language: string) {
+  async getCategoriesForFront(body: GetCategoryDto, lang: string) {
+    const parentId = body.parentId ?? null;
+    const pipeline = [
+      {
+        $match: parentId
+          ? {
+              parentId: new mongoose.Types.ObjectId(parentId),
+              isDeleted: false,
+            }
+          : { parentId: null, isDeleted: false },
+      },
+      ...(parentId
+        ? [
+            {
+              $lookup: {
+                from: 'categories',
+                localField: '_id',
+                foreignField: 'parentId',
+                as: 'children',
+              },
+            },
+            {
+              $project: {
+                _id: 1,
+                name: `$name${lang}`,
+                slug: `$slug${lang}`,
+                children: {
+                  $map: {
+                    input: '$children',
+                    as: 'child',
+                    in: {
+                      _id: '$$child._id',
+                      name: `$$child.name${lang}`,
+                      slug: `$$child.slug${lang}`,
+                    },
+                  },
+                },
+              },
+            },
+          ]
+        : [
+            {
+              $project: {
+                _id: 1,
+                name: `$name${lang}`,
+                slug: `$slug${lang}`,
+              },
+            },
+          ]),
+    ];
+
+    const categories = await this.categoryModel.aggregate(pipeline).exec();
+    return { data: categories };
   }
 
   async getCategoriesList(body: GetCategoryDto) {
@@ -31,9 +90,9 @@ export class CategoryService {
       body.parentId = null;
     }
     const [data, total] = await getFilteredResultsWithTotal(
-        body,
-        this.categoryModel,
-        ['nameUz', 'nameRu', 'nameEn'],
+      body,
+      this.categoryModel,
+      ['nameUz', 'nameRu', 'nameEn'],
     );
 
     return {
@@ -44,7 +103,7 @@ export class CategoryService {
 
   async addCategory(body: AddCategoryDto) {
     try {
-      const {nameUz, nameRu, nameEn} = body;
+      const { nameUz, nameRu, nameEn } = body;
       const slugUz = generateUniqueSlug(nameUz);
       const slugRu = generateUniqueSlug(nameRu);
       const slugEn = generateUniqueSlug(nameEn);
@@ -54,11 +113,11 @@ export class CategoryService {
         slugUz,
         slugRu,
         slugEn,
-      }
+      };
 
       const newCategory = await this.categoryModel.create(createBody);
-      const {hierarchyPath} = await this.buildCategoryHierarchy(
-          newCategory._id.toString(),
+      const { hierarchyPath } = await this.buildCategoryHierarchy(
+        newCategory._id.toString(),
       );
       newCategory.hierarchyPath = hierarchyPath;
       await newCategory.save();
@@ -75,7 +134,7 @@ export class CategoryService {
       throw new ModelDataNotFoundByIdException('Category not found');
     }
 
-    const {nameUz, nameRu, nameEn} = updateBody;
+    const { nameUz, nameRu, nameEn } = updateBody;
     const slugUz = generateUniqueSlug(nameUz);
     const slugRu = generateUniqueSlug(nameRu);
     const slugEn = generateUniqueSlug(nameEn);
@@ -85,8 +144,8 @@ export class CategoryService {
       slugUz,
       slugRu,
       slugEn,
-    }
-    
+    };
+
     await this.categoryModel.findByIdAndUpdate(updateBody._id, {
       $set: {
         ...forUpdateBody,
@@ -114,10 +173,10 @@ export class CategoryService {
     });
     if (hasProducts) {
       throw new CantDeleteModelException(
-          'Cannot delete category with linked products',
+        'Cannot delete category with linked products',
       );
     }
-    await this.categoryModel.updateOne({_id}, {isDeleted: true});
+    await this.categoryModel.updateOne({ _id }, { isDeleted: true });
   }
 
   async buildCategoryHierarchy(categoryId: string): Promise<{
@@ -127,8 +186,8 @@ export class CategoryService {
     const hierarchy: IHierarchyPayload[] = [];
     const hierarchyPath: string[] = [];
     let currentCategory: CategoryDocument | null = await this.categoryModel
-        .findById(categoryId)
-        .exec();
+      .findById(categoryId)
+      .exec();
 
     hierarchyPath.push(currentCategory._id.toString());
     hierarchy.push({
@@ -144,8 +203,8 @@ export class CategoryService {
     while (currentCategory.parentId) {
       hierarchyPath.unshift(currentCategory.parentId.toString());
       currentCategory = await this.categoryModel
-          .findById(currentCategory.parentId.toString())
-          .exec();
+        .findById(currentCategory.parentId.toString())
+        .exec();
       hierarchy.unshift({
         categoryId: currentCategory._id.toString(),
         categoryNameUz: currentCategory.nameUz,
