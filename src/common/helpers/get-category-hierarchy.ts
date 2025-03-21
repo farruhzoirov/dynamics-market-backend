@@ -30,7 +30,7 @@ export async function buildCategoryHierarchyPipeline(lang: string) {
     {
       $project: {
         _id: 1,
-        name: `$name.${lang}`, // Dinamik emas, to‘g‘ridan-to‘g‘ri qabul qiladi
+        name: `$name.${lang}`,
         slug: `$slug.${lang}`,
         children: {
           $map: {

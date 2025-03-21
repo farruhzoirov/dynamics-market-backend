@@ -51,12 +51,7 @@ export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {
     consumer
       .apply(AuthMiddleware)
-      .exclude(
-        '/auth/google',
-        '/',
-        '/category/front/get-list',
-        '/product/front/get-list',
-      )
+      .exclude('/auth/google', '/', '/category/list', '/product/list')
       .forRoutes('*');
   }
 }
