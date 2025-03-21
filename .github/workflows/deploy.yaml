@@ -12,6 +12,11 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v3
 
+      - name: Install Docker Compose
+        run: |
+          sudo apt update
+          sudo apt install -y docker-compose
+
       - name: SSH to Server and Deploy
         uses: appleboy/ssh-action@master
         with:
@@ -25,7 +30,6 @@ jobs:
               rm -rf dynamics-market-backend
               git clone https://github.com/farruhzoirov/dynamics-market-backend.git
             fi
-
 
             cd dynamics-market-backend
             git reset --hard HEAD
