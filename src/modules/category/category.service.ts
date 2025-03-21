@@ -17,7 +17,6 @@ import {
 import { Product, ProductDocument } from '../product/schemas/product.model';
 
 import { IHierarchyPayload } from 'src/shared/interfaces/hierarchy-payload';
-import { RedisCategoryRepository } from 'src/repositories/redis/redis-category.repository';
 
 @Injectable()
 export class CategoryService {
