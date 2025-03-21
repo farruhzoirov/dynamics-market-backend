@@ -5,8 +5,8 @@ import { CategoryService } from './category.service';
 import { CategoryController } from './category.controller';
 import { Category, CategorySchema } from './schemas/category.schema';
 import { Product, ProductSchema } from '../product/schemas/product.model';
-import { CacheModule } from '@nestjs/cache-manager';
-import { redisStore } from 'cache-manager-redis-store';
+import { RedisCategoryRepository } from 'src/repositories/redis/redis-category.repository';
+import { RedisService } from '../../shared/services/redis.service';
 
 @Module({
   imports: [
@@ -14,14 +14,9 @@ import { redisStore } from 'cache-manager-redis-store';
       { name: Category.name, schema: CategorySchema },
       { name: Product.name, schema: ProductSchema },
     ]),
-    CacheModule.register({
-      store: redisStore,
-      host: 'localhost',
-      port: 6379,
-      ttl: 300,
-    }),
   ],
-  providers: [CategoryService],
+  providers: [CategoryService, RedisCategoryRepository, RedisService],
   controllers: [CategoryController],
+  exports: [CategoryService],
 })
 export class CategoryModule {}

@@ -1,10 +1,10 @@
+import { ValidationPipe } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import * as process from 'node:process';
 import { NestExpressApplication } from '@nestjs/platform-express';
 import { AllExceptionsTo200Interceptor } from './common/interceptors/universal-response';
-import { ValidationPipe } from '@nestjs/common';
 import { ErrorCodes } from './common/errors/error-codes';
 import { ValidationError } from 'class-validator';
 

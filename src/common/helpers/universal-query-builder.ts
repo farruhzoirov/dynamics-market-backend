@@ -47,5 +47,3 @@ export const getFilteredResultsWithTotal = async (
     await currentModel.countDocuments(filter),
   ]);
 };
-
-// || payload.select ? payload.select : '-__v'

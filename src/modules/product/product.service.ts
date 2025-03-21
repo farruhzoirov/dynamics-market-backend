@@ -10,7 +10,6 @@ import {
   GetProductsListDto,
   UpdateProductDto,
 } from './dto/product.dto';
-
 import { generateUniqueSlug } from 'src/common/helpers/generate-slug';
 import {
   AddingModelException,
@@ -34,7 +33,9 @@ export class ProductService {
     private readonly categoryService: CategoryService,
   ) {}
 
-  async getProductList(body: GetProductsListDto, lang: string) {
+  async getProductsListForFront(body: GetProductsListDto, lang: string) {}
+
+  async getProductList(body: GetProductsListDto) {
     const [data, total] = await getFilteredResultsWithTotal(
       body,
       this.productModel,

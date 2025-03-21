@@ -1,60 +1,103 @@
-import mongoose, {Model} from 'mongoose';
-import {CategoryDocument} from 'src/modules/category/schemas/category.schema';
-
-export async function getCategoryHierarchy(
-    categoryModel: Model<CategoryDocument>,
-    categoryId: string,
-) {
-  const categoryWithParents = await categoryModel.aggregate([
-    {$match: {_id: new mongoose.Types.ObjectId(categoryId)}},
+export async function buildCategoryHierarchyPipeline(lang: string) {
+  return [
+    {
+      $match: { parentId: null },
+    },
     {
       $graphLookup: {
         from: 'categories',
-        startWith: '$parentId',
-        connectFromField: 'parentId',
-        connectToField: '_id',
-        as: 'hierarchy',
-        depthField: 'depth',
+        startWith: '$_id',
+        connectFromField: '_id',
+        connectToField: 'parentId',
+        as: 'allDescendants',
         maxDepth: 3,
       },
     },
     {
-      $addFields: {
-        allParents: {$concatArrays: [['$$ROOT'], '$hierarchy']},
+      $lookup: {
+        from: 'categories',
+        localField: '_id',
+        foreignField: 'parentId',
+        as: 'directChildren',
       },
     },
     {
-      $unwind: '$allParents',
-    },
-    {
-      $sort: {
-        'allParents.depth': 1,
+      $project: {
+        _id: 1,
+        name: {
+          $getField: { field: { $concat: ['name', lang] }, input: '$$ROOT' },
+        },
+        slug: {
+          $getField: { field: { $concat: ['slug', lang] }, input: '$$ROOT' },
+        },
+        children: {
+          $map: {
+            input: '$directChildren',
+            as: 'child',
+            in: {
+              _id: '$$child._id',
+              name: {
+                $getField: {
+                  field: { $concat: ['name', lang] },
+                  input: '$$child',
+                },
+              },
+              slug: {
+                $getField: {
+                  field: { $concat: ['slug', lang] },
+                  input: '$$child',
+                },
+              },
+              children: {
+                $filter: {
+                  input: '$allDescendants',
+                  as: 'grandchild',
+                  cond: { $eq: ['$$grandchild.parentId', '$$child._id'] },
+                },
+              },
+            },
+          },
+        },
       },
     },
     {
-      $group: {
-        _id: '$_id',
-        allParents: {$push: '$allParents'},
+      $project: {
+        _id: 1,
+        name: 1,
+        slug: 1,
+        children: {
+          $map: {
+            input: '$children',
+            as: 'child',
+            in: {
+              _id: '$$child._id',
+              name: '$$child.name',
+              slug: '$$child.slug',
+              children: {
+                $map: {
+                  input: '$$child.children',
+                  as: 'grandchild',
+                  in: {
+                    _id: '$$grandchild._id',
+                    name: {
+                      $getField: {
+                        field: { $concat: ['name', lang] },
+                        input: '$$grandchild',
+                      },
+                    },
+                    slug: {
+                      $getField: {
+                        field: { $concat: ['slug', lang] },
+                        input: '$$grandchild',
+                      },
+                    },
+                  },
+                },
+              },
+            },
+          },
+        },
       },
     },
-  ]);
-
-  const hierarchy = categoryWithParents[0].allParents.map((cat: any) => ({
-    categoryId: cat._id.toString(),
-    categorySlugUz: cat.slugUz,
-    categorySlugRu: cat.slugRu,
-    categorySlugEn: cat.slugEn,
-    categoryNameUz: cat.nameUz,
-    categoryNameRu: cat.nameRu,
-    categoryNameEn: cat.nameEn,
-  }));
-
-  const hierarchyPath = categoryWithParents[0].allParents.map((cat: any) => {
-    return cat._id.toString();
-  });
-
-  return {
-    hierarchy,
-    hierarchyPath,
-  };
+  ];
 }

@@ -37,14 +37,23 @@ export class ProductController {
     description: 'Tilni ko‘rsatish kerak: uz, ru yoki en',
     required: false,
   })
-  @HttpCode(HttpStatus.OK)
-  @Post('get-list')
-  async getProductsList(
+  @Post('front/get-list')
+  async getProductsForFront(
     @Headers('Accept-Language') lang: string,
     @Body() body: GetProductsListDto,
   ) {
     lang = new AcceptLanguagePipe().transform(lang);
-    const productsList = await this.productService.getProductList(body, lang);
+    const productList = await this.productService.getProductsListForFront(
+      body,
+      lang,
+    );
+    return productList;
+  }
+
+  @HttpCode(HttpStatus.OK)
+  @Post('get-list')
+  async getProductsList(@Body() body: GetProductsListDto) {
+    const productsList = await this.productService.getProductList(body);
     return productsList;
   }
 

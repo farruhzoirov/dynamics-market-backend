@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import mongoose, { Model } from 'mongoose';
+import { Model } from 'mongoose';
 import { Category, CategoryDocument } from './schemas/category.schema';
 import { getFilteredResultsWithTotal } from '../../common/helpers/universal-query-builder';
 import { generateUniqueSlug } from '../../common/helpers/generate-slug';
@@ -15,8 +15,8 @@ import {
   UpdateCategoryDto,
 } from './dto/category.dto';
 import { Product, ProductDocument } from '../product/schemas/product.model';
-
 import { IHierarchyPayload } from 'src/shared/interfaces/hierarchy-payload';
+import { buildCategoryHierarchyPipeline } from 'src/common/helpers/get-category-hierarchy';
 
 @Injectable()
 export class CategoryService {
@@ -29,7 +29,6 @@ export class CategoryService {
   ) {}
 
   async getCategoriesForFront(body: GetCategoryDto, lang: string) {
-    const parentId = body.parentId ?? null;
     // const cacheKey = `categories:${String(parentId ?? 'root')}:${lang}`;
 
     // const cachedData: string | null =
@@ -38,107 +37,7 @@ export class CategoryService {
     // if (cachedData) {
     //   return { data: cachedData };
     // }
-    const pipeline = [
-      {
-        $match: { parentId: null }, // Start with root categories (parentId is null)
-      },
-      {
-        $graphLookup: {
-          from: 'categories',
-          startWith: '$_id',
-          connectFromField: '_id',
-          connectToField: 'parentId',
-          as: 'allDescendants',
-          maxDepth: 3, // Limit to 2 levels below root (3 levels total)
-        },
-      },
-      {
-        $lookup: {
-          from: 'categories',
-          localField: '_id',
-          foreignField: 'parentId',
-          as: 'directChildren',
-        },
-      },
-      {
-        $project: {
-          _id: 1,
-          name: {
-            $getField: { field: { $concat: ['name', lang] }, input: '$$ROOT' },
-          },
-          slug: {
-            $getField: { field: { $concat: ['slug', lang] }, input: '$$ROOT' },
-          },
-          children: {
-            $map: {
-              input: '$directChildren',
-              as: 'child',
-              in: {
-                _id: '$$child._id',
-                name: {
-                  $getField: {
-                    field: { $concat: ['name', lang] },
-                    input: '$$child',
-                  },
-                },
-                slug: {
-                  $getField: {
-                    field: { $concat: ['slug', lang] },
-                    input: '$$child',
-                  },
-                },
-                children: {
-                  $filter: {
-                    input: '$allDescendants',
-                    as: 'grandchild',
-                    cond: { $eq: ['$$grandchild.parentId', '$$child._id'] },
-                  },
-                },
-              },
-            },
-          },
-        },
-      },
-      {
-        $project: {
-          _id: 1,
-          name: 1,
-          slug: 1,
-          children: {
-            $map: {
-              input: '$children',
-              as: 'child',
-              in: {
-                _id: '$$child._id',
-                name: '$$child.name',
-                slug: '$$child.slug',
-                children: {
-                  $map: {
-                    input: '$$child.children',
-                    as: 'grandchild',
-                    in: {
-                      _id: '$$grandchild._id',
-                      name: {
-                        $getField: {
-                          field: { $concat: ['name', lang] },
-                          input: '$$grandchild',
-                        },
-                      },
-                      slug: {
-                        $getField: {
-                          field: { $concat: ['slug', lang] },
-                          input: '$$grandchild',
-                        },
-                      },
-                    },
-                  },
-                },
-              },
-            },
-          },
-        },
-      },
-    ];
+    const pipeline = await buildCategoryHierarchyPipeline(lang);
     const categories = await this.categoryModel.aggregate(pipeline).exec();
     // await this.redisCategoryRepository.set(cacheKey, categories, 300);
     return { data: categories };
