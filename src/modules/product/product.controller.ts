@@ -37,7 +37,7 @@ export class ProductController {
     description: 'Tilni ko‘rsatish kerak: uz, ru yoki en',
     required: false,
   })
-  @Post('front/get-list')
+  @Post('list')
   async getProductsForFront(
     @Headers('Accept-Language') lang: string,
     @Body() body: GetProductsListDto,

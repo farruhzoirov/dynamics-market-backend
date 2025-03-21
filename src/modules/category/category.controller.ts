@@ -41,7 +41,7 @@ export class CategoryController {
     schema: { type: 'string', enum: ['uz', 'ru', 'en'], default: 'uz' },
   })
   @HttpCode(HttpStatus.OK)
-  @Post('front/get-list')
+  @Post('list')
   async getCategoriesForFront(@Req() req: Request, @Res() res: Response) {
     const lang = new AcceptLanguagePipe().transform(
       req.headers['accept-language'],
