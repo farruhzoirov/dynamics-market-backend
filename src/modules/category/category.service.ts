@@ -33,7 +33,6 @@ export class CategoryService {
 
     // const cachedData: string | null =
     //   await this.redisCategoryRepository.get(cacheKey);
-
     // if (cachedData) {
     //   return { data: cachedData };
     // }
