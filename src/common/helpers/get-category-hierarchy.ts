@@ -22,67 +22,29 @@ export async function buildCategoryHierarchyPipeline(lang: string) {
       },
     },
     {
-      // Yangi maydon qo'shish
       $addFields: {
-        nameField: { $concat: ['name', lang] },
-        slugField: { $concat: ['slug', lang] },
+        nameField: { $arrayElemAt: [{ $objectToArray: '$name' }, 1] },
+        slugField: { $arrayElemAt: [{ $objectToArray: '$slug' }, 1] },
       },
     },
     {
       $project: {
         _id: 1,
-        name: { $getField: { field: '$nameField', input: '$$ROOT' } },
-        slug: { $getField: { field: '$slugField', input: '$$ROOT' } },
+        name: `$name.${lang}`, // Dinamik emas, to‘g‘ridan-to‘g‘ri qabul qiladi
+        slug: `$slug.${lang}`,
         children: {
           $map: {
             input: '$directChildren',
             as: 'child',
             in: {
               _id: '$$child._id',
-              name: {
-                $getField: { field: '$nameField', input: '$$child' },
-              },
-              slug: {
-                $getField: { field: '$slugField', input: '$$child' },
-              },
+              name: `$${lang}`,
+              slug: `$${lang}`,
               children: {
                 $filter: {
                   input: '$allDescendants',
                   as: 'grandchild',
                   cond: { $eq: ['$$grandchild.parentId', '$$child._id'] },
-                },
-              },
-            },
-          },
-        },
-      },
-    },
-    {
-      $project: {
-        _id: 1,
-        name: 1,
-        slug: 1,
-        children: {
-          $map: {
-            input: '$children',
-            as: 'child',
-            in: {
-              _id: '$$child._id',
-              name: '$$child.name',
-              slug: '$$child.slug',
-              children: {
-                $map: {
-                  input: '$$child.children',
-                  as: 'grandchild',
-                  in: {
-                    _id: '$$grandchild._id',
-                    name: {
-                      $getField: { field: '$nameField', input: '$$grandchild' },
-                    },
-                    slug: {
-                      $getField: { field: '$slugField', input: '$$grandchild' },
-                    },
-                  },
                 },
               },
             },
