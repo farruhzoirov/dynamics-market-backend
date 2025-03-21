@@ -22,29 +22,75 @@ export async function buildCategoryHierarchyPipeline(lang: string) {
       },
     },
     {
-      $addFields: {
-        nameField: { $arrayElemAt: [{ $objectToArray: '$name' }, 1] },
-        slugField: { $arrayElemAt: [{ $objectToArray: '$slug' }, 1] },
-      },
-    },
-    {
       $project: {
         _id: 1,
-        name: `$name.${lang}`,
-        slug: `$slug.${lang}`,
+        name: { $ifNull: [`$name.${lang}`, '$nameUz'] },
+        slug: { $ifNull: [`$slug.${lang}`, '$slugUz'] },
         children: {
           $map: {
             input: '$directChildren',
             as: 'child',
             in: {
               _id: '$$child._id',
-              name: `$${lang}`,
-              slug: `$${lang}`,
+              name: { $ifNull: [`$$child.name.${lang}`, '$$child.nameUz'] },
+              slug: { $ifNull: [`$$child.slug.${lang}`, '$$child.slugUz'] },
               children: {
-                $filter: {
-                  input: '$allDescendants',
+                $map: {
+                  input: {
+                    $filter: {
+                      input: '$allDescendants',
+                      as: 'grandchild',
+                      cond: { $eq: ['$$grandchild.parentId', '$$child._id'] },
+                    },
+                  },
                   as: 'grandchild',
-                  cond: { $eq: ['$$grandchild.parentId', '$$child._id'] },
+                  in: {
+                    _id: '$$grandchild._id',
+                    name: {
+                      $ifNull: [
+                        `$$grandchild.name.${lang}`,
+                        '$$grandchild.nameUz',
+                      ],
+                    },
+                    slug: {
+                      $ifNull: [
+                        `$$grandchild.slug.${lang}`,
+                        '$$grandchild.slugUz',
+                      ],
+                    },
+                    children: {
+                      $map: {
+                        input: {
+                          $filter: {
+                            input: '$allDescendants',
+                            as: 'greatGrandchild',
+                            cond: {
+                              $eq: [
+                                '$$greatGrandchild.parentId',
+                                '$$grandchild._id',
+                              ],
+                            },
+                          },
+                        },
+                        as: 'greatGrandchild',
+                        in: {
+                          _id: '$$greatGrandchild._id',
+                          name: {
+                            $ifNull: [
+                              `$$greatGrandchild.name.${lang}`,
+                              '$$greatGrandchild.nameUz',
+                            ],
+                          },
+                          slug: {
+                            $ifNull: [
+                              `$$greatGrandchild.slug.${lang}`,
+                              '$$greatGrandchild.slugUz',
+                            ],
+                          },
+                        },
+                      },
+                    },
+                  },
                 },
               },
             },
