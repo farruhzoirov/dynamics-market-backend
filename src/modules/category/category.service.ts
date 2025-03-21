@@ -17,6 +17,7 @@ import {
 import { Product, ProductDocument } from '../product/schemas/product.model';
 import { IHierarchyPayload } from 'src/shared/interfaces/hierarchy-payload';
 import { buildCategoryHierarchyPipeline } from 'src/common/helpers/get-category-hierarchy';
+import { RedisCategoryRepository } from 'src/repositories/redis/redis-category.repository';
 
 @Injectable()
 export class CategoryService {
@@ -25,20 +26,19 @@ export class CategoryService {
     private readonly categoryModel: Model<CategoryDocument>,
     @InjectModel(Product.name)
     private readonly productModel: Model<ProductDocument>,
-    // private readonly redisCategoryRepository: RedisCategoryRepository,
+    private readonly redisCategoryRepository: RedisCategoryRepository,
   ) {}
 
   async getCategoriesForFront(body: GetCategoryDto, lang: string) {
-    // const cacheKey = `categories:${String(parentId ?? 'root')}:${lang}`;
-
-    // const cachedData: string | null =
-    //   await this.redisCategoryRepository.get(cacheKey);
-    // if (cachedData) {
-    //   return { data: cachedData };
-    // }
+    const cacheKey = `categories:${lang}`;
+    const cachedData: string | null =
+      await this.redisCategoryRepository.get(cacheKey);
+    if (cachedData) {
+      return { data: cachedData };
+    }
     const pipeline = await buildCategoryHierarchyPipeline(lang);
     const categories = await this.categoryModel.aggregate(pipeline).exec();
-    // await this.redisCategoryRepository.set(cacheKey, categories, 300);
+    await this.redisCategoryRepository.set(cacheKey, categories, 300);
     return { data: categories };
   }
 

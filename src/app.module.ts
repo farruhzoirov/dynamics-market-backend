@@ -27,7 +27,9 @@ import jwtConfig from './config/jwt.config';
         console.log(configService.get(CONFIG_DATABASE).users.uri);
         return {
           uri: configService.get(CONFIG_DATABASE).users.uri,
-          writeConcern: { w: 'majority' },
+          writeConcern: { w: 1 },
+          useNewUrlParser: true,
+          useUnifiedTopology: true,
         };
       },
       inject: [ConfigService],
