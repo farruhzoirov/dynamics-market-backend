@@ -23,7 +23,7 @@ async function bootstrap() {
     .setDescription('These apis for dynamics market')
     .setVersion('1.0')
     .addServer(`http://localhost:5000`, 'Local environment')
-    .addServer('https://api.dynamics-market.uz', 'Production')
+    .addServer('https://backend.dynamics-market.uz', 'Production')
     .addBearerAuth()
     .build();
 

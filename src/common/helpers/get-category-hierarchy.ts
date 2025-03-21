@@ -22,14 +22,17 @@ export async function buildCategoryHierarchyPipeline(lang: string) {
       },
     },
     {
+      // Yangi maydon qo'shish
+      $addFields: {
+        nameField: { $concat: ['name', lang] },
+        slugField: { $concat: ['slug', lang] },
+      },
+    },
+    {
       $project: {
         _id: 1,
-        name: {
-          $getField: { field: { $concat: ['name', lang] }, input: '$$ROOT' },
-        },
-        slug: {
-          $getField: { field: { $concat: ['slug', lang] }, input: '$$ROOT' },
-        },
+        name: { $getField: { field: '$nameField', input: '$$ROOT' } },
+        slug: { $getField: { field: '$slugField', input: '$$ROOT' } },
         children: {
           $map: {
             input: '$directChildren',
@@ -37,16 +40,10 @@ export async function buildCategoryHierarchyPipeline(lang: string) {
             in: {
               _id: '$$child._id',
               name: {
-                $getField: {
-                  field: { $concat: ['name', lang] },
-                  input: '$$child',
-                },
+                $getField: { field: '$nameField', input: '$$child' },
               },
               slug: {
-                $getField: {
-                  field: { $concat: ['slug', lang] },
-                  input: '$$child',
-                },
+                $getField: { field: '$slugField', input: '$$child' },
               },
               children: {
                 $filter: {
@@ -80,16 +77,10 @@ export async function buildCategoryHierarchyPipeline(lang: string) {
                   in: {
                     _id: '$$grandchild._id',
                     name: {
-                      $getField: {
-                        field: { $concat: ['name', lang] },
-                        input: '$$grandchild',
-                      },
+                      $getField: { field: '$nameField', input: '$$grandchild' },
                     },
                     slug: {
-                      $getField: {
-                        field: { $concat: ['slug', lang] },
-                        input: '$$grandchild',
-                      },
+                      $getField: { field: '$slugField', input: '$$grandchild' },
                     },
                   },
                 },
