@@ -96,6 +96,7 @@ export class ProductService {
   }
 
   async updateProduct(updateBody: UpdateProductDto): Promise<void> {
+    console.log(updateBody._id);
     const findProduct = await this.productModel.findById(updateBody._id);
     if (!findProduct) {
       throw new ModelDataNotFoundByIdException('Product not found');
