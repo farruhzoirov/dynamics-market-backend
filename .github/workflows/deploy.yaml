@@ -11,9 +11,6 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
-
-      - name: Install Docker Compose
-
       - name: SSH to Server and Deploy
         uses: appleboy/ssh-action@master
         with:
