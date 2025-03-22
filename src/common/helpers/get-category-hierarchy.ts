@@ -24,16 +24,16 @@ export async function buildCategoryHierarchyPipeline(lang: string) {
     {
       $project: {
         _id: 1,
-        name: { $ifNull: [`$name.${lang}`, '$nameUz'] },
-        slug: { $ifNull: [`$slug.${lang}`, '$slugUz'] },
+        name: { $ifNull: [`$name${lang}`, '$nameUz'] },
+        slug: { $ifNull: [`$slug${lang}`, '$slugUz'] },
         children: {
           $map: {
             input: '$directChildren',
             as: 'child',
             in: {
               _id: '$$child._id',
-              name: { $ifNull: [`$$child.name.${lang}`, '$$child.nameUz'] },
-              slug: { $ifNull: [`$$child.slug.${lang}`, '$$child.slugUz'] },
+              name: { $ifNull: [`$$child.name${lang}`, '$$child.nameUz'] },
+              slug: { $ifNull: [`$$child.slug${lang}`, '$$child.slugUz'] },
               children: {
                 $map: {
                   input: {
@@ -48,13 +48,13 @@ export async function buildCategoryHierarchyPipeline(lang: string) {
                     _id: '$$grandchild._id',
                     name: {
                       $ifNull: [
-                        `$$grandchild.name.${lang}`,
+                        `$$grandchild.name${lang}`,
                         '$$grandchild.nameUz',
                       ],
                     },
                     slug: {
                       $ifNull: [
-                        `$$grandchild.slug.${lang}`,
+                        `$$grandchild.slug${lang}`,
                         '$$grandchild.slugUz',
                       ],
                     },
@@ -77,13 +77,13 @@ export async function buildCategoryHierarchyPipeline(lang: string) {
                           _id: '$$greatGrandchild._id',
                           name: {
                             $ifNull: [
-                              `$$greatGrandchild.name.${lang}`,
+                              `$$greatGrandchild.name${lang}`,
                               '$$greatGrandchild.nameUz',
                             ],
                           },
                           slug: {
                             $ifNull: [
-                              `$$greatGrandchild.slug.${lang}`,
+                              `$$greatGrandchild.slug${lang}`,
                               '$$greatGrandchild.slugUz',
                             ],
                           },
