@@ -17,7 +17,7 @@ import {
 import { Product, ProductDocument } from '../product/schemas/product.model';
 import { IHierarchyPayload } from 'src/shared/interfaces/hierarchy-payload';
 import { buildCategoryHierarchyPipeline } from 'src/common/helpers/get-category-hierarchy';
-import { RedisCategoryRepository } from 'src/repositories/redis/redis-category.repository';
+import { RedisCategoryRepository } from 'src/repositories/redis-category.repository';
 
 @Injectable()
 export class CategoryService {
@@ -162,6 +162,10 @@ export class CategoryService {
       currentCategory = await this.categoryModel
         .findById(currentCategory.parentId.toString())
         .exec();
+
+      if (!currentCategory) {
+        break;
+      }
       hierarchy.unshift({
         categoryId: currentCategory._id.toString(),
         categoryNameUz: currentCategory.nameUz,

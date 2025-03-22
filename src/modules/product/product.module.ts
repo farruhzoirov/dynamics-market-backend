@@ -5,7 +5,7 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { Product, ProductSchema } from './schemas/product.model';
 import { CategoryService } from '../category/category.service';
 import { Category, CategorySchema } from '../category/schemas/category.schema';
-import { RedisCategoryRepository } from 'src/repositories/redis/redis-category.repository';
+import { RedisCategoryRepository } from 'src/repositories/redis-category.repository';
 import { RedisService } from '../../shared/services/redis.service';
 
 @Module({

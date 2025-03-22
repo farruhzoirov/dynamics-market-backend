@@ -11,6 +11,7 @@ import { BrandModule } from './modules/brand/brand.module';
 import { ProductModule } from './modules/product/product.module';
 import { RolesGuard } from './common/guards/roles.guard';
 import databaseConfig, { CONFIG_DATABASE } from './config/database.config';
+import { BannerModule } from './modules/banner/banner.module';
 import googleConfig from './config/google.config';
 import jwtConfig from './config/jwt.config';
 
@@ -39,6 +40,7 @@ import jwtConfig from './config/jwt.config';
     BrandModule,
     ProductModule,
     FileUploadModule,
+    BannerModule,
   ],
   providers: [
     {

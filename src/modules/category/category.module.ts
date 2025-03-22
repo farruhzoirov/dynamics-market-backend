@@ -5,7 +5,7 @@ import { CategoryService } from './category.service';
 import { CategoryController } from './category.controller';
 import { Category, CategorySchema } from './schemas/category.schema';
 import { Product, ProductSchema } from '../product/schemas/product.model';
-import { RedisCategoryRepository } from 'src/repositories/redis/redis-category.repository';
+import { RedisCategoryRepository } from 'src/repositories/redis-category.repository';
 import { RedisService } from '../../shared/services/redis.service';
 
 @Module({
