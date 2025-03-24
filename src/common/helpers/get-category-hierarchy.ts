@@ -1,7 +1,7 @@
 export async function buildCategoryHierarchyPipeline(lang: string) {
   return [
     {
-      $match: { parentId: null },
+      $match: { parentId: null, isDeleted: false },
     },
     {
       $graphLookup: {
