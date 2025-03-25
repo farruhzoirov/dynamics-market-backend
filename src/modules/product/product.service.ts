@@ -49,6 +49,10 @@ export class ProductService {
   }
 
   async getProduct(body: GetProductBySlugDto) {
+    if (!body.slug && !body._id) {
+      return {};
+    }
+
     if (body.slug) {
       const searchableFields = ['slugUz', 'slugRu', 'slugEn'];
       const filter = await universalSearchQuery(body.slug, searchableFields);
