@@ -33,8 +33,8 @@ export class BannerController {
     @Body() body: GetBannersListDto,
     @Headers('Accept-Language') lang: string,
   ) {
-    const isLanguageExist = lang ? true : false;
     lang = new AcceptLanguagePipe().transform(lang);
+    const isLanguageExist = lang ? true : false;
     const bannersList = await this.bannerService.getBannersList(
       body,
       lang,

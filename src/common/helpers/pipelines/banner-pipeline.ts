@@ -11,17 +11,19 @@ export async function buildBannerPipeline(lang: string) {
         text: lang ? { $ifNull: [`$text${lang}`, null] } : null,
         status: { $ifNull: ['$status', 1] },
         type: { $ifNull: ['$type', null] },
-        images: {
-          $map: {
-            input: { $ifNull: ['$images', []] },
-            as: 'image',
-            in: lang
-              ? {
-                  url: { $ifNull: [`$$image.path`, null] },
-                }
-              : '$$image',
-          },
-        },
+        images: { $ifNull: ['$images', []] },
+
+        // images: {
+        //   $map: {
+        //     input: { $ifNull: ['$images', []] },
+        //     as: 'image',
+        //     in: lang
+        //       ? {
+        //           url: { $ifNull: [`$$image.path`, null] },
+        //         }
+        //       : '$$image',
+        //   },
+        // },
 
         brandIds: { $ifNull: ['$brandIds', []] },
         hierarchy: {
