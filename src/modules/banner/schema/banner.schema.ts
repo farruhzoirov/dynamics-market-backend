@@ -58,7 +58,7 @@ export class Banner {
       slugRu: String,
       slugEn: String,
     },
-    default: {},
+    default: null,
   })
   product: {
     slugUz: string;

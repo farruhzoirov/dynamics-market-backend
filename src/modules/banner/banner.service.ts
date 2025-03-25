@@ -41,7 +41,7 @@ export class BannerService {
 
   async addBanner(body: AddBannerDto): Promise<void> {
     const customBody: Partial<{
-      product: {};
+      product;
       hierarchy: any[];
       brandSlugs: any[];
     }> = {
@@ -105,7 +105,7 @@ export class BannerService {
 
   async updateBanner(updateBody: UpdateBannerDto) {
     const customBody: Partial<{
-      product: {};
+      product;
       hierarchy: any[];
       brandSlugs: any[];
     }> = {
