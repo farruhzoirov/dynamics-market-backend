@@ -36,9 +36,9 @@ export class Banner {
     type: [
       {
         categoryId: String,
-        categoryNameUz: String,
-        categoryNameRu: String,
-        categoryNameEn: String,
+        categorySlugUz: String,
+        categorySlugRu: String,
+        categorySlugEn: String,
       },
     ],
     default: [],

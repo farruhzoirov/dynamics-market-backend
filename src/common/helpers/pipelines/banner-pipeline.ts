@@ -13,18 +13,6 @@ export async function buildBannerPipeline(lang: string) {
         type: { $ifNull: ['$type', null] },
         images: { $ifNull: ['$images', []] },
 
-        // images: {
-        //   $map: {
-        //     input: { $ifNull: ['$images', []] },
-        //     as: 'image',
-        //     in: lang
-        //       ? {
-        //           url: { $ifNull: [`$$image.path`, null] },
-        //         }
-        //       : '$$image',
-        //   },
-        // },
-
         brandIds: { $ifNull: ['$brandIds', []] },
         hierarchy: {
           $map: {
@@ -33,8 +21,8 @@ export async function buildBannerPipeline(lang: string) {
             in: lang
               ? {
                   categoryId: '$$item.categoryId',
-                  categoryName: {
-                    $ifNull: [`$$item.categoryName${lang}`, null],
+                  categorySlug: {
+                    $ifNull: [`$$item.category${lang}`, null],
                   },
                 }
               : '$$item',
@@ -56,11 +44,7 @@ export async function buildBannerPipeline(lang: string) {
           $map: {
             input: { $ifNull: ['$brandSlugs', []] },
             as: 'brand',
-            in: lang
-              ? {
-                  slug: { $ifNull: [`$$brand.slug${lang}`, null] },
-                }
-              : '$$brand',
+            in: lang ? { $ifNull: [`$$brand.slug${lang}`, null] } : null,
           },
         },
       },
