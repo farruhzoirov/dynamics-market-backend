@@ -30,7 +30,7 @@ export class CategoryService {
 
   async getCategoriesForFront(body: GetCategoryDto, lang: string) {
     const cacheKey = `categories:${lang}`;
-    const cachedData: string | null = await this.redisService.getData(cacheKey);
+    const cachedData = await this.redisService.getData(cacheKey);
     if (cachedData) {
       return { data: cachedData };
     }
