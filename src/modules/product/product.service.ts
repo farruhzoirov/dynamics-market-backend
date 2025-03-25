@@ -30,7 +30,6 @@ export class ProductService {
     private readonly productModel: Model<ProductDocument>,
     @InjectModel(Category.name)
     private readonly categoryModel: Model<CategoryDocument>,
-    // private readonly categoryService: CategoryService,
     private readonly buildCategoryHierarchyService: BuildCategoryHierarchyService,
   ) {}
 

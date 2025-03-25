@@ -40,18 +40,18 @@ export class CategoryController {
     required: true,
     schema: { type: 'string', enum: ['uz', 'ru', 'en'], default: 'uz' },
   })
-  // @HttpCode(HttpStatus.OK)
-  // @Post('list')
-  // async getCategoriesForFront(@Req() req: Request, @Res() res: Response) {
-  //   const lang = new AcceptLanguagePipe().transform(
-  //     req.headers['accept-language'],
-  //   );
-  //   const categoryList = await this.categoryService.getCategoriesForFront(
-  //     req.body,
-  //     lang,
-  //   );
-  //   res.status(200).json(categoryList);
-  // }
+  @HttpCode(HttpStatus.OK)
+  @Post('list')
+  async getCategoriesForFront(@Req() req: Request, @Res() res: Response) {
+    const lang = new AcceptLanguagePipe().transform(
+      req.headers['accept-language'],
+    );
+    const categoryList = await this.categoryService.getCategoriesForFront(
+      req.body,
+      lang,
+    );
+    res.status(200).json(categoryList);
+  }
   @Post('get-list')
   @HttpCode(HttpStatus.OK)
   @Roles(UserRole.superAdmin, UserRole.admin)

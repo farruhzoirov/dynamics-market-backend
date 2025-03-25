@@ -1,12 +1,12 @@
-import {IUniversalQuery} from 'src/shared/interfaces/query-based';
-import {universalSearchQuery} from './universal-search-query';
-import {Model} from 'mongoose';
+import { IUniversalQuery } from 'src/shared/interfaces/query-based';
+import { universalSearchQuery } from './universal-search-query';
+import { Model } from 'mongoose';
 
 export const getFilteredResultsWithTotal = async (
-    body: IUniversalQuery,
-    currentModel: Model<any>,
-    searchFields: string[],
-    selectedFields?: string,
+  body: IUniversalQuery,
+  currentModel: Model<any>,
+  searchFields: string[],
+  selectedFields?: string,
 ) => {
   const payload = {
     page: body?.page ? body.page : 1,
@@ -16,8 +16,8 @@ export const getFilteredResultsWithTotal = async (
   };
   const skip = (payload.page - 1) * payload.limit;
   const filter: Record<string, any> = await universalSearchQuery(
-      payload.search,
-      searchFields as string[],
+    payload.search,
+    searchFields as string[],
   );
 
   filter.isDeleted = false;
@@ -38,12 +38,12 @@ export const getFilteredResultsWithTotal = async (
 
   return await Promise.all([
     await currentModel
-        .find(filter)
-        .skip(skip)
-        .limit(payload.limit)
-        .select(selectedFields)
-        .lean()
-        .exec(),
+      .find(filter)
+      .skip(skip)
+      .limit(payload.limit)
+      .select(selectedFields)
+      .lean()
+      .exec(),
     await currentModel.countDocuments(filter),
   ]);
 };
