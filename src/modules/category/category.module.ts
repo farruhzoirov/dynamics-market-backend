@@ -5,8 +5,7 @@ import { CategoryService } from './category.service';
 import { CategoryController } from './category.controller';
 import { Category, CategorySchema } from './schemas/category.schema';
 import { Product, ProductSchema } from '../product/schemas/product.model';
-import { RedisCategoryRepository } from 'src/repositories/redis-category.repository';
-import { RedisService } from '../../shared/services/redis.service';
+import { RedisService } from '../../shared/module/redis/redis.service';
 
 @Module({
   imports: [
@@ -15,7 +14,7 @@ import { RedisService } from '../../shared/services/redis.service';
       { name: Product.name, schema: ProductSchema },
     ]),
   ],
-  providers: [CategoryService, RedisCategoryRepository, RedisService],
+  providers: [CategoryService, RedisService],
   controllers: [CategoryController],
   exports: [CategoryService],
 })

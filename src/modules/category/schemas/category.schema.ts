@@ -1,10 +1,10 @@
-import {Prop, Schema, SchemaFactory} from '@nestjs/mongoose';
-import mongoose, {HydratedDocument} from 'mongoose';
-import {FileMetadata} from 'src/common/schema/file-meta.schema';
+import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
+import mongoose, { HydratedDocument } from 'mongoose';
+import { FileMetadata } from 'src/common/schema/file-meta.schema';
 
 export type CategoryDocument = HydratedDocument<Category>;
 
-@Schema({timestamps: true})
+@Schema({ timestamps: true })
 export class Category {
   @Prop()
   nameUz: string;
@@ -31,22 +31,22 @@ export class Category {
   })
   parentId: mongoose.Schema.Types.ObjectId | null;
 
-  @Prop({default: false})
+  @Prop({ default: false })
   isDeleted: boolean;
 
-  @Prop({type: [FileMetadata], default: []})
+  @Prop({ type: [FileMetadata], default: [] })
   images: FileMetadata[];
 
-  @Prop({type: [String], default: []})
+  @Prop({ type: [String], default: [] })
   hierarchyPath: string[];
 
-  @Prop({default: 1})
+  @Prop({ default: 1 })
   status: number;
 }
 
 export const CategorySchema = SchemaFactory.createForClass(Category);
-CategorySchema.index({slugUz: 1});
-CategorySchema.index({slugRu: 1});
-CategorySchema.index({slugEn: 1});
-CategorySchema.index({nameUz: 1, nameRu: 1, nameEn: 1});
-CategorySchema.index({parentId: 1});
+CategorySchema.index({ slugUz: 1 });
+CategorySchema.index({ slugRu: 1 });
+CategorySchema.index({ slugEn: 1 });
+CategorySchema.index({ nameUz: 1, nameRu: 1, nameEn: 1 });
+CategorySchema.index({ parentId: 1 });

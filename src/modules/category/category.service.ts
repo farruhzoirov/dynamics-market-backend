@@ -16,9 +16,8 @@ import {
 } from './dto/category.dto';
 import { Product, ProductDocument } from '../product/schemas/product.model';
 import { IHierarchyPayload } from 'src/shared/interfaces/hierarchy-payload';
-import { buildCategoryHierarchyPipeline } from 'src/common/helpers/get-category-hierarchy';
-import { RedisCategoryRepository } from 'src/repositories/redis-category.repository';
-
+import { buildCategoryHierarchyPipeline } from 'src/common/helpers/category-hierarchy-pipeline';
+import { RedisService } from 'src/shared/module/redis/redis.service';
 @Injectable()
 export class CategoryService {
   constructor(
@@ -26,19 +25,18 @@ export class CategoryService {
     private readonly categoryModel: Model<CategoryDocument>,
     @InjectModel(Product.name)
     private readonly productModel: Model<ProductDocument>,
-    private readonly redisCategoryRepository: RedisCategoryRepository,
+    private readonly redisService: RedisService,
   ) {}
 
   async getCategoriesForFront(body: GetCategoryDto, lang: string) {
     const cacheKey = `categories:${lang}`;
-    const cachedData: string | null =
-      await this.redisCategoryRepository.get(cacheKey);
+    const cachedData: string | null = await this.redisService.getData(cacheKey);
     if (cachedData) {
       return { data: cachedData };
     }
     const pipeline = await buildCategoryHierarchyPipeline(lang);
     const categories = await this.categoryModel.aggregate(pipeline).exec();
-    await this.redisCategoryRepository.set(cacheKey, categories, 300);
+    await this.redisService.setData(cacheKey, categories);
     return { data: categories };
   }
 
@@ -79,7 +77,7 @@ export class CategoryService {
       newCategory.hierarchyPath = hierarchyPath;
       await newCategory.save();
     } catch (err) {
-      console.log(`adding mainCategory ====>  ${err.message}`);
+      console.log(`adding mainCategory ====>  ${err}`);
       throw new AddingModelException();
     }
   }

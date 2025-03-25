@@ -13,9 +13,9 @@ import {
   CategoryDocument,
 } from '../category/schemas/category.schema';
 import { Brand, BrandDocument } from '../brand/schemas/brand.schema';
-import { CategoryService } from '../category/category.service';
 import { ModelDataNotFoundByIdException } from 'src/common/errors/model/model-based.exceptions';
 import { getFilteredResultsWithTotal } from 'src/common/helpers/universal-query-builder';
+import { BuildCategoryHierarchyService } from 'src/shared/services/build-hierarchy.service';
 
 @Injectable()
 export class BannerService {
@@ -24,7 +24,7 @@ export class BannerService {
     @InjectModel(Product.name) private productModel: Model<ProductDocument>,
     @InjectModel(Category.name) private categoryModel: Model<CategoryDocument>,
     @InjectModel(Brand.name) private brandModel: Model<BrandDocument>,
-    private readonly categoryService: CategoryService,
+    private readonly buildCategoryHierarchyService: BuildCategoryHierarchyService,
   ) {}
 
   async getBannersList(body: GetBannersListDto) {
@@ -33,7 +33,6 @@ export class BannerService {
       this.bannerModel,
       ['titleUz', 'titleRu', 'titleEn'],
     );
-
     return {
       data,
       total,
@@ -74,7 +73,9 @@ export class BannerService {
         throw new BadRequestException('Category not found');
       }
       const { hierarchyPath, hierarchy } =
-        await this.categoryService.buildCategoryHierarchy(body.categoryId);
+        await this.buildCategoryHierarchyService.buildCategoryHierarchy(
+          body.categoryId,
+        );
       customBody.hierarchy = hierarchy;
     }
 
@@ -144,7 +145,7 @@ export class BannerService {
         throw new BadRequestException('Category not found');
       }
       const { hierarchyPath, hierarchy } =
-        await this.categoryService.buildCategoryHierarchy(
+        await this.buildCategoryHierarchyService.buildCategoryHierarchy(
           updateBody.categoryId,
         );
       customBody.hierarchy = hierarchy;

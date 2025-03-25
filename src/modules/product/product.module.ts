@@ -5,8 +5,7 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { Product, ProductSchema } from './schemas/product.model';
 import { CategoryService } from '../category/category.service';
 import { Category, CategorySchema } from '../category/schemas/category.schema';
-import { RedisCategoryRepository } from 'src/repositories/redis-category.repository';
-import { RedisService } from '../../shared/services/redis.service';
+import { BuildCategoryHierarchyService } from 'src/shared/services/build-hierarchy.service';
 
 @Module({
   imports: [
@@ -21,12 +20,7 @@ import { RedisService } from '../../shared/services/redis.service';
       },
     ]),
   ],
-  providers: [
-    ProductService,
-    CategoryService,
-    RedisCategoryRepository,
-    RedisService,
-  ],
+  providers: [ProductService, BuildCategoryHierarchyService],
   controllers: [ProductController],
 })
 export class ProductModule {}

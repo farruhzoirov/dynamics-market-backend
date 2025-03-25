@@ -17,11 +17,11 @@ import {
 } from 'src/common/errors/model/model-based.exceptions';
 import { generateUniqueSKU } from 'src/common/helpers/generate-sku';
 import { universalSearchQuery } from 'src/common/helpers/universal-search-query';
-import { CategoryService } from '../category/category.service';
 import {
   Category,
   CategoryDocument,
 } from '../category/schemas/category.schema';
+import { BuildCategoryHierarchyService } from 'src/shared/services/build-hierarchy.service';
 
 @Injectable()
 export class ProductService {
@@ -30,7 +30,8 @@ export class ProductService {
     private readonly productModel: Model<ProductDocument>,
     @InjectModel(Category.name)
     private readonly categoryModel: Model<CategoryDocument>,
-    private readonly categoryService: CategoryService,
+    // private readonly categoryService: CategoryService,
+    private readonly buildCategoryHierarchyService: BuildCategoryHierarchyService,
   ) {}
 
   async getProductsListForFront(body: GetProductsListDto, lang: string) {}
@@ -78,7 +79,9 @@ export class ProductService {
       const sku = await generateUniqueSKU(this.productModel);
 
       const { hierarchyPath, hierarchy } =
-        await this.categoryService.buildCategoryHierarchy(categoryId);
+        await this.buildCategoryHierarchyService.buildCategoryHierarchy(
+          categoryId,
+        );
       const createBody = {
         ...body,
         slugUz,
@@ -108,7 +111,9 @@ export class ProductService {
     const slugEn = generateUniqueSlug(nameEn);
 
     const { hierarchyPath, hierarchy } =
-      await this.categoryService.buildCategoryHierarchy(updateBody._id);
+      await this.buildCategoryHierarchyService.buildCategoryHierarchy(
+        updateBody._id,
+      );
 
     const updatingBody = {
       ...updateBody,

@@ -1,9 +1,20 @@
-import {ApiProperty} from '@nestjs/swagger';
-import {IsArray, IsNumber, IsOptional, IsString, ValidateNested,} from 'class-validator';
-import {Type} from 'class-transformer';
-import {BaseModelDto, DeleteBaseModelDto, UniversalQueryDto, UpdateBaseModelDto,} from 'src/shared/dto/base-model.dto';
+import { ApiProperty } from '@nestjs/swagger';
+import {
+  IsArray,
+  IsNumber,
+  IsOptional,
+  IsString,
+  ValidateNested,
+} from 'class-validator';
+import { Type } from 'class-transformer';
+import {
+  BaseModelDto,
+  DeleteBaseModelDto,
+  UniversalQueryDto,
+  UpdateBaseModelDto,
+} from 'src/shared/dto/base-model.dto';
 
-import {FileMetadataDto} from 'src/shared/dto/file-meta.dto';
+import { FileMetadataDto } from 'src/shared/dto/file-meta.dto';
 
 // dto for query
 export class GetCategoryDto extends UniversalQueryDto {
@@ -19,10 +30,10 @@ export class AddCategoryDto extends BaseModelDto {
   @IsString()
   parentId: string;
 
-  @ApiProperty({type: [FileMetadataDto]})
+  @ApiProperty({ type: [FileMetadataDto] })
   @IsOptional()
   @IsArray()
-  @ValidateNested({each: true})
+  @ValidateNested({ each: true })
   @Type(() => FileMetadataDto)
   images: FileMetadataDto[];
 
@@ -39,13 +50,12 @@ export class UpdateCategoryDto extends UpdateBaseModelDto {
   @IsNumber()
   status: number;
 
-  @ApiProperty({type: [FileMetadataDto]})
+  @ApiProperty({ type: [FileMetadataDto] })
   @IsOptional()
   @IsArray()
-  @ValidateNested({each: true})
+  @ValidateNested({ each: true })
   @Type(() => FileMetadataDto)
   images: FileMetadataDto[];
 }
 
-export class DeleteCategoryDto extends DeleteBaseModelDto {
-}
+export class DeleteCategoryDto extends DeleteBaseModelDto {}

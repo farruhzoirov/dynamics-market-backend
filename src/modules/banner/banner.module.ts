@@ -7,8 +7,7 @@ import { Product, ProductSchema } from '../product/schemas/product.model';
 import { Category, CategorySchema } from '../category/schemas/category.schema';
 import { Brand, BrandSchema } from '../brand/schemas/brand.schema';
 import { CategoryService } from '../category/category.service';
-import { RedisCategoryRepository } from 'src/repositories/redis-category.repository';
-import { RedisService } from 'src/shared/services/redis.service';
+import { BuildCategoryHierarchyService } from 'src/shared/services/build-hierarchy.service';
 
 @Module({
   imports: [
@@ -32,11 +31,6 @@ import { RedisService } from 'src/shared/services/redis.service';
     ]),
   ],
   controllers: [BannerController],
-  providers: [
-    BannerService,
-    CategoryService,
-    RedisService,
-    RedisCategoryRepository,
-  ],
+  providers: [BannerService, BuildCategoryHierarchyService],
 })
 export class BannerModule {}
