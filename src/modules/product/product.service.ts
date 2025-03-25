@@ -124,7 +124,7 @@ export class ProductService {
         updateBody.categoryId,
       );
 
-    const updatingBody = {
+    const forUpdateBody = {
       ...updateBody,
       ...(slugUz && { slugUz }),
       ...(slugRu && { slugRu }),
@@ -133,9 +133,7 @@ export class ProductService {
       hierarchyPath,
     };
     await this.productModel.findByIdAndUpdate(updateBody._id, {
-      $set: {
-        updatingBody,
-      },
+      $set: forUpdateBody,
     });
   }
 
