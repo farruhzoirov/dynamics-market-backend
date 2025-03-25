@@ -1,5 +1,5 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { HydratedDocument } from 'mongoose';
+import mongoose, { HydratedDocument } from 'mongoose';
 import { FileMetadata } from 'src/common/schema/file-meta.schema';
 
 export type BannerDocument = HydratedDocument<Banner>;
@@ -57,6 +57,7 @@ export class Banner {
       slugUz: String,
       slugRu: String,
       slugEn: String,
+      productId: mongoose.Schema.Types.ObjectId,
     },
     default: null,
   })
@@ -64,6 +65,7 @@ export class Banner {
     slugUz: string;
     slugRu: string;
     slugEn: string;
+    productId: mongoose.Schema.Types.ObjectId;
   };
 
   @Prop({ type: [String], default: [] })

@@ -16,6 +16,7 @@ import { Brand, BrandDocument } from '../brand/schemas/brand.schema';
 import { ModelDataNotFoundByIdException } from 'src/common/errors/model/model-based.exceptions';
 import { getFilteredResultsWithTotal } from 'src/common/helpers/universal-query-builder';
 import { BuildCategoryHierarchyService } from 'src/shared/services/build-hierarchy.service';
+import { IHierarchyPayload } from 'src/shared/interfaces/hierarchy-payload';
 
 @Injectable()
 export class BannerService {
@@ -40,11 +41,21 @@ export class BannerService {
   }
 
   async addBanner(body: AddBannerDto): Promise<void> {
-    const customBody: Partial<{
-      product;
-      hierarchy: any[];
-      brandSlugs: any[];
-    }> = {
+    const customBody: {
+      product: null | {
+        productId: string;
+        slugUz: string;
+        slugRu: string;
+        slugEn: string;
+      };
+      hierarchy?: IHierarchyPayload[];
+      brandSlugs: {
+        slugUz: string;
+        slugRu: string;
+        slugEn: string;
+      }[];
+    } = {
+      product: null,
       brandSlugs: [],
     };
 
@@ -58,6 +69,7 @@ export class BannerService {
       }
 
       customBody.product = {
+        productId: findProduct._id.toString(),
         slugUz: findProduct.slugUz,
         slugRu: findProduct.slugRu,
         slugEn: findProduct.slugEn,
@@ -104,11 +116,21 @@ export class BannerService {
   }
 
   async updateBanner(updateBody: UpdateBannerDto) {
-    const customBody: Partial<{
-      product;
-      hierarchy: any[];
-      brandSlugs: any[];
-    }> = {
+    const customBody: {
+      product: null | {
+        productId: string;
+        slugUz: string;
+        slugRu: string;
+        slugEn: string;
+      };
+      hierarchy?: IHierarchyPayload[];
+      brandSlugs: {
+        slugUz: string;
+        slugRu: string;
+        slugEn: string;
+      }[];
+    } = {
+      product: null,
       brandSlugs: [],
     };
 
@@ -130,6 +152,7 @@ export class BannerService {
       }
 
       customBody.product = {
+        productId: findProduct._id.toString(),
         slugUz: findProduct.slugUz,
         slugRu: findProduct.slugRu,
         slugEn: findProduct.slugEn,

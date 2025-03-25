@@ -13,8 +13,8 @@ export class BuildCategoryHierarchyService {
     @InjectModel(Category.name) private categoryModel: Model<CategoryDocument>,
   ) {}
   async buildCategoryHierarchy(categoryId: string): Promise<{
-    hierarchy: IHierarchyPayload[];
     hierarchyPath: string[];
+    hierarchy: IHierarchyPayload[];
   }> {
     const hierarchy: IHierarchyPayload[] = [];
     const hierarchyPath: string[] = [];
