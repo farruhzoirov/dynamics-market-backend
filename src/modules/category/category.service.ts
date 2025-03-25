@@ -28,33 +28,6 @@ export class CategoryService {
     private readonly redisService: RedisService,
   ) {}
 
-  async regenerateSlugsForCategories() {
-    console.log('Sluglarni qayta generatsiya qilish boshlandi...');
-    const categories = await this.categoryModel.find().lean();
-
-    for (const category of categories) {
-      const updatedSlugs: any = {};
-
-      if (category.nameUz) {
-        updatedSlugs.slugUz = generateUniqueSlug(category.nameUz);
-      }
-      if (category.nameRu) {
-        updatedSlugs.slugRu = generateUniqueSlug(category.nameRu);
-      }
-      if (category.nameEn) {
-        updatedSlugs.slugEn = generateUniqueSlug(category.nameEn);
-      }
-
-      await this.categoryModel.findByIdAndUpdate(category._id, {
-        $set: updatedSlugs,
-      });
-
-      console.log(`Kategoriya yangilandi: ${category._id}`);
-    }
-
-    console.log('Sluglarni qayta generatsiya qilish tugadi.');
-  }
-
   async getCategoriesForFront(body: GetCategoryDto, lang: string) {
     const cacheKey = `categories:${lang}`;
     const cachedData = await this.redisService.getData(cacheKey);
