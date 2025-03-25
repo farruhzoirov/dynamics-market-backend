@@ -16,7 +16,7 @@ import {
 } from './dto/category.dto';
 import { Product, ProductDocument } from '../product/schemas/product.model';
 import { IHierarchyPayload } from 'src/shared/interfaces/hierarchy-payload';
-import { buildCategoryHierarchyPipeline } from 'src/common/helpers/category-hierarchy-pipeline';
+import { buildCategoryHierarchyPipeline } from 'src/common/helpers/pipelines/category-hierarchy-pipeline';
 import { RedisService } from 'src/shared/module/redis/redis.service';
 @Injectable()
 export class CategoryService {

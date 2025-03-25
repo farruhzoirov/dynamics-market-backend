@@ -12,7 +12,6 @@ import { ProductModule } from './modules/product/product.module';
 import { RolesGuard } from './common/guards/roles.guard';
 import databaseConfig, { CONFIG_DATABASE } from './config/database.config';
 import { BannerModule } from './modules/banner/banner.module';
-import { RedisModule } from './shared/module/redis/redis.module';
 import googleConfig from './config/google.config';
 import jwtConfig from './config/jwt.config';
 import redisConfig from './config/redis.config';
@@ -55,7 +54,13 @@ export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {
     consumer
       .apply(AuthMiddleware)
-      .exclude('/auth/google', '/', '/category/list', '/product/list')
+      .exclude(
+        '/',
+        '/auth/google',
+        '/category/list',
+        '/product/list',
+        '/banner/get-list',
+      )
       .forRoutes('*');
   }
 }

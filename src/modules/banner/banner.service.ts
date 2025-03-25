@@ -17,6 +17,7 @@ import { ModelDataNotFoundByIdException } from 'src/common/errors/model/model-ba
 import { getFilteredResultsWithTotal } from 'src/common/helpers/universal-query-builder';
 import { BuildCategoryHierarchyService } from 'src/shared/services/build-hierarchy.service';
 import { IHierarchyPayload } from 'src/shared/interfaces/hierarchy-payload';
+import { buildBannerPipeline } from 'src/common/helpers/pipelines/banner-pipeline';
 
 @Injectable()
 export class BannerService {
@@ -28,12 +29,28 @@ export class BannerService {
     private readonly buildCategoryHierarchyService: BuildCategoryHierarchyService,
   ) {}
 
-  async getBannersList(body: GetBannersListDto) {
-    const [data, total] = await getFilteredResultsWithTotal(
-      body,
-      this.bannerModel,
-      ['titleUz', 'titleRu', 'titleEn'],
-    );
+  async getBannersList(
+    body: GetBannersListDto,
+    lang: string,
+    isLanguageExist: boolean,
+  ) {
+    if (!isLanguageExist) {
+      const [data, total] = await getFilteredResultsWithTotal(
+        body,
+        this.bannerModel,
+        ['titleUz', 'titleRu', 'titleEn'],
+      );
+      return {
+        data,
+        total,
+      };
+    }
+    const pipeline = await buildBannerPipeline(lang);
+    const [data, total] = await Promise.all([
+      this.bannerModel.aggregate(pipeline).exec(),
+      this.bannerModel.countDocuments({ isDeleted: false }),
+    ]);
+
     return {
       data,
       total,

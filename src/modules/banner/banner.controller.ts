@@ -1,13 +1,12 @@
 import {
   Body,
   Controller,
-  Get,
   HttpCode,
   HttpStatus,
+  Headers,
   Post,
 } from '@nestjs/common';
 import { ApiBearerAuth } from '@nestjs/swagger';
-
 import { BannerService } from './banner.service';
 import {
   AddBannerDto,
@@ -21,6 +20,7 @@ import {
   UpdatedSuccessResponse,
 } from 'src/shared/success/success-responses';
 import { ValidateObjectIdPipe } from 'src/common/pipes/object-id.pipe';
+import { AcceptLanguagePipe } from 'src/common/pipes/language.pipe';
 
 @ApiBearerAuth()
 @Controller('banner')
@@ -29,8 +29,17 @@ export class BannerController {
 
   @HttpCode(HttpStatus.OK)
   @Post('get-list')
-  async getBannersList(@Body() body: GetBannersListDto) {
-    const bannersList = await this.bannerService.getBannersList(body);
+  async getBannersList(
+    @Body() body: GetBannersListDto,
+    @Headers('Accept-Language') lang: string,
+  ) {
+    const isLanguageExist = lang ? true : false;
+    lang = new AcceptLanguagePipe().transform(lang);
+    const bannersList = await this.bannerService.getBannersList(
+      body,
+      lang,
+      isLanguageExist,
+    );
     return bannersList;
   }
 
