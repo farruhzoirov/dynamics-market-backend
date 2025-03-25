@@ -48,19 +48,30 @@ export class ProductService {
     };
   }
 
-  async getProductBySlug(body: GetProductBySlugDto) {
-    if (!body.slug) {
-      return {};
-    }
-    const searchableFields = ['slugUz', 'slugRu', 'slugEn'];
-    const filter = await universalSearchQuery(body.slug, searchableFields);
-    const findProduct = await this.productModel.findOne(filter);
-
-    if (!findProduct) {
+  async getProduct(body: GetProductBySlugDto) {
+    if (!body.slug || !body._id) {
       return {};
     }
 
-    return findProduct;
+    if (body.slug) {
+      const searchableFields = ['slugUz', 'slugRu', 'slugEn'];
+      const filter = await universalSearchQuery(body.slug, searchableFields);
+      const findProduct = await this.productModel.findOne(filter);
+
+      if (!findProduct) {
+        return {};
+      }
+
+      return findProduct;
+    }
+
+    if (body._id) {
+      const findProduct = await this.productModel.findById(body._id).lean();
+      if (!findProduct) {
+        return {};
+      }
+      return findProduct;
+    }
   }
 
   async addProduct(body: AddProductDto): Promise<void> {

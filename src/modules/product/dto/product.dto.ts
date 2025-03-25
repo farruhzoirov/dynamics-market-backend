@@ -61,6 +61,11 @@ export class GetProductBySlugDto {
   @IsOptional()
   @IsString()
   slug: string;
+
+  @ApiProperty()
+  @IsOptional()
+  @IsString()
+  _id: string;
 }
 
 export class AddProductDto extends BaseModelDto {
