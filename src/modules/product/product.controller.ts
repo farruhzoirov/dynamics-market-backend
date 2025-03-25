@@ -60,7 +60,7 @@ export class ProductController {
   @HttpCode(HttpStatus.OK)
   @Post('get-product')
   async getProductBySlug(@Body() body: GetProductBySlugDto) {
-    const product = await this.productService.getProductBySlug(body);
+    const product = await this.productService.getProduct(body);
     return product;
   }
 
