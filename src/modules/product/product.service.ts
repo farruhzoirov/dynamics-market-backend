@@ -10,7 +10,10 @@ import {
   GetProductsListDto,
   UpdateProductDto,
 } from './dto/product.dto';
-import { generateUniqueSlug } from 'src/common/helpers/generate-slug';
+import {
+  generateUniqueSlug,
+  generateUniqueSlugForProduct,
+} from 'src/common/helpers/generate-slug';
 import {
   AddingModelException,
   ModelDataNotFoundByIdException,
@@ -83,9 +86,9 @@ export class ProductService {
         throw new BadRequestException('Category not found');
       }
 
-      const slugUz = generateUniqueSlug(nameUz);
-      const slugRu = generateUniqueSlug(nameRu);
-      const slugEn = generateUniqueSlug(nameEn);
+      const slugUz = generateUniqueSlugForProduct(nameUz);
+      const slugRu = generateUniqueSlugForProduct(nameRu);
+      const slugEn = generateUniqueSlugForProduct(nameEn);
       const sku = await generateUniqueSKU(this.productModel);
 
       const { hierarchyPath, hierarchy } =
@@ -115,9 +118,9 @@ export class ProductService {
     }
     const { nameUz, nameRu, nameEn } = updateBody;
 
-    const slugUz = nameUz ? generateUniqueSlug(nameUz) : null;
-    const slugRu = nameRu ? generateUniqueSlug(nameRu) : null;
-    const slugEn = nameEn ? generateUniqueSlug(nameEn) : null;
+    const slugUz = nameUz ? generateUniqueSlugForProduct(nameUz) : null;
+    const slugRu = nameRu ? generateUniqueSlugForProduct(nameRu) : null;
+    const slugEn = nameEn ? generateUniqueSlugForProduct(nameEn) : null;
 
     const { hierarchyPath, hierarchy } =
       await this.buildCategoryHierarchyService.buildCategoryHierarchy(
