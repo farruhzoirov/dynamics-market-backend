@@ -1,34 +1,33 @@
-import {Injectable} from '@nestjs/common';
-import {InjectModel} from '@nestjs/mongoose';
-import {Brand, BrandDocument} from './schemas/brand.schema';
-import {Model} from 'mongoose';
-import {AddBrandDto, GetBrandListsDto, UpdateBrandDto} from './dto/brand.dto';
-import {getFilteredResultsWithTotal} from '../../common/helpers/universal-query-builder';
-import {generateUniqueSlug} from '../../common/helpers/generate-slug';
+import { Injectable } from '@nestjs/common';
+import { InjectModel } from '@nestjs/mongoose';
+import { Brand, BrandDocument } from './schemas/brand.schema';
+import { Model } from 'mongoose';
+import { AddBrandDto, GetBrandListsDto, UpdateBrandDto } from './dto/brand.dto';
+import { getFilteredResultsWithTotal } from '../../common/helpers/universal-query-builder';
+import { generateUniqueSlug } from '../../common/helpers/generate-slug';
 import {
   AddingModelException,
   CantDeleteModelException,
   ModelDataNotFoundByIdException,
 } from '../../common/errors/model/model-based.exceptions';
-import {Product, ProductDocument} from '../product/schemas/product.model';
+import { Product, ProductDocument } from '../product/schemas/product.model';
 
 @Injectable()
 export class BrandService {
   constructor(
-      @InjectModel(Brand.name)
-      private readonly brandModel: Model<BrandDocument>,
-      @InjectModel(Product.name)
-      private readonly productModel: Model<ProductDocument>,
-  ) {
-  }
+    @InjectModel(Brand.name)
+    private readonly brandModel: Model<BrandDocument>,
+    @InjectModel(Product.name)
+    private readonly productModel: Model<ProductDocument>,
+  ) {}
 
   async getBrandsList(
-      body: GetBrandListsDto,
+    body: GetBrandListsDto,
   ): Promise<{ data: any; total: number }> {
     const [data, total] = await getFilteredResultsWithTotal(
-        body,
-        this.brandModel,
-        ['nameUz', 'nameRu', 'nameEn'],
+      body,
+      this.brandModel,
+      ['nameUz', 'nameRu', 'nameEn'],
     );
     return {
       data,
@@ -38,7 +37,7 @@ export class BrandService {
 
   async addBrand(body: AddBrandDto): Promise<void> {
     try {
-      const {nameUz, nameRu, nameEn} = body;
+      const { nameUz, nameRu, nameEn } = body;
 
       const slugUz = generateUniqueSlug(nameUz);
       const slugRu = generateUniqueSlug(nameRu);
@@ -49,7 +48,7 @@ export class BrandService {
         slugUz,
         slugRu,
         slugEn,
-      }
+      };
 
       await this.brandModel.create(createBody);
     } catch (err) {
@@ -65,22 +64,20 @@ export class BrandService {
       throw new ModelDataNotFoundByIdException('Brand not found');
     }
 
-    const {nameUz, nameRu, nameEn} = updateBody;
-    const slugUz = generateUniqueSlug(nameUz);
-    const slugRu = generateUniqueSlug(nameRu);
-    const slugEn = generateUniqueSlug(nameEn);
+    const { nameUz, nameRu, nameEn } = updateBody;
+    const slugUz = nameUz ? generateUniqueSlug(nameUz) : null;
+    const slugRu = nameRu ? generateUniqueSlug(nameRu) : null;
+    const slugEn = nameEn ? generateUniqueSlug(nameEn) : null;
 
     const forUpdateBody = {
       ...updateBody,
-      slugUz,
-      slugRu,
-      slugEn,
-    }
+      ...(slugUz && { slugUz }),
+      ...(slugRu && { slugRu }),
+      ...(slugEn && { slugEn }),
+    };
 
     await this.brandModel.findByIdAndUpdate(updateBody._id, {
-      $set: {
-        ...forUpdateBody,
-      },
+      $set: forUpdateBody,
     });
   }
 
@@ -97,9 +94,9 @@ export class BrandService {
 
     if (hasProducts) {
       throw new CantDeleteModelException(
-          'Cannot delete category with linked products',
+        'Cannot delete category with linked products',
       );
     }
-    await this.brandModel.updateOne({_id}, {isDeleted: true});
+    await this.brandModel.updateOne({ _id }, { isDeleted: true });
   }
 }

@@ -109,27 +109,26 @@ export class ProductService {
   }
 
   async updateProduct(updateBody: UpdateProductDto): Promise<void> {
-    console.log(updateBody._id);
     const findProduct = await this.productModel.findById(updateBody._id);
     if (!findProduct) {
       throw new ModelDataNotFoundByIdException('Product not found');
     }
     const { nameUz, nameRu, nameEn } = updateBody;
 
-    const slugUz = generateUniqueSlug(nameUz);
-    const slugRu = generateUniqueSlug(nameRu);
-    const slugEn = generateUniqueSlug(nameEn);
+    const slugUz = nameUz ? generateUniqueSlug(nameUz) : null;
+    const slugRu = nameRu ? generateUniqueSlug(nameRu) : null;
+    const slugEn = nameEn ? generateUniqueSlug(nameEn) : null;
 
     const { hierarchyPath, hierarchy } =
       await this.buildCategoryHierarchyService.buildCategoryHierarchy(
-        updateBody._id,
+        updateBody.categoryId,
       );
 
     const updatingBody = {
       ...updateBody,
-      slugUz,
-      slugRu,
-      slugEn,
+      ...(slugUz && { slugUz }),
+      ...(slugRu && { slugRu }),
+      ...(slugEn && { slugEn }),
       hierarchy,
       hierarchyPath,
     };

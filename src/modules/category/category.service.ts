@@ -90,21 +90,19 @@ export class CategoryService {
     }
 
     const { nameUz, nameRu, nameEn } = updateBody;
-    const slugUz = generateUniqueSlug(nameUz);
-    const slugRu = generateUniqueSlug(nameRu);
-    const slugEn = generateUniqueSlug(nameEn);
+    const slugUz = nameUz ? generateUniqueSlug(nameUz) : null;
+    const slugRu = nameRu ? generateUniqueSlug(nameRu) : null;
+    const slugEn = nameEn ? generateUniqueSlug(nameEn) : null;
 
     const forUpdateBody = {
       ...updateBody,
-      slugUz,
-      slugRu,
-      slugEn,
+      ...(slugUz && { slugUz }),
+      ...(slugRu && { slugRu }),
+      ...(slugEn && { slugEn }),
     };
 
     await this.categoryModel.findByIdAndUpdate(updateBody._id, {
-      $set: {
-        ...forUpdateBody,
-      },
+      $set: forUpdateBody,
     });
   }
 
