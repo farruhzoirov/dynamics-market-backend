@@ -9,14 +9,17 @@ export async function buildBannerPipeline(lang: string) {
       $project: {
         title: lang ? { $ifNull: [`$title${lang}`, null] } : null,
         text: lang ? { $ifNull: [`$text${lang}`, null] } : null,
-        // images: { $ifNull: ['$images', []] },
+        status: { $ifNull: ['$status', 1] },
+        type: { $ifNull: ['$type', null] },
         images: {
           $map: {
             input: { $ifNull: ['$images', []] },
             as: 'image',
-            in: {
-              url: { $ifNull: [`$$image.path`, null] },
-            },
+            in: lang
+              ? {
+                  url: { $ifNull: [`$$image.path`, null] },
+                }
+              : '$$image',
           },
         },
 
