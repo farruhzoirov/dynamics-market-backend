@@ -22,7 +22,7 @@ export async function buildBannerPipeline(lang: string) {
               ? {
                   categoryId: '$$item.categoryId',
                   categorySlug: {
-                    $ifNull: [`$$item.category${lang}`, null],
+                    $ifNull: [`$$item.categorySlug${lang}`, null],
                   },
                 }
               : '$$item',
