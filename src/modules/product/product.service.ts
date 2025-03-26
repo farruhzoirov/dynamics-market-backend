@@ -3,17 +3,15 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { Product, ProductDocument } from './schemas/product.model';
 import { getFilteredResultsWithTotal } from 'src/common/helpers/universal-query-builder';
+import { generateUniqueSlugForProduct } from 'src/common/helpers/generate-slug';
 import {
   AddProductDto,
   DeleteProductDto,
   GetProductBySlugDto,
   GetProductsListDto,
+  GetProductsListForFrontDto,
   UpdateProductDto,
 } from './dto/product.dto';
-import {
-  generateUniqueSlug,
-  generateUniqueSlugForProduct,
-} from 'src/common/helpers/generate-slug';
 import {
   AddingModelException,
   ModelDataNotFoundByIdException,
@@ -36,7 +34,10 @@ export class ProductService {
     private readonly buildCategoryHierarchyService: BuildCategoryHierarchyService,
   ) {}
 
-  async getProductsListForFront(body: GetProductsListDto, lang: string) {}
+  async getProductsListForFront(
+    body: GetProductsListForFrontDto,
+    lang: string,
+  ) {}
 
   async getProductList(body: GetProductsListDto) {
     const [data, total] = await getFilteredResultsWithTotal(
@@ -60,11 +61,9 @@ export class ProductService {
       const searchableFields = ['slugUz', 'slugRu', 'slugEn'];
       const filter = await universalSearchQuery(body.slug, searchableFields);
       const findProduct = await this.productModel.findOne(filter);
-
       if (!findProduct) {
         return {};
       }
-
       return findProduct;
     }
 
@@ -90,7 +89,6 @@ export class ProductService {
       const slugRu = generateUniqueSlugForProduct(nameRu);
       const slugEn = generateUniqueSlugForProduct(nameEn);
       const sku = await generateUniqueSKU(this.productModel);
-
       const { hierarchyPath, hierarchy } =
         await this.buildCategoryHierarchyService.buildCategoryHierarchy(
           categoryId,
@@ -121,7 +119,6 @@ export class ProductService {
     const slugUz = nameUz ? generateUniqueSlugForProduct(nameUz) : null;
     const slugRu = nameRu ? generateUniqueSlugForProduct(nameRu) : null;
     const slugEn = nameEn ? generateUniqueSlugForProduct(nameEn) : null;
-
     const { hierarchyPath, hierarchy } =
       await this.buildCategoryHierarchyService.buildCategoryHierarchy(
         updateBody.categoryId,

@@ -1,36 +1,36 @@
-import {Prop, Schema, SchemaFactory} from '@nestjs/mongoose';
-import mongoose, {HydratedDocument} from 'mongoose';
-import {FileMetadata} from 'src/common/schema/file-meta.schema';
+import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
+import mongoose, { HydratedDocument } from 'mongoose';
+import { FileMetadata } from 'src/common/schema/file-meta.schema';
 
 export type ProductDocument = HydratedDocument<Product>;
 
-@Schema({timestamps: true})
+@Schema({ timestamps: true })
 export class Product {
-  @Prop({required: true})
+  @Prop({ type: String, required: true })
   nameUz: string;
 
-  @Prop({required: true})
+  @Prop({ type: String, required: true })
   nameRu: string;
 
-  @Prop({required: true})
+  @Prop({ type: String, required: true })
   nameEn: string;
 
-  @Prop({default: ''})
+  @Prop({ type: String, default: '' })
   descriptionUz: string;
 
-  @Prop({default: ''})
+  @Prop({ type: String, default: '' })
   descriptionRu: string;
 
-  @Prop({default: ''})
+  @Prop({ type: String, default: '' })
   descriptionEn: string;
 
-  @Prop({required: true})
+  @Prop({ type: String, required: true })
   slugUz: string;
 
-  @Prop({required: true})
+  @Prop({ type: String, required: true })
   slugRu: string;
 
-  @Prop({required: true})
+  @Prop({ type: String, required: true })
   slugEn: string;
 
   @Prop({
@@ -55,19 +55,19 @@ export class Product {
     valueEn: string;
   }[];
 
-  @Prop({required: true})
+  @Prop({ type: String, required: true })
   sku: string;
 
-  @Prop({default: null})
+  @Prop({ type: Number, default: null })
   oldPrice: number;
 
-  @Prop({default: 0, required: true})
+  @Prop({ type: Number, default: 0, required: true })
   currentPrice: number;
 
-  @Prop({default: 0})
+  @Prop({ type: Number, default: 0 })
   quantity: number;
 
-  @Prop({default: 0})
+  @Prop({ type: Number, default: 0 })
   rate: number;
 
   @Prop({
@@ -76,7 +76,7 @@ export class Product {
     default: null,
     required: true,
   })
-  categoryId: string;
+  categoryId: mongoose.Schema.Types.ObjectId;
 
   @Prop({
     type: mongoose.Schema.Types.ObjectId,
@@ -84,18 +84,18 @@ export class Product {
     default: null,
     required: true,
   })
-  brandId: string;
+  brandId: mongoose.Schema.Types.ObjectId;
 
-  @Prop({type: [FileMetadata], default: []})
+  @Prop({ type: [FileMetadata], default: [] })
   images: FileMetadata[];
 
-  @Prop({default: 1})
+  @Prop({ type: Number, default: 1 })
   status: number;
 
-  @Prop({default: false})
+  @Prop({ type: Boolean, default: false })
   isDeleted: boolean;
 
-  @Prop({default: null})
+  @Prop({ type: String, default: null })
   keywords: string;
 
   @Prop({
@@ -124,17 +124,21 @@ export class Product {
     },
   ];
 
-  @Prop({type: [String], default: [], index: true})
+  @Prop({ type: [String], default: [], index: true })
   hierarchyPath: string[];
 
-  @Prop({type: mongoose.Schema.Types.Mixed})
+  @Prop({ type: Number, default: 0 })
+  views: number;
+
+  @Prop({ type: Boolean, default: true })
+  inStock: boolean;
+
+  @Prop({ type: mongoose.Schema.Types.Mixed })
   details: any;
 }
 
 export const ProductSchema = SchemaFactory.createForClass(Product);
-ProductSchema.index({slugUz: 1});
-ProductSchema.index({slugRu: 1});
-ProductSchema.index({slugEn: 1});
-ProductSchema.index({nameUz: 1, nameRu: 1, nameEn: 1});
-ProductSchema.index({categoryId: 1});
-ProductSchema.index({brandId: 1});
+ProductSchema.index({ slugUz: 1 });
+ProductSchema.index({ slugRu: 1 });
+ProductSchema.index({ slugEn: 1 });
+ProductSchema.index({ nameUz: 1, nameRu: 1, nameEn: 1 });

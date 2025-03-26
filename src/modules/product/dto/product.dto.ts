@@ -3,6 +3,7 @@ import { ApiProperty } from '@nestjs/swagger';
 import { Type } from 'class-transformer';
 import {
   IsArray,
+  IsBoolean,
   IsNumber,
   IsOptional,
   IsString,
@@ -42,6 +43,23 @@ class AttributeDto {
   @ApiProperty()
   @IsString()
   valueEn: string;
+}
+
+export class GetProductsListForFrontDto extends UniversalQueryDto {
+  @ApiProperty()
+  @IsOptional()
+  @IsString()
+  categorySlug: string;
+
+  @ApiProperty()
+  @IsOptional()
+  @IsString()
+  brandSlug: string;
+
+  @ApiProperty()
+  @IsOptional()
+  @IsString()
+  priceRange: string;
 }
 
 export class GetProductsListDto extends UniversalQueryDto {
@@ -195,9 +213,15 @@ export class UpdateProductDto extends UpdateBaseModelDto {
   @Type(() => FileMetadataDto)
   images: FileMetadataDto[];
 
+  @ApiProperty()
   @IsOptional()
   @IsNumber()
   status: number;
+
+  @ApiProperty()
+  @IsOptional()
+  @IsBoolean()
+  inStock: boolean;
 
   @ApiProperty()
   @IsOptional()

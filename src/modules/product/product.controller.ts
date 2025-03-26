@@ -13,6 +13,7 @@ import {
   DeleteProductDto,
   GetProductBySlugDto,
   GetProductsListDto,
+  GetProductsListForFrontDto,
   UpdateProductDto,
 } from './dto/product.dto';
 import { ProductService } from './product.service';
@@ -39,8 +40,8 @@ export class ProductController {
   })
   @Post('list')
   async getProductsForFront(
+    @Body() body: GetProductsListForFrontDto,
     @Headers('Accept-Language') lang: string,
-    @Body() body: GetProductsListDto,
   ) {
     lang = new AcceptLanguagePipe().transform(lang);
     const productList = await this.productService.getProductsListForFront(
