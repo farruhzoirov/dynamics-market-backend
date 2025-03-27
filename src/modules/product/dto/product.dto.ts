@@ -53,8 +53,8 @@ export class GetProductsListForFrontDto extends UniversalQueryDto {
 
   @ApiProperty()
   @IsOptional()
-  @IsString()
-  brandSlug: string;
+  @IsArray()
+  brandsSlug: string[];
 
   @ApiProperty()
   @IsOptional()

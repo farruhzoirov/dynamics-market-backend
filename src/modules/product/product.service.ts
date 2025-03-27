@@ -4,6 +4,15 @@ import { Model } from 'mongoose';
 import { Product, ProductDocument } from './schemas/product.model';
 import { getFilteredResultsWithTotal } from 'src/common/helpers/universal-query-builder';
 import { generateUniqueSlugForProduct } from 'src/common/helpers/generate-slug';
+import { Brand, BrandDocument } from '../brand/schemas/brand.schema';
+import { buildProductPipeline } from 'src/common/helpers/pipelines/product-pipeline';
+import { generateUniqueSKU } from 'src/common/helpers/generate-sku';
+import { universalSearchQuery } from 'src/common/helpers/universal-search-query';
+import { BuildCategoryHierarchyService } from 'src/shared/services/build-hierarchy.service';
+import {
+  Category,
+  CategoryDocument,
+} from '../category/schemas/category.schema';
 import {
   AddProductDto,
   DeleteProductDto,
@@ -16,13 +25,6 @@ import {
   AddingModelException,
   ModelDataNotFoundByIdException,
 } from 'src/common/errors/model/model-based.exceptions';
-import { generateUniqueSKU } from 'src/common/helpers/generate-sku';
-import { universalSearchQuery } from 'src/common/helpers/universal-search-query';
-import {
-  Category,
-  CategoryDocument,
-} from '../category/schemas/category.schema';
-import { BuildCategoryHierarchyService } from 'src/shared/services/build-hierarchy.service';
 
 @Injectable()
 export class ProductService {
@@ -31,13 +33,63 @@ export class ProductService {
     private readonly productModel: Model<ProductDocument>,
     @InjectModel(Category.name)
     private readonly categoryModel: Model<CategoryDocument>,
+    @InjectModel(Brand.name)
+    private readonly brandModel: Model<BrandDocument>,
     private readonly buildCategoryHierarchyService: BuildCategoryHierarchyService,
   ) {}
 
   async getProductsListForFront(
     body: GetProductsListForFrontDto,
     lang: string,
-  ) {}
+  ) {
+    const { categorySlug, brandsSlug, priceRange } = body;
+    const sort: Record<string, 1 | -1> = { currentPrice: 1 };
+    const limit = body.limit ? body.limit : 0;
+    const skip = body.page ? (body.page - 1) * limit : 0;
+    const match: any = { isDeleted: false };
+
+    if (categorySlug) {
+      const searchableFields = [`slug${lang}`];
+      const filter = await universalSearchQuery(categorySlug, searchableFields);
+      const findCategory = await this.categoryModel.findOne(filter).lean();
+      if (!findCategory) {
+        return {
+          data: [],
+          total: 0,
+        };
+      }
+      match.categoryId = findCategory._id;
+    }
+
+    if (brandsSlug?.length) {
+      const brandIds = await this.brandModel
+        .find({ [`slug${lang}`]: { $in: brandsSlug } })
+        .distinct('_id');
+      if (!brandIds.length) {
+        return {
+          data: [],
+          total: 0,
+        };
+      }
+      match.brandId = { $in: brandIds };
+    }
+
+    if (priceRange) {
+      const [minPrice, maxPrice] = priceRange.split('-');
+      match.currentPrice = { $gte: +minPrice, $lte: +maxPrice };
+    }
+
+    const pipeline = await buildProductPipeline(match, sort, lang, limit, skip);
+    const [data, total] = await Promise.all([
+      this.productModel.aggregate(pipeline).exec(),
+      this.productModel.countDocuments(match),
+    ]);
+
+    return {
+      data,
+      total,
+    };
+  }
 
   async getProductList(body: GetProductsListDto) {
     const [data, total] = await getFilteredResultsWithTotal(

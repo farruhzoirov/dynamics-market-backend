@@ -3,9 +3,9 @@ import { ProductService } from './product.service';
 import { ProductController } from './product.controller';
 import { MongooseModule } from '@nestjs/mongoose';
 import { Product, ProductSchema } from './schemas/product.model';
-import { CategoryService } from '../category/category.service';
 import { Category, CategorySchema } from '../category/schemas/category.schema';
 import { BuildCategoryHierarchyService } from 'src/shared/services/build-hierarchy.service';
+import { Brand, BrandSchema } from '../brand/schemas/brand.schema';
 
 @Module({
   imports: [
@@ -17,6 +17,10 @@ import { BuildCategoryHierarchyService } from 'src/shared/services/build-hierarc
       {
         name: Category.name,
         schema: CategorySchema,
+      },
+      {
+        name: Brand.name,
+        schema: BrandSchema,
       },
     ]),
   ],

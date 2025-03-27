@@ -1,10 +1,15 @@
-export async function buildProductPipeline(lang: string) {
-  return [
+import { PipelineStage } from 'mongoose';
+
+export async function buildProductPipeline(
+  match: any,
+  sort: Record<string, 1 | -1>,
+  lang: string,
+  limit: number | null,
+  skip: number,
+): Promise<PipelineStage[]> {
+  const pipeline: PipelineStage[] = [
     {
-      $match: {
-        isDeleted: false,
-        status: 1,
-      },
+      $match: match,
     },
     {
       $project: {
@@ -54,5 +59,19 @@ export async function buildProductPipeline(lang: string) {
         hierarchyPath: 1,
       },
     },
+    {
+      $sort: sort,
+    },
+    {
+      $skip: skip,
+    },
   ];
+
+  if (limit !== 0) {
+    pipeline.push({
+      $limit: limit,
+    });
+  }
+
+  return pipeline;
 }
