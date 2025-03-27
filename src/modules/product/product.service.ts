@@ -53,6 +53,7 @@ export class ProductService {
       const filter = await universalSearchQuery(categorySlug, searchableFields);
       console.log(filter);
       const findCategory = await this.categoryModel.findOne(filter).lean();
+      console.log('findCategory', findCategory);
       if (!findCategory) {
         return {
           data: [],
