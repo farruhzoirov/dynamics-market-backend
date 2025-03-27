@@ -38,6 +38,7 @@ export class ProductController {
     description: 'Tilni ko‘rsatish kerak: uz, ru yoki en',
     required: false,
   })
+  @HttpCode(HttpStatus.OK)
   @Post('list')
   async getProductsForFront(
     @Body() body: GetProductsListForFrontDto,
