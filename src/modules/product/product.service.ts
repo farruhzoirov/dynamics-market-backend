@@ -51,6 +51,7 @@ export class ProductService {
     if (categorySlug) {
       const searchableFields = [`slug${lang}`];
       const filter = await universalSearchQuery(categorySlug, searchableFields);
+      console.log(filter);
       const findCategory = await this.categoryModel.findOne(filter).lean();
       if (!findCategory) {
         return {
