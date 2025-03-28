@@ -30,40 +30,6 @@ export class CategoryService {
     private readonly redisService: RedisService,
   ) {}
 
-  async regenerateCategorySlugs(): Promise<{ updatedCount: number }> {
-    const categories = await this.categoryModel.find().lean();
-
-    let updatedCount = 0;
-
-    for (const category of categories) {
-      const { nameUz, nameRu, nameEn } = category;
-
-      const slugUz = generateUniqueSlug(nameUz);
-      const slugRu = generateUniqueSlug(nameRu);
-      const slugEn = generateUniqueSlug(nameEn);
-      const { hierarchyPath, hierarchy } =
-        await this.buildCategoryHierarchyService.buildCategoryHierarchy(
-          category._id.toString(),
-        );
-
-      await this.categoryModel.updateOne(
-        { _id: category._id },
-        {
-          $set: {
-            hierarchy,
-            hierarchyPath,
-            slugUz,
-            slugRu,
-            slugEn,
-          },
-        },
-      );
-      updatedCount++;
-    }
-
-    return { updatedCount };
-  }
-
   async getCategoriesForFront(body: GetCategoryDto, lang: string) {
     const cacheKey = `categories:${lang}`;
     const cachedData = await this.redisService.getData(cacheKey);
@@ -181,4 +147,38 @@ export class CategoryService {
     }
     await this.categoryModel.updateOne({ _id }, { isDeleted: true });
   }
+
+  // async regenerateCategorySlugs(): Promise<{ updatedCount: number }> {
+  //   const categories = await this.categoryModel.find().lean();
+
+  //   let updatedCount = 0;
+
+  //   for (const category of categories) {
+  //     const { nameUz, nameRu, nameEn } = category;
+
+  //     const slugUz = generateUniqueSlug(nameUz);
+  //     const slugRu = generateUniqueSlug(nameRu);
+  //     const slugEn = generateUniqueSlug(nameEn);
+  //     const { hierarchyPath, hierarchy } =
+  //       await this.buildCategoryHierarchyService.buildCategoryHierarchy(
+  //         category._id.toString(),
+  //       );
+
+  //     await this.categoryModel.updateOne(
+  //       { _id: category._id },
+  //       {
+  //         $set: {
+  //           hierarchy,
+  //           hierarchyPath,
+  //           slugUz,
+  //           slugRu,
+  //           slugEn,
+  //         },
+  //       },
+  //     );
+  //     updatedCount++;
+  //   }
+
+  //   return { updatedCount };
+  // }
 }

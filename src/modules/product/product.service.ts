@@ -47,7 +47,12 @@ export class ProductService {
     const sort: Record<string, 1 | -1> = { createdAt: -1, views: -1 };
     const limit = body.limit ? body.limit : 0;
     const skip = body.page ? (body.page - 1) * limit : 0;
-    let breadCrump: IHierarchyPayload[] = [];
+    let breadCrump: {
+      categoryId: string;
+      categorySlug: string;
+      categoryName: string;
+    }[] = [];
+
     const match: any = { isDeleted: false };
 
     if (categorySlug) {
@@ -60,7 +65,11 @@ export class ProductService {
           total: 0,
         };
       }
-      // breadCrump = findCategory.hierarchyPath;
+      breadCrump = findCategory.hierarchy.map((item: IHierarchyPayload) => ({
+        categoryId: item.categoryId,
+        categorySlug: item[`categorySlug${lang}}`] as string,
+        categoryName: item[`categoryName${lang}`] as string,
+      }));
       match.categoryId = findCategory._id;
     }
 
@@ -91,6 +100,7 @@ export class ProductService {
     return {
       data,
       total,
+      breadCrump,
     };
   }
 
