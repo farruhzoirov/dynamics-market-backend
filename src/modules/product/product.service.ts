@@ -67,7 +67,7 @@ export class ProductService {
       }
       breadCrump = findCategory.hierarchy.map((item: IHierarchyPayload) => ({
         categoryId: item.categoryId,
-        categorySlug: item[`categorySlug${lang}}`] as string,
+        categorySlug: item[`categorySlug${lang}`] as string,
         categoryName: item[`categoryName${lang}`] as string,
       }));
       match.categoryId = findCategory._id;
