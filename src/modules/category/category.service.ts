@@ -28,6 +28,34 @@ export class CategoryService {
     private readonly redisService: RedisService,
   ) {}
 
+  async regenerateCategorySlugs(): Promise<{ updatedCount: number }> {
+    const categories = await this.categoryModel.find().lean();
+
+    let updatedCount = 0;
+
+    for (const category of categories) {
+      const { nameUz, nameRu, nameEn } = category;
+
+      const slugUz = generateUniqueSlug(nameUz);
+      const slugRu = generateUniqueSlug(nameRu);
+      const slugEn = generateUniqueSlug(nameEn);
+
+      await this.categoryModel.updateOne(
+        { _id: category._id },
+        {
+          $set: {
+            slugUz,
+            slugRu,
+            slugEn,
+          },
+        },
+      );
+      updatedCount++;
+    }
+
+    return { updatedCount };
+  }
+
   async getCategoriesForFront(body: GetCategoryDto, lang: string) {
     const cacheKey = `categories:${lang}`;
     const cachedData = await this.redisService.getData(cacheKey);
