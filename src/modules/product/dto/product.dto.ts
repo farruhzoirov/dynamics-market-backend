@@ -56,7 +56,7 @@ export class GetProductsListForFrontDto extends UniversalQueryDto {
   @IsArray()
   brandsSlug: string[];
 
-  @ApiProperty()
+  @ApiProperty({ example: '0-10000' })
   @IsOptional()
   @IsString()
   priceRange: string;
