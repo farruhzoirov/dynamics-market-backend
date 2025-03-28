@@ -33,11 +33,16 @@ export class BuildCategoryHierarchyService {
       categorySlugEn: currentCategory.slugEn,
     });
 
-    while (currentCategory.parentId) {
+    while (currentCategory.parentId !== null) {
       hierarchyPath.unshift(currentCategory.parentId.toString());
       currentCategory = await this.categoryModel
         .findById(currentCategory.parentId.toString())
         .exec();
+
+      if (!currentCategory) {
+        break;
+      }
+
       hierarchy.unshift({
         categoryId: currentCategory._id.toString(),
         categoryNameUz: currentCategory.nameUz,
