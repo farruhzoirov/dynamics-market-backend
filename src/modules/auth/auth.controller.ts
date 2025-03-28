@@ -1,12 +1,19 @@
-import {Body, Controller, HttpCode, HttpStatus, Post, UsePipes, ValidationPipe,} from '@nestjs/common';
-import {AuthService} from './auth.service';
+import {
+  Body,
+  Controller,
+  HttpCode,
+  HttpStatus,
+  Post,
+  UsePipes,
+  ValidationPipe,
+} from '@nestjs/common';
+import { AuthService } from './auth.service';
 
-import {IdTokenDto} from './dto/id-token.dto';
+import { IdTokenDto } from './dto/id-token.dto';
 
 @Controller('auth')
 export class AuthController {
-  constructor(private readonly authService: AuthService) {
-  }
+  constructor(private readonly authService: AuthService) {}
 
   @Post('google')
   @HttpCode(HttpStatus.OK)

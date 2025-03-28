@@ -1,24 +1,23 @@
-import {Injectable} from '@nestjs/common';
-import {InjectModel} from '@nestjs/mongoose';
-import {Model} from 'mongoose';
+import { Injectable } from '@nestjs/common';
+import { InjectModel } from '@nestjs/mongoose';
+import { Model } from 'mongoose';
 import * as jwt from 'jsonwebtoken';
-import {OAuth2Client} from 'google-auth-library';
-import {ConfigService} from '@nestjs/config';
+import { OAuth2Client } from 'google-auth-library';
+import { ConfigService } from '@nestjs/config';
 // Schemas
-import {User, UserDocument} from '../user/schemas/user.schema';
+import { User, UserDocument } from '../user/schemas/user.schema';
 // Interfaces
-import {IJwtPayload} from '../../shared/interfaces/jwt-payload';
-import {VerifyIdTokenException} from '../../common/errors/auth/verify-id-token.exception';
+import { IJwtPayload } from '../../shared/interfaces/jwt-payload';
+import { VerifyIdTokenException } from '../../common/errors/auth/verify-id-token.exception';
 
 const client = new OAuth2Client();
 
 @Injectable()
 export class AuthService {
   constructor(
-      private readonly configService: ConfigService,
-      @InjectModel(User.name) private readonly userModel: Model<UserDocument>,
-  ) {
-  }
+    private readonly configService: ConfigService,
+    @InjectModel(User.name) private readonly userModel: Model<UserDocument>,
+  ) {}
 
   async verifyToken(id_token: string) {
     try {
@@ -36,17 +35,17 @@ export class AuthService {
 
   async generateJwtToken(payload: IJwtPayload) {
     return jwt.sign(
-        payload,
-        this.configService.get('CONFIG_JWT').JWT_SECRET_KEY,
+      payload,
+      this.configService.get('CONFIG_JWT').JWT_SECRET_KEY,
     );
   }
 
   async registerOrLoginUser(idToken: string): Promise<string> {
     const payload = await this.verifyToken(idToken);
     const checkUser = await this.userModel
-        .findOne({email: payload.email})
-        .select('-__v -createdAt -updatedAt')
-        .lean();
+      .findOne({ email: payload.email })
+      .select('-__v -createdAt -updatedAt')
+      .lean();
 
     if (!checkUser) {
       const newUser = await this.userModel.create({

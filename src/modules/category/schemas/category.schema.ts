@@ -37,6 +37,32 @@ export class Category {
   @Prop({ type: [FileMetadata], default: [] })
   images: FileMetadata[];
 
+  @Prop({
+    type: [
+      {
+        categoryId: String,
+        categorySlugUz: String,
+        categorySlugRu: String,
+        categorySlugEn: String,
+        categoryNameUz: String,
+        categoryNameRu: String,
+        categoryNameEn: String,
+      },
+    ],
+    default: [],
+  })
+  hierarchy: [
+    {
+      categoryId: string;
+      categorySlugUz: string;
+      categorySlugRu: string;
+      categorySlugEn: string;
+      categoryNameUz: string;
+      categoryNameRu: string;
+      categoryNameEn: string;
+    },
+  ];
+
   @Prop({ type: [String], default: [] })
   hierarchyPath: string[];
 

@@ -4,7 +4,6 @@ import {
   HttpCode,
   HttpStatus,
   Post,
-  Get,
   Req,
   Res,
   UsePipes,
@@ -34,7 +33,6 @@ import { AcceptLanguagePipe } from 'src/common/pipes/language.pipe';
 @UsePipes(new ValidationPipe({ whitelist: true }))
 export class CategoryController {
   constructor(private readonly categoryService: CategoryService) {}
-
   @Post('regenerate-slug')
   async regenerateCategorySlug() {
     const count = await this.categoryService.regenerateCategorySlugs();

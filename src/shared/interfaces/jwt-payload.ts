@@ -1,4 +1,4 @@
-import {ILocations} from './location';
+import { ILocations } from './location';
 
 export interface IJwtPayload {
   _id: string;

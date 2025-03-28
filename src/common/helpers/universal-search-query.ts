@@ -1,6 +1,6 @@
 export async function universalSearchQuery(
-    searchText: string,
-    searchableFields: string[],
+  searchText: string,
+  searchableFields: string[],
 ) {
   if (!searchText) return {};
   const escapedSearch = searchText.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');

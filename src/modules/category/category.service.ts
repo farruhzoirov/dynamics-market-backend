@@ -18,6 +18,7 @@ import { Product, ProductDocument } from '../product/schemas/product.model';
 import { IHierarchyPayload } from 'src/shared/interfaces/hierarchy-payload';
 import { buildCategoryHierarchyPipeline } from 'src/common/helpers/pipelines/category-hierarchy-pipeline';
 import { RedisService } from 'src/shared/module/redis/redis.service';
+import { BuildCategoryHierarchyService } from 'src/shared/services/build-hierarchy.service';
 @Injectable()
 export class CategoryService {
   constructor(
@@ -25,6 +26,7 @@ export class CategoryService {
     private readonly categoryModel: Model<CategoryDocument>,
     @InjectModel(Product.name)
     private readonly productModel: Model<ProductDocument>,
+    private readonly buildCategoryHierarchyService: BuildCategoryHierarchyService,
     private readonly redisService: RedisService,
   ) {}
 
@@ -39,11 +41,17 @@ export class CategoryService {
       const slugUz = generateUniqueSlug(nameUz);
       const slugRu = generateUniqueSlug(nameRu);
       const slugEn = generateUniqueSlug(nameEn);
+      const { hierarchyPath, hierarchy } =
+        await this.buildCategoryHierarchyService.buildCategoryHierarchy(
+          category._id.toString(),
+        );
 
       await this.categoryModel.updateOne(
         { _id: category._id },
         {
           $set: {
+            hierarchy,
+            hierarchyPath,
             slugUz,
             slugRu,
             slugEn,
@@ -99,9 +107,10 @@ export class CategoryService {
       };
 
       const newCategory = await this.categoryModel.create(createBody);
-      const { hierarchyPath } = await this.buildCategoryHierarchy(
-        newCategory._id.toString(),
-      );
+      const { hierarchyPath } =
+        await this.buildCategoryHierarchyService.buildCategoryHierarchy(
+          newCategory._id.toString(),
+        );
       newCategory.hierarchyPath = hierarchyPath;
       await newCategory.save();
     } catch (err) {
@@ -111,10 +120,22 @@ export class CategoryService {
   }
 
   async updateCategory(updateBody: UpdateCategoryDto) {
+    const customBody: {
+      hierarchy?: IHierarchyPayload[];
+      hierarchyPath?: string[];
+    } = {};
     const findCategory = await this.categoryModel.findById(updateBody._id);
-
     if (!findCategory) {
       throw new ModelDataNotFoundByIdException('Category not found');
+    }
+
+    if (updateBody?.parentId !== findCategory.parentId.toString()) {
+      const { hierarchyPath, hierarchy } =
+        await this.buildCategoryHierarchyService.buildCategoryHierarchy(
+          updateBody._id.toString(),
+        );
+      customBody.hierarchy = hierarchy;
+      customBody.hierarchyPath = hierarchyPath;
     }
 
     const { nameUz, nameRu, nameEn } = updateBody;
@@ -124,6 +145,7 @@ export class CategoryService {
 
     const forUpdateBody = {
       ...updateBody,
+      ...customBody,
       ...(slugUz && { slugUz }),
       ...(slugRu && { slugRu }),
       ...(slugEn && { slugEn }),
@@ -158,52 +180,5 @@ export class CategoryService {
       );
     }
     await this.categoryModel.updateOne({ _id }, { isDeleted: true });
-  }
-
-  async buildCategoryHierarchy(categoryId: string): Promise<{
-    hierarchy: IHierarchyPayload[];
-    hierarchyPath: string[];
-  }> {
-    const hierarchy: IHierarchyPayload[] = [];
-    const hierarchyPath: string[] = [];
-    let currentCategory: CategoryDocument | null = await this.categoryModel
-      .findById(categoryId)
-      .exec();
-
-    hierarchyPath.push(currentCategory._id.toString());
-    hierarchy.push({
-      categoryId: currentCategory._id.toString(),
-      categoryNameUz: currentCategory.nameUz,
-      categoryNameRu: currentCategory.nameRu,
-      categoryNameEn: currentCategory.nameEn,
-      categorySlugUz: currentCategory.slugUz,
-      categorySlugRu: currentCategory.slugRu,
-      categorySlugEn: currentCategory.slugEn,
-    });
-
-    while (currentCategory.parentId) {
-      hierarchyPath.unshift(currentCategory.parentId.toString());
-      currentCategory = await this.categoryModel
-        .findById(currentCategory.parentId.toString())
-        .exec();
-
-      if (!currentCategory) {
-        break;
-      }
-      hierarchy.unshift({
-        categoryId: currentCategory._id.toString(),
-        categoryNameUz: currentCategory.nameUz,
-        categoryNameRu: currentCategory.nameRu,
-        categoryNameEn: currentCategory.nameEn,
-        categorySlugUz: currentCategory.slugUz,
-        categorySlugRu: currentCategory.slugRu,
-        categorySlugEn: currentCategory.slugEn,
-      });
-    }
-
-    return {
-      hierarchyPath,
-      hierarchy,
-    };
   }
 }

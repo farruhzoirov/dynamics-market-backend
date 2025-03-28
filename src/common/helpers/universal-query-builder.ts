@@ -34,8 +34,6 @@ export const getFilteredResultsWithTotal = async (
     filter.brandId = body.brandId;
   }
 
-  console.log(selectedFields);
-
   return await Promise.all([
     await currentModel
       .find(filter)

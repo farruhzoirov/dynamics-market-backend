@@ -25,6 +25,7 @@ import {
   AddingModelException,
   ModelDataNotFoundByIdException,
 } from 'src/common/errors/model/model-based.exceptions';
+import { IHierarchyPayload } from 'src/shared/interfaces/hierarchy-payload';
 
 @Injectable()
 export class ProductService {
@@ -43,23 +44,23 @@ export class ProductService {
     lang: string,
   ) {
     const { categorySlug, brandsSlug, priceRange } = body;
-    const sort: Record<string, 1 | -1> = { currentPrice: 1 };
+    const sort: Record<string, 1 | -1> = { createdAt: -1, views: -1 };
     const limit = body.limit ? body.limit : 0;
     const skip = body.page ? (body.page - 1) * limit : 0;
+    let breadCrump: IHierarchyPayload[] = [];
     const match: any = { isDeleted: false };
 
     if (categorySlug) {
       const searchableFields = [`slug${lang}`];
       const filter = await universalSearchQuery(categorySlug, searchableFields);
-      console.log(filter);
       const findCategory = await this.categoryModel.findOne(filter).lean();
-      console.log('findCategory', findCategory);
       if (!findCategory) {
         return {
           data: [],
           total: 0,
         };
       }
+      // breadCrump = findCategory.hierarchyPath;
       match.categoryId = findCategory._id;
     }
 

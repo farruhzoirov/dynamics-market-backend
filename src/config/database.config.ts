@@ -1,6 +1,6 @@
-import {registerAs} from '@nestjs/config';
+import { registerAs } from '@nestjs/config';
 import * as process from 'node:process';
-import {config} from 'dotenv';
+import { config } from 'dotenv';
 
 config();
 
