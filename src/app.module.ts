@@ -9,9 +9,9 @@ import { CategoryModule } from './modules/category/category.module';
 import { FileUploadModule } from './modules/file-upload/file-upload.module';
 import { BrandModule } from './modules/brand/brand.module';
 import { ProductModule } from './modules/product/product.module';
+import { BannerModule } from './modules/banner/banner.module';
 import { RolesGuard } from './common/guards/roles.guard';
 import databaseConfig, { CONFIG_DATABASE } from './config/database.config';
-import { BannerModule } from './modules/banner/banner.module';
 import googleConfig from './config/google.config';
 import jwtConfig from './config/jwt.config';
 import redisConfig from './config/redis.config';
@@ -57,9 +57,10 @@ export class AppModule implements NestModule {
       .exclude(
         '/',
         '/auth/google',
+        '/banner/get-list',
+        '/brand/get-list',
         '/category/list',
         '/product/list',
-        '/banner/get-list',
       )
       .forRoutes('*');
   }

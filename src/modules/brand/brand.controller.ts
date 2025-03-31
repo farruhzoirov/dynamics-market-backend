@@ -2,6 +2,7 @@ import {
   Body,
   Controller,
   Post,
+  Headers,
   UsePipes,
   ValidationPipe,
 } from '@nestjs/common';
@@ -19,6 +20,7 @@ import {
   DeletedSuccessResponse,
   UpdatedSuccessResponse,
 } from '../../shared/success/success-responses';
+import { AcceptLanguagePipe } from '../../common/pipes/language.pipe';
 
 @ApiBearerAuth()
 @Controller('brand')
@@ -27,8 +29,12 @@ export class BrandController {
   constructor(private readonly brandService: BrandService) {}
 
   @Post('get-list')
-  async getBrandsList(@Body() body: GetBrandListsDto) {
-    return await this.brandService.getBrandsList(body);
+  async getBrandsList(
+    @Body() body: GetBrandListsDto,
+    @Headers('accept-language') lang: string,
+  ) {
+    lang = new AcceptLanguagePipe().transform(lang);
+    return await this.brandService.getBrandsList(body, lang);
   }
 
   @Post('add')

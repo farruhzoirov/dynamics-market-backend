@@ -7,6 +7,9 @@ import { NestExpressApplication } from '@nestjs/platform-express';
 import { AllExceptionsTo200Interceptor } from './common/interceptors/universal-response';
 import { ErrorCodes } from './common/errors/error-codes';
 import { ValidationError } from 'class-validator';
+import * as dotenv from 'dotenv';
+
+dotenv.config();
 
 async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule);
@@ -49,7 +52,7 @@ async function bootstrap() {
   app.useStaticAssets('uploads', { prefix: '/uploads' });
   app.useGlobalInterceptors(new AllExceptionsTo200Interceptor());
   const PORT = process.env.PORT || 5000;
-  app.listen(PORT, '0.0.0.0', () => {
+  await app.listen(PORT, '0.0.0.0', () => {
     console.log(`Server started on port ${PORT}.`);
   });
 }
