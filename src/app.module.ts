@@ -61,6 +61,7 @@ export class AppModule implements NestModule {
         '/brand/get-list',
         '/category/list',
         '/product/list',
+        '/product/get-product',
       )
       .forRoutes('*');
   }
