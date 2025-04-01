@@ -57,7 +57,6 @@ export class ProductService {
     if (!body.slug && !body._id) {
       return {};
     }
-
     if (lang && body.slug) {
       const ip = req.ip;
       const findProduct = await this.productModel
@@ -68,7 +67,7 @@ export class ProductService {
         return {};
       }
 
-      const [isProductViewed, isIpsExistByProduct] = await Promise.all([
+      const [isProductViewed, isIpsExist] = await Promise.all([
         await this.productViewModel.findOne({
           productId: findProduct._id,
           ips: ip,
@@ -78,7 +77,7 @@ export class ProductService {
         }),
       ]);
 
-      if (!isIpsExistByProduct) {
+      if (!isIpsExist) {
         await this.productViewModel.create({
           productId: findProduct._id,
           ips: [ip],
@@ -142,16 +141,20 @@ export class ProductService {
     lang: string,
   ) {
     const { categorySlug, brandsSlug, priceRange } = body;
-    const sort: Record<string, 1 | -1> = { createdAt: -1, views: -1 };
+    let sort: Record<string, 1 | -1> = { createdAt: -1, views: -1 };
     const limit = body.limit ? body.limit : 0;
     const skip = body.page ? (body.page - 1) * limit : 0;
-    let breadCrump: {
+    let hierarchy: {
       categoryId: string;
       categorySlug: string;
       categoryName: string;
     }[] = [];
 
     const match: any = { isDeleted: false };
+
+    if (body.lastViewed) {
+      sort = { viewedAt: -1 };
+    }
 
     if (categorySlug) {
       const searchableFields = [`slug${lang}`];
@@ -163,7 +166,7 @@ export class ProductService {
           total: 0,
         };
       }
-      breadCrump = findCategory.hierarchy.map((item: IHierarchyPayload) => ({
+      hierarchy = findCategory.hierarchy.map((item: IHierarchyPayload) => ({
         categoryId: item.categoryId,
         categorySlug: item[`categorySlug${lang}`] as string,
         categoryName: item[`categoryName${lang}`] as string,
@@ -173,7 +176,9 @@ export class ProductService {
 
     if (brandsSlug?.length) {
       const brandIds = await this.brandModel
-        .find({ [`slug${lang}`]: { $in: brandsSlug } })
+        .find({
+          [`slug${lang}`]: { $in: brandsSlug },
+        })
         .distinct('_id');
       if (!brandIds.length) {
         return {
@@ -198,7 +203,7 @@ export class ProductService {
     return {
       data,
       total,
-      breadCrump,
+      hierarchy,
     };
   }
 

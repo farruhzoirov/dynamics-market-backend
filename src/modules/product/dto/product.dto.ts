@@ -60,6 +60,11 @@ export class GetProductsListForFrontDto extends UniversalQueryDto {
   @IsOptional()
   @IsString()
   priceRange: string;
+
+  @ApiProperty({ example: true })
+  @IsOptional()
+  @IsBoolean()
+  lastViewed: boolean;
 }
 
 export class GetProductsListDto extends UniversalQueryDto {
