@@ -3,6 +3,7 @@ import mongoose, { HydratedDocument } from 'mongoose';
 import { FileMetadata } from 'src/common/schema/file-meta.schema';
 
 export type ProductDocument = HydratedDocument<Product>;
+export type ProductViewDocument = HydratedDocument<ProductViews>;
 
 @Schema({ timestamps: true })
 export class Product {
@@ -130,6 +131,9 @@ export class Product {
   @Prop({ type: Number, default: 0 })
   views: number;
 
+  @Prop({ type: Date, default: null })
+  viewedAt: Date;
+
   @Prop({ type: Boolean, default: true })
   inStock: boolean;
 
@@ -137,8 +141,22 @@ export class Product {
   details: any;
 }
 
+@Schema({ timestamps: true })
+export class ProductViews {
+  @Prop({ type: mongoose.Types.ObjectId, required: true })
+  productId: mongoose.Types.ObjectId;
+
+  @Prop({ type: [String], required: true })
+  ips: [string];
+}
+
 export const ProductSchema = SchemaFactory.createForClass(Product);
 ProductSchema.index({ slugUz: 1 });
 ProductSchema.index({ slugRu: 1 });
 ProductSchema.index({ slugEn: 1 });
 ProductSchema.index({ nameUz: 1, nameRu: 1, nameEn: 1 });
+ProductSchema.index({ hierarchyPath: 1 });
+
+export const ProductViewSchema = SchemaFactory.createForClass(ProductViews);
+ProductViewSchema.index({ productId: 1 });
+ProductViewSchema.index({ ip: 1 });

@@ -5,6 +5,8 @@ import {
   HttpCode,
   HttpStatus,
   Post,
+  Req,
+  Res,
   UsePipes,
   ValidationPipe,
 } from '@nestjs/common';
@@ -25,6 +27,7 @@ import {
 } from 'src/shared/success/success-responses';
 import { AcceptLanguagePipe } from '../../common/pipes/language.pipe';
 import { ValidateObjectIdPipe } from '../../common/pipes/object-id.pipe';
+import { Request, Response } from 'express';
 
 @Controller('product')
 @ApiBearerAuth()
@@ -61,8 +64,13 @@ export class ProductController {
 
   @HttpCode(HttpStatus.OK)
   @Post('get-product')
-  async getProductBySlug(@Body() body: GetProductBySlugDto) {
-    const product = await this.productService.getProduct(body);
+  async getProductBySlug(
+    @Body() body: GetProductBySlugDto,
+    @Headers('Accept-Language') lang: string | undefined,
+    @Req() req: Request,
+  ) {
+    lang = new AcceptLanguagePipe().transform(lang);
+    const product = await this.productService.getProduct(body, req, lang);
     return product;
   }
 

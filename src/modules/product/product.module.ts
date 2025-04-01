@@ -2,7 +2,12 @@ import { Module } from '@nestjs/common';
 import { ProductService } from './product.service';
 import { ProductController } from './product.controller';
 import { MongooseModule } from '@nestjs/mongoose';
-import { Product, ProductSchema } from './schemas/product.model';
+import {
+  Product,
+  ProductSchema,
+  ProductViews,
+  ProductViewSchema,
+} from './schemas/product.model';
 import { Category, CategorySchema } from '../category/schemas/category.schema';
 import { BuildCategoryHierarchyService } from 'src/shared/services/build-hierarchy.service';
 import { Brand, BrandSchema } from '../brand/schemas/brand.schema';
@@ -13,6 +18,10 @@ import { Brand, BrandSchema } from '../brand/schemas/brand.schema';
       {
         name: Product.name,
         schema: ProductSchema,
+      },
+      {
+        name: ProductViews.name,
+        schema: ProductViewSchema,
       },
       {
         name: Category.name,

@@ -1,11 +1,18 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
-import { Product, ProductDocument } from './schemas/product.model';
+import {
+  Product,
+  ProductDocument,
+  ProductViews,
+} from './schemas/product.model';
 import { getFilteredResultsWithTotal } from 'src/common/helpers/universal-query-builder';
 import { generateUniqueSlugForProduct } from 'src/common/helpers/generate-slug';
 import { Brand, BrandDocument } from '../brand/schemas/brand.schema';
-import { buildProductPipeline } from 'src/common/helpers/pipelines/product-pipeline';
+import {
+  buildOneProductPipeline,
+  buildProductPipeline,
+} from 'src/common/helpers/pipelines/product-pipeline';
 import { generateUniqueSKU } from 'src/common/helpers/generate-sku';
 import { universalSearchQuery } from 'src/common/helpers/universal-search-query';
 import { BuildCategoryHierarchyService } from 'src/shared/services/build-hierarchy.service';
@@ -26,18 +33,109 @@ import {
   ModelDataNotFoundByIdException,
 } from 'src/common/errors/model/model-based.exceptions';
 import { IHierarchyPayload } from 'src/shared/interfaces/hierarchy-payload';
+import { Request } from 'express';
 
 @Injectable()
 export class ProductService {
   constructor(
     @InjectModel(Product.name)
     private readonly productModel: Model<ProductDocument>,
+    @InjectModel(ProductViews.name)
+    private readonly productViewModel: Model<ProductDocument>,
     @InjectModel(Category.name)
     private readonly categoryModel: Model<CategoryDocument>,
     @InjectModel(Brand.name)
     private readonly brandModel: Model<BrandDocument>,
     private readonly buildCategoryHierarchyService: BuildCategoryHierarchyService,
   ) {}
+
+  async getProduct(
+    body: GetProductBySlugDto,
+    req: Request,
+    lang: string | null,
+  ) {
+    if (!body.slug && !body._id) {
+      return {};
+    }
+
+    if (lang && body.slug) {
+      const ip = req.ip;
+      const findProduct = await this.productModel
+        .findOne({ [`slug${lang}`]: body.slug })
+        .lean();
+
+      if (!findProduct) {
+        return {};
+      }
+
+      const [isProductViewed, isIpsExistByProduct] = await Promise.all([
+        await this.productViewModel.findOne({
+          productId: findProduct._id,
+          ips: ip,
+        }),
+        await this.productViewModel.findOne({
+          productId: findProduct._id,
+        }),
+      ]);
+
+      if (!isIpsExistByProduct) {
+        await this.productViewModel.create({
+          productId: findProduct._id,
+          ips: [ip],
+        });
+      }
+
+      if (!isProductViewed) {
+        await Promise.all([
+          await this.productViewModel.updateOne(
+            { productId: findProduct._id },
+            {
+              $addToSet: { ips: ip },
+            },
+          ),
+          await this.productModel.updateOne(
+            { _id: findProduct._id },
+            {
+              $inc: { views: 1 },
+              $set: { viewedAt: new Date() },
+            },
+          ),
+        ]);
+      }
+
+      if (isProductViewed) {
+        await this.productModel.updateOne(
+          { _id: findProduct._id },
+          {
+            $set: { viewedAt: new Date() },
+          },
+        );
+      }
+      const pipeline = await buildOneProductPipeline(body.slug, lang);
+      const data = await this.productModel.aggregate(pipeline).exec();
+      return {
+        data,
+      };
+    }
+
+    if (body.slug) {
+      const searchableFields = ['slugUz', 'slugRu', 'slugEn'];
+      const filter = await universalSearchQuery(body.slug, searchableFields);
+      const findProduct = await this.productModel.findOne(filter);
+      if (!findProduct) {
+        return {};
+      }
+      return findProduct;
+    }
+
+    if (body._id) {
+      const findProduct = await this.productModel.findById(body._id).lean();
+      if (!findProduct) {
+        return {};
+      }
+      return findProduct;
+    }
+  }
 
   async getProductsListForFront(
     body: GetProductsListForFrontDto,
@@ -115,30 +213,6 @@ export class ProductService {
       data: data,
       total,
     };
-  }
-
-  async getProduct(body: GetProductBySlugDto) {
-    if (!body.slug && !body._id) {
-      return {};
-    }
-
-    if (body.slug) {
-      const searchableFields = ['slugUz', 'slugRu', 'slugEn'];
-      const filter = await universalSearchQuery(body.slug, searchableFields);
-      const findProduct = await this.productModel.findOne(filter);
-      if (!findProduct) {
-        return {};
-      }
-      return findProduct;
-    }
-
-    if (body._id) {
-      const findProduct = await this.productModel.findById(body._id).lean();
-      if (!findProduct) {
-        return {};
-      }
-      return findProduct;
-    }
   }
 
   async addProduct(body: AddProductDto): Promise<void> {
