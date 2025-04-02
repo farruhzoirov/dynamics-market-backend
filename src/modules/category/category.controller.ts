@@ -5,7 +5,6 @@ import {
   HttpStatus,
   Post,
   Req,
-  Res,
   UsePipes,
   ValidationPipe,
 } from '@nestjs/common';
@@ -19,7 +18,6 @@ import {
   GetCategoryDto,
   UpdateCategoryDto,
 } from './dto/category.dto';
-import { ValidateObjectIdPipe } from '../../common/pipes/object-id.pipe';
 import {
   AddedSuccessResponse,
   DeletedSuccessResponse,
@@ -49,7 +47,7 @@ export class CategoryController {
   })
   @HttpCode(HttpStatus.OK)
   @Post('list')
-  async getCategoriesForFront(@Req() req: Request, @Res() res: Response) {
+  async getCategoriesForFront(@Req() req: Request) {
     const lang = new AcceptLanguagePipe().transform(
       req.headers['accept-language'],
     );
@@ -57,24 +55,18 @@ export class CategoryController {
       req.body,
       lang,
     );
-    res.status(200).json(categoryList);
+    return categoryList;
   }
   @Post('get-list')
   @HttpCode(HttpStatus.OK)
   @Roles(UserRole.superAdmin, UserRole.admin)
-  async getCategoriesList(
-    @Body() body: GetCategoryDto,
-    @Body('parentId', ValidateObjectIdPipe) parentId: string,
-  ) {
+  async getCategoriesList(@Body() body: GetCategoryDto) {
     return await this.categoryService.getCategoriesList(body);
   }
 
   @Post('add')
   @Roles(UserRole.superAdmin, UserRole.admin)
-  async addCategory(
-    @Body() body: AddCategoryDto,
-    @Body('parentId', ValidateObjectIdPipe) parentId: string,
-  ) {
+  async addCategory(@Body() body: AddCategoryDto) {
     await this.categoryService.addCategory(body);
     return new AddedSuccessResponse();
   }
@@ -82,11 +74,7 @@ export class CategoryController {
   @Post('update')
   @HttpCode(HttpStatus.OK)
   @Roles(UserRole.superAdmin, UserRole.admin)
-  async updateCategory(
-    @Body() updateBody: UpdateCategoryDto,
-    @Body('_id', ValidateObjectIdPipe) _id: string,
-    @Body('parentId', ValidateObjectIdPipe) parentId: string,
-  ) {
+  async updateCategory(@Body() updateBody: UpdateCategoryDto) {
     await this.categoryService.updateCategory(updateBody);
     return new UpdatedSuccessResponse();
   }
@@ -94,10 +82,7 @@ export class CategoryController {
   @Post('delete')
   @HttpCode(HttpStatus.OK)
   @Roles(UserRole.superAdmin, UserRole.admin)
-  async deleteCategory(
-    @Body() body: DeleteCategoryDto,
-    @Body('_id', ValidateObjectIdPipe) _id: string,
-  ) {
+  async deleteCategory(@Body() body: DeleteCategoryDto) {
     await this.categoryService.deleteCategory(body._id);
     return new DeletedSuccessResponse();
   }

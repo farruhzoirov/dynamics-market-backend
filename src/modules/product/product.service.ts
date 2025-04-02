@@ -23,7 +23,7 @@ import {
 import {
   AddProductDto,
   DeleteProductDto,
-  GetProductBySlugDto,
+  GetProductDto,
   GetProductsListDto,
   GetProductsListForFrontDto,
   UpdateProductDto,
@@ -49,11 +49,7 @@ export class ProductService {
     private readonly buildCategoryHierarchyService: BuildCategoryHierarchyService,
   ) {}
 
-  async getProduct(
-    body: GetProductBySlugDto,
-    req: Request,
-    lang: string | null,
-  ) {
+  async getProduct(body: GetProductDto, req: Request, lang: string | null) {
     if (!body.slug && !body._id) {
       return {};
     }
@@ -189,7 +185,7 @@ export class ProductService {
       match.brandId = { $in: brandIds };
     }
 
-    if (priceRange) {
+    if (priceRange && priceRange.split('').includes('-')) {
       const [minPrice, maxPrice] = priceRange.split('-');
       match.currentPrice = { $gte: +minPrice, $lte: +maxPrice };
     }

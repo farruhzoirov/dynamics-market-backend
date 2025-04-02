@@ -16,6 +16,7 @@ import {
   DeleteBaseModelDto,
   UniversalQueryDto,
 } from 'src/shared/dto/base-model.dto';
+import { IsObjectId } from 'src/common/decorator/object-id.decarator';
 
 export class GetBannersListDto extends UniversalQueryDto {}
 
@@ -78,6 +79,7 @@ export class AddBannerDto {
 }
 
 export class UpdateBannerDto {
+  @IsObjectId()
   @IsString()
   _id: string;
 
@@ -142,18 +144,20 @@ export class UpdateBannerDto {
 
   @ApiProperty()
   @IsOptional()
+  @IsObjectId()
   @IsString()
   productId: string;
 
   @ApiProperty()
   @IsOptional()
+  @IsObjectId()
   @IsString()
   categoryId: string;
 
   @ApiProperty()
   @IsOptional()
   @IsArray()
-  @IsString({ each: true })
+  @IsObjectId({ each: true })
   brandIds: string[];
 
   @ApiProperty({

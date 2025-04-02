@@ -15,11 +15,13 @@ import {
 } from 'src/shared/dto/base-model.dto';
 
 import { FileMetadataDto } from 'src/shared/dto/file-meta.dto';
+import { IsObjectId } from 'src/common/decorator/object-id.decarator';
 
 // dto for query
 export class GetCategoryDto extends UniversalQueryDto {
   @ApiProperty()
   @IsOptional()
+  @IsObjectId()
   @IsString()
   parentId: string;
 }
@@ -27,6 +29,7 @@ export class GetCategoryDto extends UniversalQueryDto {
 export class AddCategoryDto extends BaseModelDto {
   @ApiProperty()
   @IsOptional()
+  @IsObjectId()
   @IsString()
   parentId: string;
 
@@ -43,6 +46,7 @@ export class AddCategoryDto extends BaseModelDto {
 export class UpdateCategoryDto extends UpdateBaseModelDto {
   @ApiProperty()
   @IsOptional()
+  @IsObjectId()
   @IsString()
   parentId: string;
 

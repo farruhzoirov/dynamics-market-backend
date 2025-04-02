@@ -11,7 +11,7 @@ export class GettingModelException extends BadRequestException {
 }
 
 export class AddingModelException extends BadRequestException {
-  constructor(message: string = 'Error adding model data') {
+  constructor(message: string = 'Error adding data') {
     super({
       errorCode: `${ErrorCodes.ERROR_ADDING_MODEL_DATA}`,
       message: message,

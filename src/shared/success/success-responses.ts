@@ -5,7 +5,7 @@ export class AddedSuccessResponse {
   readonly message: string;
   readonly errorCode: null;
 
-  constructor(message: string = 'Model data added successfully') {
+  constructor(message: string = 'added successfully') {
     this.errorCode = null;
     this.statusCode = HttpStatus.CREATED;
     this.message = message;
@@ -17,7 +17,7 @@ export class UpdatedSuccessResponse {
   readonly message: string;
   readonly errorCode: null;
 
-  constructor(message: string = 'Model data updated successfully') {
+  constructor(message: string = 'updated successfully') {
     this.errorCode = null;
     this.statusCode = HttpStatus.OK;
     this.message = message;
@@ -29,7 +29,7 @@ export class DeletedSuccessResponse {
   readonly message: string;
   readonly errorCode: null;
 
-  constructor(message: string = 'Model data deleted successfully') {
+  constructor(message: string = 'deleted successfully') {
     this.errorCode = null;
     this.statusCode = HttpStatus.OK;
     this.message = message;

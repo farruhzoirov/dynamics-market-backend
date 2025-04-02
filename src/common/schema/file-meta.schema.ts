@@ -28,3 +28,5 @@ export class FileMetadata {
   @Prop({ required: true })
   extension: string;
 }
+
+

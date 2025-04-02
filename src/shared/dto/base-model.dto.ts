@@ -1,5 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsNumber, IsOptional, IsString } from 'class-validator';
+import { IsObjectId } from 'src/common/decorator/object-id.decarator';
 
 export class UniversalQueryDto {
   @ApiProperty()
@@ -39,6 +40,7 @@ export class BaseModelDto {
 
 export class UpdateBaseModelDto {
   @ApiProperty()
+  @IsObjectId()
   @IsString()
   _id: string;
 
@@ -60,6 +62,7 @@ export class UpdateBaseModelDto {
 
 export class DeleteBaseModelDto {
   @ApiProperty({ required: true })
+  @IsObjectId()
   @IsString()
   _id: string;
 }

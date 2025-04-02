@@ -9,6 +9,7 @@ import {
   IsString,
   ValidateNested,
 } from 'class-validator';
+import { IsObjectId } from 'src/common/decorator/object-id.decarator';
 
 import {
   BaseModelDto,
@@ -75,11 +76,12 @@ export class GetProductsListDto extends UniversalQueryDto {
 
   @ApiProperty()
   @IsOptional()
+  @IsObjectId()
   @IsString()
   brandId: string;
 }
 
-export class GetProductBySlugDto {
+export class GetProductDto {
   @ApiProperty()
   @IsOptional()
   @IsString()
@@ -87,6 +89,7 @@ export class GetProductBySlugDto {
 
   @ApiProperty()
   @IsOptional()
+  @IsObjectId()
   @IsString()
   _id: string;
 }
@@ -124,10 +127,12 @@ export class AddProductDto extends BaseModelDto {
   rate: number;
 
   @ApiProperty()
+  @IsObjectId()
   @IsString()
   categoryId: string;
 
   @ApiProperty()
+  @IsObjectId()
   @IsString()
   brandId: string;
 
@@ -191,11 +196,13 @@ export class UpdateProductDto extends UpdateBaseModelDto {
 
   @ApiProperty()
   @IsOptional()
+  @IsObjectId()
   @IsString()
   categoryId: string;
 
   @ApiProperty()
   @IsOptional()
+  @IsObjectId()
   @IsString()
   brandId: string;
 

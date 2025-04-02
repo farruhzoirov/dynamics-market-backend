@@ -6,14 +6,13 @@ import {
   HttpStatus,
   Post,
   Req,
-  Res,
   UsePipes,
   ValidationPipe,
 } from '@nestjs/common';
 import {
   AddProductDto,
   DeleteProductDto,
-  GetProductBySlugDto,
+  GetProductDto,
   GetProductsListDto,
   GetProductsListForFrontDto,
   UpdateProductDto,
@@ -26,8 +25,7 @@ import {
   UpdatedSuccessResponse,
 } from 'src/shared/success/success-responses';
 import { AcceptLanguagePipe } from '../../common/pipes/language.pipe';
-import { ValidateObjectIdPipe } from '../../common/pipes/object-id.pipe';
-import { Request, Response } from 'express';
+import { Request } from 'express';
 
 @Controller('product')
 @ApiBearerAuth()
@@ -64,8 +62,8 @@ export class ProductController {
 
   @HttpCode(HttpStatus.OK)
   @Post('get-product')
-  async getProductBySlug(
-    @Body() body: GetProductBySlugDto,
+  async getProduct(
+    @Body() body: GetProductDto,
     @Headers('Accept-Language') lang: string | undefined,
     @Req() req: Request,
   ) {
@@ -75,11 +73,7 @@ export class ProductController {
   }
 
   @Post('add')
-  async addProduct(
-    @Body() body: AddProductDto,
-    @Body('categoryId', ValidateObjectIdPipe) categoryId: string,
-    @Body('brandId', ValidateObjectIdPipe) brandId: string,
-  ) {
+  async addProduct(@Body() body: AddProductDto) {
     await this.productService.addProduct(body);
     return new AddedSuccessResponse();
   }

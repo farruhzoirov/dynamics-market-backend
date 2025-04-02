@@ -5,7 +5,10 @@ import {
   Headers,
   UsePipes,
   ValidationPipe,
+  HttpCode,
+  HttpStatus,
 } from '@nestjs/common';
+import { ApiBearerAuth } from '@nestjs/swagger';
 import { BrandService } from './brand.service';
 import {
   AddBrandDto,
@@ -13,8 +16,6 @@ import {
   GetBrandListsDto,
   UpdateBrandDto,
 } from './dto/brand.dto';
-import { ValidateObjectIdPipe } from '../../common/pipes/object-id.pipe';
-import { ApiBearerAuth } from '@nestjs/swagger';
 import {
   AddedSuccessResponse,
   DeletedSuccessResponse,
@@ -28,6 +29,7 @@ import { AcceptLanguagePipe } from '../../common/pipes/language.pipe';
 export class BrandController {
   constructor(private readonly brandService: BrandService) {}
 
+  @HttpCode(HttpStatus.OK)
   @Post('get-list')
   async getBrandsList(
     @Body() body: GetBrandListsDto,
@@ -50,10 +52,7 @@ export class BrandController {
   }
 
   @Post('delete')
-  async deleteBrand(
-    @Body() body: DeleteBrandDto,
-    @Body('_id', ValidateObjectIdPipe) _id: string,
-  ) {
+  async deleteBrand(@Body() body: DeleteBrandDto) {
     await this.brandService.deleteBrand(body._id);
     return new DeletedSuccessResponse();
   }

@@ -10,6 +10,7 @@ import { FileUploadModule } from './modules/file-upload/file-upload.module';
 import { BrandModule } from './modules/brand/brand.module';
 import { ProductModule } from './modules/product/product.module';
 import { BannerModule } from './modules/banner/banner.module';
+import { ReviewModule } from './modules/review/review.module';
 import { RolesGuard } from './common/guards/roles.guard';
 import databaseConfig, { CONFIG_DATABASE } from './config/database.config';
 import googleConfig from './config/google.config';
@@ -42,6 +43,7 @@ import redisConfig from './config/redis.config';
     ProductModule,
     FileUploadModule,
     BannerModule,
+    ReviewModule,
   ],
   providers: [
     {
@@ -62,6 +64,7 @@ export class AppModule implements NestModule {
         '/category/list',
         '/product/list',
         '/product/get-product',
+        '/review/list',
       )
       .forRoutes('*');
   }
