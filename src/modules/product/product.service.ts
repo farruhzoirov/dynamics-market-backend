@@ -62,52 +62,9 @@ export class ProductService {
       if (!findProduct) {
         return {};
       }
-
-      const [isProductViewed, isIpsExist] = await Promise.all([
-        await this.productViewModel.findOne({
-          productId: findProduct._id,
-          ips: ip,
-        }),
-        await this.productViewModel.findOne({
-          productId: findProduct._id,
-        }),
-      ]);
-
-      if (!isIpsExist) {
-        await this.productViewModel.create({
-          productId: findProduct._id,
-          ips: [ip],
-        });
-      }
-
-      if (!isProductViewed) {
-        await Promise.all([
-          await this.productViewModel.updateOne(
-            { productId: findProduct._id },
-            {
-              $addToSet: { ips: ip },
-            },
-          ),
-          await this.productModel.updateOne(
-            { _id: findProduct._id },
-            {
-              $inc: { views: 1 },
-              $set: { viewedAt: new Date() },
-            },
-          ),
-        ]);
-      }
-
-      if (isProductViewed) {
-        await this.productModel.updateOne(
-          { _id: findProduct._id },
-          {
-            $set: { viewedAt: new Date() },
-          },
-        );
-      }
       const pipeline = await buildOneProductPipeline(body.slug, lang);
       const data = await this.productModel.aggregate(pipeline).exec();
+      this.updateProductViewsInBackground(findProduct._id.toString(), ip);
       return {
         data,
       };
@@ -283,5 +240,44 @@ export class ProductService {
       throw new ModelDataNotFoundByIdException('Product not found');
     }
     await this.productModel.updateOne({ _id: body._id }, { isDeleted: true });
+  }
+
+  async updateProductViewsInBackground(productId: string, ip: string) {
+    try {
+      const [isProductViewed, isIpsExist] = await Promise.all([
+        this.productViewModel.findOne({ productId, ips: ip }),
+        this.productViewModel.findOne({ productId }),
+      ]);
+
+      if (!isIpsExist) {
+        await this.productViewModel.create({
+          productId,
+          ips: [ip],
+        });
+      }
+
+      if (!isProductViewed) {
+        await Promise.all([
+          this.productViewModel.updateOne(
+            { productId },
+            { $addToSet: { ips: ip } },
+          ),
+          this.productModel.updateOne(
+            { _id: productId },
+            {
+              $inc: { views: 1 },
+              $set: { viewedAt: new Date() },
+            },
+          ),
+        ]);
+      } else {
+        await this.productModel.updateOne(
+          { _id: productId },
+          { $set: { viewedAt: new Date() } },
+        );
+      }
+    } catch (err) {
+      console.error('View update error:', err);
+    }
   }
 }
