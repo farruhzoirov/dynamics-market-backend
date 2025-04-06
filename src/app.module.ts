@@ -27,12 +27,8 @@ import redisConfig from './config/redis.config';
     MongooseModule.forRootAsync({
       imports: [ConfigModule],
       useFactory: async (configService: ConfigService) => {
-        console.log(configService.get(CONFIG_DATABASE).users.uri);
         return {
           uri: configService.get(CONFIG_DATABASE).users.uri,
-          writeConcern: { w: 1 },
-          useNewUrlParser: true,
-          useUnifiedTopology: true,
         };
       },
       inject: [ConfigService],

@@ -30,9 +30,7 @@ services:
     ports:
       - '27017:27017'
     volumes:
-      # - mongodb_primary_data:/data/db
-      - dynamics-market-backend_mongodb_primary_data:/data/db
-
+      - mongodb_data:/data/db
 volumes:
   redis_data:
-  dynamics-market-backend_mongodb_primary_data:
+  mongodb_data:
