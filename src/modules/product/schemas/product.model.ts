@@ -125,7 +125,7 @@ export class Product {
     },
   ];
 
-  @Prop({ type: [String], default: [], index: true })
+  @Prop({ type: [String], default: [] })
   hierarchyPath: string[];
 
   @Prop({ type: Number, default: 0 })
