@@ -9,9 +9,9 @@ services:
       - '5000:5000'
     volumes:
       - ./uploads:/usr/src/app/uploads
-    depends_on:
-      # - redis
-      # - mongodb
+    # depends_on:
+    # - redis
+    # - mongodb
 
   # redis:
   #   image: redis:latest
