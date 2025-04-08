@@ -11,6 +11,7 @@ services:
       - ./uploads:/usr/src/app/uploads
     depends_on:
       - redis
+      - mongodb
 
   redis:
     image: redis:latest
@@ -22,5 +23,16 @@ services:
       - redis_data:/data
     command: redis-server --appendonly yes
 
+  mongodb:
+    image: mongo:6.0
+    container_name: mongodb
+    restart: always
+    ports:
+      - '27017:27017'
+    volumes:
+      - mongo_data:/data/db
+
 volumes:
   redis_data:
+  mongo_data:
+
