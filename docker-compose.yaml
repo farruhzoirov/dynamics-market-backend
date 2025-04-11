@@ -11,7 +11,7 @@ services:
       - ./uploads:/usr/src/app/uploads
     depends_on:
       - redis
-    network_mode: host
+    network_mode: 'host'
   #      - mongodb
 
   redis:
