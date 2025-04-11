@@ -8,6 +8,7 @@ export class RedisService extends Redis {
     super({
       host: configService.get('REDIS').REDIS_HOST ?? 'redis',
       port: configService.get('REDIS').REDIS_PORT ?? '6379',
+      readOnly: false,
     });
     super.on('error', (error) => {
       console.log('Error Connecting to Redis');
