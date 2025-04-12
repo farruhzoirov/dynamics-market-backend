@@ -10,6 +10,7 @@ import {
   ValidateNested,
 } from 'class-validator';
 import { IsObjectId } from 'src/common/decorator/object-id.decarator';
+import { FileMetadataDto } from 'src/shared/dto/file-meta.dto';
 
 import {
   BaseModelDto,
@@ -17,8 +18,6 @@ import {
   UniversalQueryDto,
   UpdateBaseModelDto,
 } from 'src/shared/dto/base-model.dto';
-
-import { FileMetadataDto } from 'src/shared/dto/file-meta.dto';
 
 class AttributeDto {
   @ApiProperty()
