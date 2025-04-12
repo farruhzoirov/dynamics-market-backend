@@ -1,6 +1,8 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
+import { Request } from 'express';
+
 import {
   Product,
   ProductDocument,
@@ -33,7 +35,6 @@ import {
   ModelDataNotFoundByIdException,
 } from 'src/common/errors/model/model-based.exceptions';
 import { IHierarchyPayload } from 'src/shared/interfaces/hierarchy-payload';
-import { Request } from 'express';
 
 @Injectable()
 export class ProductService {

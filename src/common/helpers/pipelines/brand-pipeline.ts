@@ -8,6 +8,7 @@ export async function buildBrandPipeline(lang: string) {
     {
       $project: {
         name: { $ifNull: [`$name${lang}`, '$nameUz'] },
+        slug: { $ifNull: [`$slug${lang}`, '$slugUz'] },
         slugUz: 1,
         slugRu: 1,
         slugEn: 1,

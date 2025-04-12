@@ -25,6 +25,7 @@ export async function buildCategoryHierarchyPipeline(lang: string) {
       $project: {
         _id: 1,
         name: { $ifNull: [`$name${lang}`, '$nameUz'] },
+        slug: { $ifNull: [`$slug${lang}`, '$slugUz'] },
         slugUz: 1,
         slugRu: 1,
         slugEn: 1,
@@ -36,6 +37,7 @@ export async function buildCategoryHierarchyPipeline(lang: string) {
             in: {
               _id: '$$child._id',
               name: { $ifNull: [`$$child.name${lang}`, '$$child.nameUz'] },
+              slug: { $ifNull: [`$$child.slug${lang}`, '$$child.slugUz'] },
               slugUz: `$$child.slugUz`,
               slugRu: `$$child.slugRu`,
               slugEn: `$$child.slugEn`,
@@ -57,6 +59,9 @@ export async function buildCategoryHierarchyPipeline(lang: string) {
                         `$$grandchild.name${lang}`,
                         '$$grandchild.nameUz',
                       ],
+                    },
+                    slug: {
+                      $ifNull: [`$$grandchild.slug${lang}`, '$$grand.slugUz'],
                     },
                     slugUz: `$$grandchild.slugUz`,
                     slugRu: `$$grandchild.slugRu`,
@@ -83,6 +88,12 @@ export async function buildCategoryHierarchyPipeline(lang: string) {
                             $ifNull: [
                               `$$greatGrandchild.name${lang}`,
                               '$$greatGrandchild.nameUz',
+                            ],
+                          },
+                          slug: {
+                            $ifNull: [
+                              `$$greatGrandchild.slug${lang}`,
+                              '$$greatGrandchild.slugUz',
                             ],
                           },
                           slugUz: `$$greatGrandchild.slugUz`,
