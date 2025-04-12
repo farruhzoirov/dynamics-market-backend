@@ -25,7 +25,9 @@ export async function buildCategoryHierarchyPipeline(lang: string) {
       $project: {
         _id: 1,
         name: { $ifNull: [`$name${lang}`, '$nameUz'] },
-        slug: { $ifNull: [`$slug${lang}`, '$slugUz'] },
+        slugUz: 1,
+        slugRu: 1,
+        slugEn: 1,
         parentId: 1,
         children: {
           $map: {
@@ -34,7 +36,9 @@ export async function buildCategoryHierarchyPipeline(lang: string) {
             in: {
               _id: '$$child._id',
               name: { $ifNull: [`$$child.name${lang}`, '$$child.nameUz'] },
-              slug: { $ifNull: [`$$child.slug${lang}`, '$$child.slugUz'] },
+              slugUz: 1,
+              slugRu: 1,
+              slugEn: 1,
               parentId: '$$child.parentId',
               children: {
                 $map: {
@@ -54,12 +58,9 @@ export async function buildCategoryHierarchyPipeline(lang: string) {
                         '$$grandchild.nameUz',
                       ],
                     },
-                    slug: {
-                      $ifNull: [
-                        `$$grandchild.slug${lang}`,
-                        '$$grandchild.slugUz',
-                      ],
-                    },
+                    slugUz: 1,
+                    slugRu: 1,
+                    slugEn: 1,
                     parentId: '$$grandchild.parentId',
                     children: {
                       $map: {
@@ -84,12 +85,9 @@ export async function buildCategoryHierarchyPipeline(lang: string) {
                               '$$greatGrandchild.nameUz',
                             ],
                           },
-                          slug: {
-                            $ifNull: [
-                              `$$greatGrandchild.slug${lang}`,
-                              '$$greatGrandchild.slugUz',
-                            ],
-                          },
+                          slugUz: 1,
+                          slugRu: 1,
+                          slugEn: 1,
                           parentId: '$$greatGrandchild.parentId',
                         },
                       },
