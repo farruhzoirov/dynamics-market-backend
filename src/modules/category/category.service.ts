@@ -38,6 +38,7 @@ export class CategoryService {
       console.log('ok');
       return { data: cachedData };
     }
+    console.log('ok');
     const pipeline = await buildCategoryHierarchyPipeline(lang);
     const categories = await this.categoryModel.aggregate(pipeline).exec();
     await this.redisService.setData(cacheKey, categories);
