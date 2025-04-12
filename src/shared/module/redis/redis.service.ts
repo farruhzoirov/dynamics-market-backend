@@ -27,6 +27,7 @@ export class RedisService extends Redis {
 
   async getData(key: string) {
     const getDataByKey = await super.get(key);
+    console.log('GetDataByKey', getDataByKey);
     if (!getDataByKey) return null;
     return JSON.parse(getDataByKey);
   }
