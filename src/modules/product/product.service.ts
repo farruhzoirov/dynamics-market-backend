@@ -109,6 +109,10 @@ export class ProductService {
       sort = { viewedAt: -1 };
     }
 
+    if (body.descending) {
+      sort = { currentPrice: -1 };
+    }
+
     if (categorySlug) {
       const searchableFields = [`slug${lang}`];
       const filter = await universalSearchQuery(categorySlug, searchableFields);

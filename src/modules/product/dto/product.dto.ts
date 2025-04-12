@@ -65,6 +65,11 @@ export class GetProductsListForFrontDto extends UniversalQueryDto {
   @ApiProperty({ example: true })
   @IsOptional()
   @IsBoolean()
+  descending: boolean;
+
+  @ApiProperty({ example: true })
+  @IsOptional()
+  @IsBoolean()
   lastViewed: boolean;
 }
 
