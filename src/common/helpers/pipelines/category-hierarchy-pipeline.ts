@@ -61,7 +61,10 @@ export async function buildCategoryHierarchyPipeline(lang: string) {
                       ],
                     },
                     slug: {
-                      $ifNull: [`$$grandchild.slug${lang}`, '$$grand.slugUz'],
+                      $ifNull: [
+                        `$$grandchild.slug${lang}`,
+                        '$$grandchild.slugUz',
+                      ],
                     },
                     slugUz: `$$grandchild.slugUz`,
                     slugRu: `$$grandchild.slugRu`,
