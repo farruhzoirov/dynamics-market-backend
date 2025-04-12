@@ -33,7 +33,9 @@ export class CategoryService {
   async getCategoriesForFront(body: GetCategoryDto, lang: string) {
     const cacheKey = `categories:${lang}`;
     const cachedData = await this.redisService.getData(cacheKey);
+    console.log('cachedData', cachedData);
     if (cachedData) {
+      console.log('ok');
       return { data: cachedData };
     }
     const pipeline = await buildCategoryHierarchyPipeline(lang);
