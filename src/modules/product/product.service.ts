@@ -54,6 +54,7 @@ export class ProductService {
     if (!body.slug && !body._id) {
       return {};
     }
+
     if (lang && body.slug) {
       const ip = req.ip;
       const findProduct = await this.productModel
@@ -63,6 +64,7 @@ export class ProductService {
       if (!findProduct) {
         return {};
       }
+
       const pipeline = await buildOneProductPipeline(body.slug, lang);
       const data = await this.productModel.aggregate(pipeline).exec();
       this.updateProductViewsInBackground(findProduct._id.toString(), ip);
@@ -106,18 +108,19 @@ export class ProductService {
 
     const match: any = { isDeleted: false };
 
-    if (body.lastViewed) {
-      sort = { viewedAt: -1 };
+    if (body.sortByPrice === 'asc') {
+      sort.currentPrice = 1;
     }
 
-    if (body.descending) {
-      sort = { currentPrice: -1 };
+    if (body.sortByPrice === 'desc') {
+      sort.currentPrice = -1;
     }
 
     if (categorySlug) {
-      const searchableFields = [`slug${lang}`];
-      const filter = await universalSearchQuery(categorySlug, searchableFields);
-      const findCategory = await this.categoryModel.findOne(filter).lean();
+      const findCategory = await this.categoryModel
+        .findOne({ [`slug${lang}`]: categorySlug })
+        .lean();
+
       if (!findCategory) {
         return {
           data: [],

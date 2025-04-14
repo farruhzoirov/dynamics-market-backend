@@ -4,6 +4,7 @@ import { Type } from 'class-transformer';
 import {
   IsArray,
   IsBoolean,
+  IsEnum,
   IsNumber,
   IsOptional,
   IsString,
@@ -18,6 +19,11 @@ import {
   UniversalQueryDto,
   UpdateBaseModelDto,
 } from 'src/shared/dto/base-model.dto';
+
+enum SortByPrice {
+  ASC = 'asc',
+  DESC = 'desc',
+}
 
 class AttributeDto {
   @ApiProperty()
@@ -61,15 +67,10 @@ export class GetProductsListForFrontDto extends UniversalQueryDto {
   @IsString()
   priceRange: string;
 
-  @ApiProperty({ example: true })
+  @ApiProperty({ example: 'asc' })
   @IsOptional()
-  @IsBoolean()
-  descending: boolean;
-
-  @ApiProperty({ example: true })
-  @IsOptional()
-  @IsBoolean()
-  lastViewed: boolean;
+  @IsEnum(['asc', 'desc'])
+  sortByPrice: SortByPrice;
 }
 
 export class GetProductsListDto extends UniversalQueryDto {
