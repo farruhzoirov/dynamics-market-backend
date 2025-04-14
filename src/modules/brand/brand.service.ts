@@ -32,7 +32,7 @@ export class BrandService {
         await this.brandModel.aggregate(pipeline).exec(),
         await this.brandModel.countDocuments({ isDeleted: false }),
       ]);
-
+      
       return {
         data,
         total,

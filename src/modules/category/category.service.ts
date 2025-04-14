@@ -31,14 +31,14 @@ export class CategoryService {
   ) {}
 
   async getCategoriesForFront(body: GetCategoryDto, lang: string) {
-    const cacheKey = `categories:${lang}`;
-    const cachedData = await this.redisService.getData(cacheKey);
-    if (cachedData) {
-      return { data: cachedData };
-    }
+    // const cacheKey = `categories:${lang}`;
+    // const cachedData = await this.redisService.getData(cacheKey);
+    // if (cachedData) {
+    //   return { data: cachedData };
+    // }
     const pipeline = await buildCategoryHierarchyPipeline(lang);
     const categories = await this.categoryModel.aggregate(pipeline).exec();
-    await this.redisService.setData(cacheKey, categories);
+    // await this.redisService.setData(cacheKey, categories);
     return { data: categories };
   }
 
