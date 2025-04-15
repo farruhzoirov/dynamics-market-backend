@@ -160,7 +160,6 @@ export class ProductService {
       this.productModel.aggregate(pipeline).exec(),
       this.productModel.countDocuments(match),
     ]);
-
     return {
       data,
       total,
@@ -220,7 +219,6 @@ export class ProductService {
       throw new ModelDataNotFoundByIdException('Product not found');
     }
     const { nameUz, nameRu, nameEn } = updateBody;
-
     const slugUz = nameUz ? generateUniqueSlugForProduct(nameUz) : null;
     const slugRu = nameRu ? generateUniqueSlugForProduct(nameRu) : null;
     const slugEn = nameEn ? generateUniqueSlugForProduct(nameEn) : null;
