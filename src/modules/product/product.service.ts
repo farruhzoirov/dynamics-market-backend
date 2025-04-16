@@ -99,8 +99,9 @@ export class ProductService {
   ) {
     const { categorySlug, brandsSlug, priceRange } = body;
     let sort: Record<string, 1 | -1> = { createdAt: -1, views: -1 };
-    const limit = body.limit ? body.limit : 0;
+    const limit = body.limit ? body.limit : 12;
     const skip = body.page ? (body.page - 1) * limit : 0;
+    let pages = 0;
     let hierarchy: {
       categoryId: string;
       categorySlug: string;
@@ -161,9 +162,12 @@ export class ProductService {
       this.productModel.aggregate(pipeline).exec(),
       this.productModel.countDocuments(match),
     ]);
+
+    pages = Math.ceil(total / limit);
     return {
       data,
       total,
+      pages,
       hierarchy,
     };
   }
