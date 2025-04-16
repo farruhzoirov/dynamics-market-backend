@@ -67,12 +67,6 @@ export class CategoryController {
       return data;
     }
   }
-  @Post('get-list')
-  @HttpCode(HttpStatus.OK)
-  @Roles(UserRole.superAdmin, UserRole.admin)
-  async getCategoriesList(@Body() body: GetCategoryDto) {
-    return await this.categoryService.getCategoriesList(body);
-  }
 
   @Post('add')
   @Roles(UserRole.superAdmin, UserRole.admin)
