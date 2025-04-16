@@ -30,7 +30,7 @@ export class BrandController {
   constructor(private readonly brandService: BrandService) {}
 
   @HttpCode(HttpStatus.OK)
-  @Post('get-list')
+  @Post('list')
   async getBrandsList(
     @Body() body: GetBrandListsDto,
     @Headers('accept-language') lang: string,

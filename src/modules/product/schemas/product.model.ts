@@ -68,9 +68,6 @@ export class Product {
   @Prop({ type: Number, default: 0 })
   quantity: number;
 
-  @Prop({ type: Number, default: 0 })
-  rate: number;
-
   @Prop({
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Category',

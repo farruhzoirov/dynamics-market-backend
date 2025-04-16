@@ -56,8 +56,8 @@ export class AppModule implements NestModule {
       .exclude(
         '/',
         '/auth/google',
-        '/banner/get-list',
-        '/brand/get-list',
+        '/banner/list',
+        '/brand/list',
         '/category/list',
         '/product/list',
         '/product/get-product',

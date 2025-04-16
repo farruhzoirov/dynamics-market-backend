@@ -28,7 +28,7 @@ export class BannerController {
   constructor(private readonly bannerService: BannerService) {}
 
   @HttpCode(HttpStatus.OK)
-  @Post('get-list')
+  @Post('list')
   async getBannersList(
     @Body() body: GetBannersListDto,
     @Headers('Accept-Language') lang: string,

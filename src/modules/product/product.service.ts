@@ -6,6 +6,7 @@ import { Request } from 'express';
 import {
   Product,
   ProductDocument,
+  ProductViewDocument,
   ProductViews,
 } from './schemas/product.model';
 import { getFilteredResultsWithTotal } from 'src/common/helpers/universal-query-builder';
@@ -42,7 +43,7 @@ export class ProductService {
     @InjectModel(Product.name)
     private readonly productModel: Model<ProductDocument>,
     @InjectModel(ProductViews.name)
-    private readonly productViewModel: Model<ProductDocument>,
+    private readonly productViewModel: Model<ProductViewDocument>,
     @InjectModel(Category.name)
     private readonly categoryModel: Model<CategoryDocument>,
     @InjectModel(Brand.name)
