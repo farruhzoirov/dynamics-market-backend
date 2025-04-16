@@ -30,7 +30,7 @@ export class CategoryService {
     private readonly redisService: RedisService,
   ) {}
 
-  async getCategoriesForFront(body: GetCategoryDto, lang: string) {
+  async getCategoriesForFront(lang: string) {
     // const cacheKey = `categories:${lang}`;
     // const cachedData = await this.redisService.getData(cacheKey);
     // if (cachedData) {

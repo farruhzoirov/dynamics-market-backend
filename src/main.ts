@@ -2,12 +2,12 @@ import { ValidationPipe } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
-import * as process from 'node:process';
 import { NestExpressApplication } from '@nestjs/platform-express';
+import { ValidationError } from 'class-validator';
+import * as process from 'node:process';
+import * as dotenv from 'dotenv';
 import { AllExceptionsTo200Interceptor } from './common/interceptors/universal-response';
 import { ErrorCodes } from './common/errors/error-codes';
-import { ValidationError } from 'class-validator';
-import * as dotenv from 'dotenv';
 
 dotenv.config();
 
@@ -16,7 +16,8 @@ async function bootstrap() {
   app.enableCors({
     origin: '*',
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
-    allowedHeaders: 'Content-Type, Authorization, Accept-Language, Accept',
+    allowedHeaders:
+      'Content-Type, Authorization, Accept-Language, App-Type, Accept',
   });
 
   // Swagger based

@@ -5,6 +5,7 @@ import {
   HttpStatus,
   Headers,
   Post,
+  Req,
 } from '@nestjs/common';
 import { ApiBearerAuth } from '@nestjs/swagger';
 import { BannerService } from './banner.service';
@@ -21,6 +22,8 @@ import {
 } from 'src/shared/success/success-responses';
 import { ValidateObjectIdPipe } from 'src/common/pipes/object-id.pipe';
 import { AcceptLanguagePipe } from 'src/common/pipes/language.pipe';
+import { AcceptAppTypePipe } from 'src/common/pipes/app-type.pipe';
+import { AppType } from 'src/shared/enums/app-type.enum';
 
 @ApiBearerAuth()
 @Controller('banner')
@@ -29,18 +32,20 @@ export class BannerController {
 
   @HttpCode(HttpStatus.OK)
   @Post('list')
-  async getBannersList(
-    @Body() body: GetBannersListDto,
-    @Headers('Accept-Language') lang: string,
-  ) {
+  async getBannersList(@Body() body: GetBannersListDto, @Req() req: Request) {
+    let lang = req.headers['accept-language'] as string;
+    let appType = req.headers['app-type'] as string;
     lang = new AcceptLanguagePipe().transform(lang);
-    const isLanguageExist = lang ? true : false;
-    const bannersList = await this.bannerService.getBannersList(
-      body,
-      lang,
-      isLanguageExist,
-    );
-    return bannersList;
+    appType = new AcceptAppTypePipe().transform(appType);
+    let data;
+    if (appType === AppType.ADMIN) {
+      data = await this.bannerService.getBannersList(body);
+      return data;
+    }
+    if (appType === AppType.USER) {
+      data = await this.bannerService.getBannersListForFront(lang);
+      return data;
+    }
   }
 
   @Post('add')

@@ -29,22 +29,19 @@ export class BannerService {
     private readonly buildCategoryHierarchyService: BuildCategoryHierarchyService,
   ) {}
 
-  async getBannersList(
-    body: GetBannersListDto,
-    lang: string,
-    isLanguageExist: boolean,
-  ) {
-    if (!isLanguageExist) {
-      const [data, total] = await getFilteredResultsWithTotal(
-        body,
-        this.bannerModel,
-        ['titleUz', 'titleRu', 'titleEn'],
-      );
-      return {
-        data,
-        total,
-      };
-    }
+  async getBannersList(body: GetBannersListDto) {
+    const [data, total] = await getFilteredResultsWithTotal(
+      body,
+      this.bannerModel,
+      ['titleUz', 'titleRu', 'titleEn'],
+    );
+    return {
+      data,
+      total,
+    };
+  }
+
+  async getBannersListForFront(lang: string) {
     const pipeline = await buildBannerPipeline(lang);
     const [data, total] = await Promise.all([
       this.bannerModel.aggregate(pipeline).exec(),

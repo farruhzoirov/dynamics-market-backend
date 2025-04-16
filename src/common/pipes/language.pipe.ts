@@ -6,7 +6,7 @@ export class AcceptLanguagePipe implements PipeTransform {
   transform(value: any) {
     if (!value) return 'Uz';
     if (value && !this.allowedLanguages.includes(value)) {
-      return null;
+      return 'Uz';
     }
     const normalizedValue =
       value.charAt(0).toUpperCase() + value.slice(1).toLowerCase();

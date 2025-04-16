@@ -24,26 +24,25 @@ export class BrandService {
 
   async getBrandsList(
     body: GetBrandListsDto,
-    lang: string | null,
   ): Promise<{ data: any; total: number }> {
-    if (lang) {
-      const pipeline = await buildBrandPipeline(lang);
-      const [data, total] = await Promise.all([
-        await this.brandModel.aggregate(pipeline).exec(),
-        await this.brandModel.countDocuments({ isDeleted: false }),
-      ]);
-
-      return {
-        data,
-        total,
-      };
-    }
-
     const [data, total] = await getFilteredResultsWithTotal(
       body,
       this.brandModel,
       ['nameUz', 'nameRu', 'nameEn'],
     );
+    return {
+      data,
+      total,
+    };
+  }
+
+  async getBrandsListForFront(lang: string) {
+    const pipeline = await buildBrandPipeline(lang);
+    const [data, total] = await Promise.all([
+      await this.brandModel.aggregate(pipeline).exec(),
+      await this.brandModel.countDocuments({ isDeleted: false }),
+    ]);
+
     return {
       data,
       total,

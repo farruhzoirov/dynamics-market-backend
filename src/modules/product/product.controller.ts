@@ -26,6 +26,10 @@ import {
 } from 'src/shared/success/success-responses';
 import { AcceptLanguagePipe } from '../../common/pipes/language.pipe';
 import { Request } from 'express';
+import { AcceptAppTypePipe } from 'src/common/pipes/app-type.pipe';
+import { AppType } from 'src/shared/enums/app-type.enum';
+import { plainToInstance } from 'class-transformer';
+import { validateOrReject } from 'class-validator';
 
 @Controller('product')
 @ApiBearerAuth()
@@ -41,23 +45,30 @@ export class ProductController {
   })
   @HttpCode(HttpStatus.OK)
   @Post('list')
-  async getProductsForFront(
-    @Body() body: GetProductsListForFrontDto,
-    @Headers('Accept-Language') lang: string,
-  ) {
+  async getProductsForFront(@Body() body: any, @Req() req: Request) {
+    let lang = req.headers['accept-language'] as string;
+    let appType = req.headers['app-type'] as string;
     lang = new AcceptLanguagePipe().transform(lang);
-    const productList = await this.productService.getProductsListForFront(
-      body,
-      lang,
-    );
-    return productList;
-  }
+    appType = new AcceptAppTypePipe().transform(appType);
+    let data;
+    let validatedBody;
 
-  @HttpCode(HttpStatus.OK)
-  @Post('get-list')
-  async getProductsList(@Body() body: GetProductsListDto) {
-    const productsList = await this.productService.getProductList(body);
-    return productsList;
+    if (appType === AppType.ADMIN) {
+      validatedBody = plainToInstance(GetProductsListDto, body);
+      await validateOrReject(validatedBody);
+      data = await this.productService.getProductList(validatedBody);
+      return data;
+    }
+
+    if (appType === AppType.USER) {
+      validatedBody = plainToInstance(GetProductsListForFrontDto, body);
+      await validateOrReject(validatedBody);
+      data = await this.productService.getProductsListForFront(
+        validatedBody,
+        lang,
+      );
+      return data;
+    }
   }
 
   @HttpCode(HttpStatus.OK)
