@@ -7,7 +7,7 @@ import {
   Post,
   Req,
 } from '@nestjs/common';
-import { ApiBearerAuth } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiHeaders } from '@nestjs/swagger';
 import { BannerService } from './banner.service';
 import {
   AddBannerDto,
@@ -29,7 +29,20 @@ import { AppType } from 'src/shared/enums/app-type.enum';
 @Controller('banner')
 export class BannerController {
   constructor(private readonly bannerService: BannerService) {}
-
+  @ApiHeaders([
+    {
+      name: 'Accept-Language',
+      enum: ['uz', 'ru', 'en'],
+      description: 'Tilni ko‘rsatish kerak: uz, ru yoki en',
+      required: false,
+    },
+    {
+      name: 'App-Type',
+      enum: ['admin', 'user'],
+      description: 'App Type ko‘rsatish kerak: admin yoki user',
+      required: false,
+    },
+  ])
   @HttpCode(HttpStatus.OK)
   @Post('list')
   async getBannersList(@Body() body: GetBannersListDto, @Req() req: Request) {

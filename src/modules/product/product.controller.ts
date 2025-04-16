@@ -18,7 +18,7 @@ import {
   UpdateProductDto,
 } from './dto/product.dto';
 import { ProductService } from './product.service';
-import { ApiBearerAuth, ApiHeader } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiHeader, ApiHeaders } from '@nestjs/swagger';
 import {
   AddedSuccessResponse,
   DeletedSuccessResponse,
@@ -37,12 +37,20 @@ import { validateOrReject } from 'class-validator';
 export class ProductController {
   constructor(private readonly productService: ProductService) {}
 
-  @ApiHeader({
-    name: 'Accept-Language',
-    enum: ['uz', 'ru', 'en'],
-    description: 'Tilni ko‘rsatish kerak: uz, ru yoki en',
-    required: false,
-  })
+  @ApiHeaders([
+    {
+      name: 'Accept-Language',
+      enum: ['uz', 'ru', 'en'],
+      description: 'Tilni ko‘rsatish kerak: uz, ru yoki en',
+      required: false,
+    },
+    {
+      name: 'App-Type',
+      enum: ['admin', 'user'],
+      description: 'App Type ko‘rsatish kerak: admin yoki user',
+      required: false,
+    },
+  ])
   @HttpCode(HttpStatus.OK)
   @Post('list')
   async getProductsForFront(@Body() body: any, @Req() req: Request) {

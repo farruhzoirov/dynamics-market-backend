@@ -9,7 +9,7 @@ import {
   HttpStatus,
   Req,
 } from '@nestjs/common';
-import { ApiBearerAuth } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiHeaders } from '@nestjs/swagger';
 import { BrandService } from './brand.service';
 import {
   AddBrandDto,
@@ -32,6 +32,20 @@ import { AppType } from 'src/shared/enums/app-type.enum';
 export class BrandController {
   constructor(private readonly brandService: BrandService) {}
 
+  @ApiHeaders([
+    {
+      name: 'Accept-Language',
+      enum: ['uz', 'ru', 'en'],
+      description: 'Tilni ko‘rsatish kerak: uz, ru yoki en',
+      required: false,
+    },
+    {
+      name: 'App-Type',
+      enum: ['admin', 'user'],
+      description: 'App Type ko‘rsatish kerak: admin yoki user',
+      required: false,
+    },
+  ])
   @HttpCode(HttpStatus.OK)
   @Post('list')
   async getBrandsList(@Body() body: GetBrandListsDto, @Req() req: Request) {

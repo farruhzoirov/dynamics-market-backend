@@ -64,9 +64,7 @@ export class BannerService {
       };
       hierarchy?: IHierarchyPayload[];
       brandSlugs: {
-        slugUz: string;
-        slugRu: string;
-        slugEn: string;
+        slug: string;
       }[];
     } = {
       product: null,
@@ -116,9 +114,7 @@ export class BannerService {
 
       for (const brand of findBrands) {
         customBody.brandSlugs.push({
-          slugUz: brand.slugUz,
-          slugRu: brand.slugRu,
-          slugEn: brand.slugEn,
+          slug: brand.slug,
         });
       }
     }
@@ -139,9 +135,7 @@ export class BannerService {
       };
       hierarchy?: IHierarchyPayload[];
       brandSlugs: {
-        slugUz: string;
-        slugRu: string;
-        slugEn: string;
+        slug: string;
       }[];
     } = {
       product: null,
@@ -199,9 +193,7 @@ export class BannerService {
 
       for (const brand of findBrands) {
         customBody.brandSlugs.push({
-          slugUz: brand.slugUz,
-          slugRu: brand.slugRu,
-          slugEn: brand.slugEn,
+          slug: brand.slug,
         });
       }
     }

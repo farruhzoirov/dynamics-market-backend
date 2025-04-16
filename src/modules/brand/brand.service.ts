@@ -51,17 +51,11 @@ export class BrandService {
 
   async addBrand(body: AddBrandDto): Promise<void> {
     try {
-      const { nameUz, nameRu, nameEn } = body;
-
-      const slugUz = generateUniqueSlug(nameUz);
-      const slugRu = generateUniqueSlug(nameRu);
-      const slugEn = generateUniqueSlug(nameEn);
-
+      const { nameEn } = body;
+      const slug = generateUniqueSlug(nameEn);
       const createBody = {
         ...body,
-        slugUz,
-        slugRu,
-        slugEn,
+        slug,
       };
 
       await this.brandModel.create(createBody);
@@ -78,16 +72,12 @@ export class BrandService {
       throw new ModelDataNotFoundByIdException('Brand not found');
     }
 
-    const { nameUz, nameRu, nameEn } = updateBody;
-    const slugUz = nameUz ? generateUniqueSlug(nameUz) : null;
-    const slugRu = nameRu ? generateUniqueSlug(nameRu) : null;
-    const slugEn = nameEn ? generateUniqueSlug(nameEn) : null;
+    const { nameEn } = updateBody;
+    const slug = nameEn ? generateUniqueSlug(nameEn) : null;
 
     const forUpdateBody = {
       ...updateBody,
-      ...(slugUz && { slugUz }),
-      ...(slugRu && { slugRu }),
-      ...(slugEn && { slugEn }),
+      ...(slug && { slug }),
     };
 
     await this.brandModel.findByIdAndUpdate(updateBody._id, {

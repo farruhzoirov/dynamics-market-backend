@@ -16,13 +16,7 @@ export class Brand {
   nameEn: string;
 
   @Prop()
-  slugUz: string;
-
-  @Prop()
-  slugRu: string;
-
-  @Prop()
-  slugEn: string;
+  slug: string;
 
   @Prop({ default: null })
   website: string;
@@ -38,7 +32,5 @@ export class Brand {
 }
 
 export const BrandSchema = SchemaFactory.createForClass(Brand);
-BrandSchema.index({ slugUz: 1 });
-BrandSchema.index({ slugRu: 1 });
-BrandSchema.index({ slugEn: 1 });
+BrandSchema.index({ slug: 1 });
 BrandSchema.index({ nameUz: 1, nameRu: 1, nameEn: 1 });

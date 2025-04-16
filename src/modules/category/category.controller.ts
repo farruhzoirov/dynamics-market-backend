@@ -9,7 +9,7 @@ import {
   ValidationPipe,
 } from '@nestjs/common';
 import { CategoryService } from './category.service';
-import { ApiBearerAuth, ApiHeader } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiHeader, ApiHeaders } from '@nestjs/swagger';
 import { Roles } from '../../common/decorator/roles.decarator';
 import { UserRole } from '../../shared/enums/roles.enum';
 import {
@@ -41,12 +41,20 @@ export class CategoryController {
   //   };
   // }
 
-  @ApiHeader({
-    name: 'Accept-Language',
-    description: 'Sending language (uz, ru, en)',
-    required: true,
-    schema: { type: 'string', enum: ['uz', 'ru', 'en'], default: 'uz' },
-  })
+  @ApiHeaders([
+    {
+      name: 'Accept-Language',
+      enum: ['uz', 'ru', 'en'],
+      description: 'Tilni ko‘rsatish kerak: uz, ru yoki en',
+      required: false,
+    },
+    {
+      name: 'App-Type',
+      enum: ['admin', 'user'],
+      description: 'App Type ko‘rsatish kerak: admin yoki user',
+      required: false,
+    },
+  ])
   @HttpCode(HttpStatus.OK)
   @Post('list')
   async getCategoriesForFront(
