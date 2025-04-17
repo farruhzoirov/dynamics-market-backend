@@ -36,6 +36,7 @@ import {
   ModelDataNotFoundByIdException,
 } from 'src/common/errors/model/model-based.exceptions';
 import { IHierarchyPayload } from 'src/shared/interfaces/hierarchy-payload';
+import { AppType } from 'src/shared/enums/app-type.enum';
 
 @Injectable()
 export class ProductService {
@@ -56,7 +57,9 @@ export class ProductService {
       return {};
     }
 
-    if (lang && body.slug) {
+    const appType = req.headers['app-type'] as string;
+
+    if (appType === AppType.USER && body.slug) {
       const ip = req.ip;
       const findProduct = await this.productModel
         .findOne({ [`slug${lang}`]: body.slug })
@@ -92,6 +95,8 @@ export class ProductService {
       return findProduct;
     }
   }
+
+  async getProductForFront() {}
 
   async getProductsListForFront(
     body: GetProductsListForFrontDto,

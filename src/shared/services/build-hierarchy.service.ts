@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { IHierarchyPayload } from '../interfaces/hierarchy-payload';
+import { IHierarchyPayload } from '../interfaces/hierarchy-payload.js';
 import { InjectModel } from '@nestjs/mongoose';
 import {
   Category,
