@@ -2,7 +2,6 @@ import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { Request } from 'express';
-
 import {
   Product,
   ProductDocument,
@@ -52,31 +51,10 @@ export class ProductService {
     private readonly buildCategoryHierarchyService: BuildCategoryHierarchyService,
   ) {}
 
-  async getProduct(body: GetProductDto, req: Request, lang: string | null) {
+  async getProduct(body: GetProductDto) {
     if (!body.slug && !body._id) {
       return {};
     }
-
-    const appType = req.headers['app-type'] as string;
-
-    if (appType === AppType.USER && body.slug) {
-      const ip = req.ip;
-      const findProduct = await this.productModel
-        .findOne({ [`slug${lang}`]: body.slug })
-        .lean();
-
-      if (!findProduct) {
-        return {};
-      }
-
-      const pipeline = await buildOneProductPipeline(body.slug, lang);
-      const data = await this.productModel.aggregate(pipeline).exec();
-      this.updateProductViewsInBackground(findProduct._id.toString(), ip);
-      return {
-        data,
-      };
-    }
-
     if (body.slug) {
       const searchableFields = ['slugUz', 'slugRu', 'slugEn'];
       const filter = await universalSearchQuery(body.slug, searchableFields);
@@ -96,7 +74,26 @@ export class ProductService {
     }
   }
 
-  async getProductForFront() {}
+  async getProductForFront(body: GetProductDto, req: Request, lang: string) {
+    if (!body.slug) {
+      return {};
+    }
+    const ip = req.ip;
+    const findProduct = await this.productModel
+      .findOne({ [`slug${lang}`]: body.slug })
+      .lean();
+
+    if (!findProduct) {
+      return {};
+    }
+
+    const pipeline = await buildOneProductPipeline(body.slug, lang);
+    const data = await this.productModel.aggregate(pipeline).exec();
+    this.updateProductViewsInBackground(findProduct._id.toString(), ip);
+    return {
+      data,
+    };
+  }
 
   async getProductsListForFront(
     body: GetProductsListForFrontDto,

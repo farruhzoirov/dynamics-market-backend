@@ -33,31 +33,48 @@ import { validateOrReject } from 'class-validator';
 
 @Controller('product')
 @ApiBearerAuth()
+// @ApiHeaders([
+//   {
+//     name: 'Accept-Language',
+//     enum: ['uz', 'ru', 'en'],
+//     description: 'Tilni ko‘rsatish kerak: uz, ru yoki en',
+//     required: false,
+//   },
+//   {
+//     name: 'App-Type',
+//     enum: ['admin', 'user'],
+//     description: 'App Type ko‘rsatish kerak: admin yoki user',
+//     required: false,
+//   },
+// ])
 @UsePipes(new ValidationPipe({ whitelist: true }))
 export class ProductController {
   constructor(private readonly productService: ProductService) {}
 
-  @ApiHeaders([
-    {
-      name: 'Accept-Language',
-      enum: ['uz', 'ru', 'en'],
-      description: 'Tilni ko‘rsatish kerak: uz, ru yoki en',
-      required: false,
-    },
-    {
-      name: 'App-Type',
-      enum: ['admin', 'user'],
-      description: 'App Type ko‘rsatish kerak: admin yoki user',
-      required: false,
-    },
-  ])
+  // @ApiHeaders([
+  //   {
+  //     name: 'Accept-Language',
+  //     enum: ['uz', 'ru', 'en'],
+  //     description: 'Tilni ko‘rsatish kerak: uz, ru yoki en',
+  //     required: false,
+  //   },
+  //   {
+  //     name: 'App-Type',
+  //     enum: ['admin', 'user'],
+  //     description: 'App Type ko‘rsatish kerak: admin yoki user',
+  //     required: false,
+  //   },
+  // ])
   @HttpCode(HttpStatus.OK)
   @Post('list')
-  async getProductsForFront(@Body() body: any, @Req() req: Request) {
-    let lang = req.headers['accept-language'] as string;
-    let appType = req.headers['app-type'] as string;
-    lang = new AcceptLanguagePipe().transform(lang);
+  async getProductsForFront(
+    @Body() body: any,
+    @Headers('Accept-Language') lang: string,
+    @Headers('App-Type') appType: string,
+    @Req() req: Request,
+  ) {
     appType = new AcceptAppTypePipe().transform(appType);
+    lang = new AcceptLanguagePipe().transform(lang);
     let data;
     let validatedBody;
 
@@ -83,12 +100,21 @@ export class ProductController {
   @Post('get-product')
   async getProduct(
     @Body() body: GetProductDto,
-    @Headers('Accept-Language') lang: string | undefined,
+    @Headers('Accept-Language') lang: string,
+    @Headers('App-Type') appType: string,
     @Req() req: Request,
   ) {
     lang = new AcceptLanguagePipe().transform(lang);
-    const product = await this.productService.getProduct(body, req, lang);
-    return product;
+    appType = new AcceptAppTypePipe().transform(appType);
+    let data;
+    if (appType === AppType.ADMIN) {
+      data = await this.productService.getProduct(body);
+      return data;
+    }
+    if (appType === AppType.USER) {
+      data = await this.productService.getProductForFront(body, req, lang);
+      return data;
+    }
   }
 
   @Post('add')
