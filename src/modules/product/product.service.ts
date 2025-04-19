@@ -36,6 +36,7 @@ import {
 } from 'src/common/errors/model/model-based.exceptions';
 import { IHierarchyPayload } from 'src/shared/interfaces/hierarchy-payload';
 import { AppType } from 'src/shared/enums/app-type.enum';
+import { buildCategoryHierarchyPipeline } from 'src/common/helpers/pipelines/category-hierarchy-pipeline';
 
 @Injectable()
 export class ProductService {
@@ -99,7 +100,7 @@ export class ProductService {
     body: GetProductsListForFrontDto,
     lang: string,
   ) {
-    const { categorySlug, brandsSlug, priceRange } = body;
+    const { category, brands, price } = body;
     let sort: Record<string, 1 | -1> = { createdAt: -1, views: -1 };
     const limit = body.limit ? body.limit : 12;
     const skip = body.page ? (body.page - 1) * limit : 0;
@@ -112,17 +113,17 @@ export class ProductService {
 
     const match: any = { isDeleted: false };
 
-    if (body.sortByPrice === 'asc') {
+    if (body.sort === 'more-expensive') {
       sort.currentPrice = 1;
     }
 
-    if (body.sortByPrice === 'desc') {
+    if (body.sort === 'cheaper') {
       sort.currentPrice = -1;
     }
 
-    if (categorySlug) {
+    if (category) {
       const findCategory = await this.categoryModel
-        .findOne({ [`slug${lang}`]: categorySlug })
+        .findOne({ [`slug${lang}`]: category })
         .lean();
 
       if (!findCategory) {
@@ -139,10 +140,10 @@ export class ProductService {
       match.categoryId = findCategory._id;
     }
 
-    if (brandsSlug?.length) {
+    if (brands?.length) {
       const brandIds = await this.brandModel
         .find({
-          [`slug${lang}`]: { $in: brandsSlug },
+          [`slug${lang}`]: { $in: brands },
         })
         .distinct('_id');
       if (!brandIds.length) {
@@ -154,8 +155,8 @@ export class ProductService {
       match.brandId = { $in: brandIds };
     }
 
-    if (priceRange && priceRange.split('').includes('-')) {
-      const [minPrice, maxPrice] = priceRange.split('-');
+    if (price && price.split('').includes('-')) {
+      const [minPrice, maxPrice] = price.split('-');
       match.currentPrice = { $gte: +minPrice, $lte: +maxPrice };
     }
 

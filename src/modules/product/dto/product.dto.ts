@@ -21,8 +21,8 @@ import {
 } from 'src/shared/dto/base-model.dto';
 
 enum SortByPrice {
-  ASC = 'asc',
-  DESC = 'desc',
+  CHEAPER = 'cheaper',
+  MOREEXPENSIVE = 'more-expensive',
 }
 
 class AttributeDto {
@@ -55,22 +55,22 @@ export class GetProductsListForFrontDto extends UniversalQueryDto {
   @ApiProperty()
   @IsOptional()
   @IsString()
-  categorySlug: string;
+  category: string;
 
   @ApiProperty()
   @IsOptional()
   @IsArray()
-  brandsSlug: string[];
+  brands: string[];
 
   @ApiProperty({ example: '0-10000' })
   @IsOptional()
   @IsString()
-  priceRange: string;
+  price: string;
 
-  @ApiProperty({ example: 'asc' })
+  @ApiProperty({ example: 'cheaper' })
   @IsOptional()
-  @IsEnum(['asc', 'desc'])
-  sortByPrice: SortByPrice;
+  @IsEnum(['cheaper', 'more-expensive'])
+  sort: SortByPrice;
 }
 
 export class GetProductsListDto extends UniversalQueryDto {
