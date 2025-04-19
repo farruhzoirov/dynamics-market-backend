@@ -141,7 +141,7 @@ export class ProductService {
         categorySlug: item[`categorySlug${lang}`] as string,
         categoryName: item[`categoryName${lang}`] as string,
       }));
-      match.hierarchyPath = findCategory._id;
+      match.hierarchyPath = findCategory._id.toString();
     }
 
     if (brands?.length) {
@@ -166,7 +166,6 @@ export class ProductService {
     }
 
     const pipeline = await buildProductPipeline(match, sort, lang, limit, skip);
-    console.log(pipeline);
     const [data, total] = await Promise.all([
       this.productModel.aggregate(pipeline).exec(),
       this.productModel.countDocuments(match),
