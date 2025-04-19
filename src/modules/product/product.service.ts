@@ -141,7 +141,7 @@ export class ProductService {
         categorySlug: item[`categorySlug${lang}`] as string,
         categoryName: item[`categoryName${lang}`] as string,
       }));
-      match.categoryId = findCategory._id;
+      match.hierarchyPath = findCategory._id;
     }
 
     if (brands?.length) {
