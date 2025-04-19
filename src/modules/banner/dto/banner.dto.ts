@@ -16,7 +16,7 @@ import {
   DeleteBaseModelDto,
   UniversalQueryDto,
 } from 'src/shared/dto/base-model.dto';
-import { IsObjectId } from 'src/common/decorator/object-id.decarator';
+import { IsObjectId } from 'src/common/decorators/object-id.decarator';
 
 export class GetBannersListDto extends UniversalQueryDto {}
 

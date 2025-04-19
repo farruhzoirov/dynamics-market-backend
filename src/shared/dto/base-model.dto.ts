@@ -1,6 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsNumber, IsOptional, IsString } from 'class-validator';
-import { IsObjectId } from 'src/common/decorator/object-id.decarator';
+import { IsObjectId } from 'src/common/decorators/object-id.decarator';
 
 export class UniversalQueryDto {
   @ApiProperty()

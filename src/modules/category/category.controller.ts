@@ -10,7 +10,7 @@ import {
 } from '@nestjs/common';
 import { CategoryService } from './category.service';
 import { ApiBearerAuth, ApiHeader, ApiHeaders } from '@nestjs/swagger';
-import { Roles } from '../../common/decorator/roles.decarator';
+import { Roles } from '../../common/decorators/roles.decarator';
 import { UserRole } from '../../shared/enums/roles.enum';
 import {
   AddCategoryDto,

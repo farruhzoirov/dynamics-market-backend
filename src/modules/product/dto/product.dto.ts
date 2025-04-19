@@ -10,7 +10,7 @@ import {
   IsString,
   ValidateNested,
 } from 'class-validator';
-import { IsObjectId } from 'src/common/decorator/object-id.decarator';
+import { IsObjectId } from 'src/common/decorators/object-id.decarator';
 import { FileMetadataDto } from 'src/shared/dto/file-meta.dto';
 
 import {

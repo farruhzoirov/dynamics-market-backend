@@ -13,7 +13,7 @@ import { BannerModule } from './modules/banner/banner.module';
 import { ReviewModule } from './modules/review/review.module';
 import { RolesGuard } from './common/guards/roles.guard';
 import databaseConfig, { CONFIG_DATABASE } from './config/database.config';
-import { CardModule } from './modules/card/card.module';
+import { CartModule } from './modules/cart/cart.module';
 import googleConfig from './config/google.config';
 import jwtConfig from './config/jwt.config';
 import redisConfig from './config/redis.config';
@@ -39,10 +39,10 @@ import redisConfig from './config/redis.config';
     CategoryModule,
     BrandModule,
     ProductModule,
-    FileUploadModule,
     BannerModule,
     ReviewModule,
-    CardModule,
+    CartModule,
+    FileUploadModule,
   ],
   providers: [
     {

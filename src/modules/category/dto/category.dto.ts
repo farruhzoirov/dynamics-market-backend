@@ -15,7 +15,7 @@ import {
 } from 'src/shared/dto/base-model.dto';
 
 import { FileMetadataDto } from 'src/shared/dto/file-meta.dto';
-import { IsObjectId } from 'src/common/decorator/object-id.decarator';
+import { IsObjectId } from 'src/common/decorators/object-id.decarator';
 
 // dto for query
 export class GetCategoryDto extends UniversalQueryDto {
