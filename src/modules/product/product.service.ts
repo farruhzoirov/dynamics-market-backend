@@ -37,6 +37,7 @@ import {
 import { IHierarchyPayload } from 'src/shared/interfaces/hierarchy-payload';
 import { AppType } from 'src/shared/enums/app-type.enum';
 import { buildCategoryHierarchyPipeline } from 'src/common/helpers/pipelines/category-hierarchy-pipeline';
+import { pipe } from 'rxjs';
 
 @Injectable()
 export class ProductService {
@@ -165,6 +166,7 @@ export class ProductService {
     }
 
     const pipeline = await buildProductPipeline(match, sort, lang, limit, skip);
+    console.log(pipeline);
     const [data, total] = await Promise.all([
       this.productModel.aggregate(pipeline).exec(),
       this.productModel.countDocuments(match),
