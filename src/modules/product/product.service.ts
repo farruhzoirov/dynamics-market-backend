@@ -101,6 +101,7 @@ export class ProductService {
     lang: string,
   ) {
     const { category, brands, price } = body;
+    console.log('Body', body);
     let sort: Record<string, 1 | -1> = { createdAt: -1, views: -1 };
     const limit = body.limit ? body.limit : 12;
     const skip = body.page ? (body.page - 1) * limit : 0;
@@ -126,6 +127,8 @@ export class ProductService {
         .findOne({ [`slug${lang}`]: category })
         .lean();
 
+      console.log('findCategory', findCategory);
+
       if (!findCategory) {
         return {
           data: [],
@@ -146,6 +149,7 @@ export class ProductService {
           [`slug${lang}`]: { $in: brands },
         })
         .distinct('_id');
+      console.log('brands', brandIds);
       if (!brandIds.length) {
         return {
           data: [],
