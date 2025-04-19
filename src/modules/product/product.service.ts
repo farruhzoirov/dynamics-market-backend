@@ -115,11 +115,11 @@ export class ProductService {
     const match: any = { isDeleted: false };
 
     if (body.sort === 'more-expensive') {
-      sort.currentPrice = -1;
+      sort = { currentPrice: -1 };
     }
 
     if (body.sort === 'cheaper') {
-      sort.currentPrice = 1;
+      sort = { currentPrice: 1 };
     }
 
     if (category) {
