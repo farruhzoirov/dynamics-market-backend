@@ -23,6 +23,7 @@ import {
 enum SortByPrice {
   CHEAPER = 'cheaper',
   MOREEXPENSIVE = 'more-expensive',
+  HIGHRATING = 'high-rating',
 }
 
 class AttributeDto {
