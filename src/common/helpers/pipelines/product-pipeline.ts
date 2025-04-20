@@ -12,6 +12,20 @@ export async function buildProductPipeline(
       $match: match,
     },
     {
+      $lookup: {
+        from: 'brands',
+        localField: 'brandId',
+        foreignField: '_id',
+        as: 'brand',
+      },
+    },
+    {
+      $unwind: {
+        path: '$brand',
+        preserveNullAndEmptyArrays: true,
+      },
+    },
+    {
       $project: {
         name: lang ? { $ifNull: [`$name${lang}`, null] } : null,
         description: lang ? { $ifNull: [`$description${lang}`, null] } : null,
@@ -57,6 +71,14 @@ export async function buildProductPipeline(
           },
         },
         hierarchyPath: 1,
+
+        brand: {
+          _id: '$brand._id',
+          logo: '$brand.logo',
+          name: lang ? { $ifNull: [`$brand.name${lang}`, null] } : null,
+          website: 1,
+          slug: 1,
+        },
       },
     },
     {
