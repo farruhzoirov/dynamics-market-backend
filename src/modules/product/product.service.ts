@@ -35,9 +35,11 @@ import {
   ModelDataNotFoundByIdException,
 } from 'src/common/errors/model/model-based.exceptions';
 import { IHierarchyPayload } from 'src/shared/interfaces/hierarchy-payload';
-import { AppType } from 'src/shared/enums/app-type.enum';
-import { buildCategoryHierarchyPipeline } from 'src/common/helpers/pipelines/category-hierarchy-pipeline';
-import { pipe } from 'rxjs';
+
+import * as sharp from 'sharp';
+import * as path from 'node:path';
+import * as fs from 'node:fs/promises';
+import { FileMetadataDto } from '../../shared/dto/file-meta.dto';
 
 @Injectable()
 export class ProductService {
@@ -191,7 +193,7 @@ export class ProductService {
 
   async addProduct(body: AddProductDto): Promise<void> {
     try {
-      const { nameUz, nameRu, nameEn, categoryId } = body;
+      const { nameUz, nameRu, nameEn, categoryId, images } = body;
       const findCategory = await this.categoryModel.findById(categoryId).lean();
 
       if (!findCategory) {
@@ -206,8 +208,34 @@ export class ProductService {
         await this.buildCategoryHierarchyService.buildCategoryHierarchy(
           categoryId,
         );
+      const thumbs: FileMetadataDto[] = [];
+      for (const image of images) {
+        const fileName = path.basename(image.path);
+        const thumbName = `thumb-${fileName}`;
+        const thumbPath = path.join('uploads/thumbs', thumbName);
+        await fs.mkdir(path.dirname(thumbPath), { recursive: true });
+        const thumbInfo = await sharp(image.path)
+          .resize(100, 100)
+          .toFile(thumbPath);
+
+        thumbs.push({
+          fieldname: 'thumb',
+          originalname: fileName,
+          encoding: '7bit',
+          mimetype: thumbInfo.format
+            ? `image/${thumbInfo.format}`
+            : 'image/jpeg',
+          destination: 'uploads/thumbs',
+          filename: thumbName,
+          path: thumbPath,
+          size: thumbInfo.size,
+          extension: path.extname(thumbPath).replace('.', ''),
+        });
+      }
+
       const createBody = {
         ...body,
+        thumbs,
         slugUz,
         slugRu,
         slugEn,

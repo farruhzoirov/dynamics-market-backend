@@ -87,6 +87,10 @@ export class Product {
   @Prop({ type: [FileMetadata], default: [] })
   images: FileMetadata[];
 
+  @Prop({ type: [FileMetadata], default: [] })
+  thumbs: FileMetadata[];
+
+  @Prop()
   @Prop({ type: Number, default: 1 })
   status: number;
 
