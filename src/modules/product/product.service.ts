@@ -230,7 +230,7 @@ export class ProductService {
   }
 
   async updateProduct(
-    updateBody: UpdateProductDto & { thumbs: FileMetadataDto[] },
+    updateBody: UpdateProductDto & Partial<{ thumbs: FileMetadataDto[] }>,
   ): Promise<void> {
     const findProduct = await this.productModel.findById(updateBody._id);
     if (!findProduct) {
