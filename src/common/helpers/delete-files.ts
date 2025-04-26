@@ -1,4 +1,4 @@
-import fs from 'fs/promises';
+import * as fs from 'fs/promises';
 import { FileMetadata } from '../schema/file-meta.schema';
 
 export const deleteFiles = async (images: FileMetadata[]) => {
