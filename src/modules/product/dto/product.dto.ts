@@ -8,6 +8,7 @@ import {
   IsNumber,
   IsOptional,
   IsString,
+  ValidateIf,
   ValidateNested,
 } from 'class-validator';
 import { IsObjectId } from 'src/common/decorators/object-id.decarator';
@@ -115,11 +116,20 @@ export class AddProductDto extends BaseModelDto {
   descriptionEn: string;
 
   @ApiProperty()
+  @ValidateIf(
+    (o) =>
+      o.oldPrice !== null && o.oldPrice !== undefined && o.currentPrice !== '',
+  )
   @IsNumber()
   @IsOptional()
   oldPrice: number;
 
   @ApiProperty()
+  @ValidateIf(
+    (c) =>
+      c.oldPrice !== null && c.oldPrice !== undefined && c.currentPrice !== '',
+  )
+  @IsOptional()
   @IsNumber()
   currentPrice: number;
 
@@ -182,11 +192,19 @@ export class UpdateProductDto extends UpdateBaseModelDto {
   descriptionEn: string;
 
   @ApiProperty()
+  @ValidateIf(
+    (o) =>
+      o.oldPrice !== null && o.oldPrice !== undefined && o.currentPrice !== '',
+  )
   @IsNumber()
   @IsOptional()
   oldPrice: number;
 
   @ApiProperty()
+  @ValidateIf(
+    (c) =>
+      c.oldPrice !== null && c.oldPrice !== undefined && c.currentPrice !== '',
+  )
   @IsOptional()
   @IsNumber()
   currentPrice: number;
