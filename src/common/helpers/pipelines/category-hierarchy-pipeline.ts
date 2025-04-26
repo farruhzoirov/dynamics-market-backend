@@ -21,19 +21,18 @@ export async function buildCategoryHierarchyPipeline(lang: string) {
         as: 'directChildren',
       },
     },
-    // directChildren sort qilamiz
     {
       $set: {
         directChildren: {
           $sortArray: {
             input: '$directChildren',
-            sortBy: { nameUz: 1 }, // yoki slugUz: 1; tartibni nimaga qarab istasang
+            sortBy: { nameUz: 1 }, 
           },
         },
         allDescendants: {
           $sortArray: {
             input: '$allDescendants',
-            sortBy: { nameUz: 1 }, // descendants ham sorted
+            sortBy: { nameUz: 1 }
           },
         },
       },

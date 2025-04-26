@@ -40,6 +40,8 @@ import * as sharp from 'sharp';
 import * as path from 'node:path';
 import * as fs from 'node:fs/promises';
 import { FileMetadataDto } from '../../shared/dto/file-meta.dto';
+import { generateThumbs } from 'src/common/helpers/generate-thumbs';
+import { deleteFiles } from 'src/common/helpers/delete-files';
 
 @Injectable()
 export class ProductService {
@@ -208,30 +210,7 @@ export class ProductService {
         await this.buildCategoryHierarchyService.buildCategoryHierarchy(
           categoryId,
         );
-      const thumbs: FileMetadataDto[] = [];
-      for (const image of images) {
-        const fileName = path.basename(image.path);
-        const thumbName = `thumb-${fileName}`;
-        const thumbPath = path.join('uploads/thumbs', thumbName);
-        await fs.mkdir(path.dirname(thumbPath), { recursive: true });
-        const thumbInfo = await sharp(image.path)
-          .resize(100, 100)
-          .toFile(thumbPath);
-
-        thumbs.push({
-          fieldname: 'thumb',
-          originalname: fileName,
-          encoding: '7bit',
-          mimetype: thumbInfo.format
-            ? `image/${thumbInfo.format}`
-            : 'image/jpeg',
-          destination: 'uploads/thumbs',
-          filename: thumbName,
-          path: thumbPath,
-          size: thumbInfo.size,
-          extension: path.extname(thumbPath).replace('.', ''),
-        });
-      }
+      const thumbs: FileMetadataDto[] = await generateThumbs(images);
 
       const createBody = {
         ...body,
@@ -250,12 +229,14 @@ export class ProductService {
     }
   }
 
-  async updateProduct(updateBody: UpdateProductDto): Promise<void> {
+  async updateProduct(
+    updateBody: UpdateProductDto & { thumbs: FileMetadataDto[] },
+  ): Promise<void> {
     const findProduct = await this.productModel.findById(updateBody._id);
     if (!findProduct) {
       throw new ModelDataNotFoundByIdException('Product not found');
     }
-    const { nameUz, nameRu, nameEn } = updateBody;
+    const { nameUz, nameRu, nameEn, images } = updateBody;
     const slugUz = nameUz ? generateUniqueSlugForProduct(nameUz) : null;
     const slugRu = nameRu ? generateUniqueSlugForProduct(nameRu) : null;
     const slugEn = nameEn ? generateUniqueSlugForProduct(nameEn) : null;
@@ -263,6 +244,11 @@ export class ProductService {
       await this.buildCategoryHierarchyService.buildCategoryHierarchy(
         updateBody.categoryId,
       );
+
+    if (images.length) {
+      await deleteFiles(findProduct.images);
+      updateBody.thumbs = await generateThumbs(updateBody.images);
+    }
 
     const forUpdateBody = {
       ...updateBody,
