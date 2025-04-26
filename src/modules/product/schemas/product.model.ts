@@ -91,7 +91,6 @@ export class Product {
   @Prop({ type: [FileMetadata], default: [] })
   thumbs: FileMetadata[];
 
-  @Prop()
   @Prop({ type: Number, default: 1 })
   status: number;
 
