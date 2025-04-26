@@ -21,6 +21,23 @@ export async function buildCategoryHierarchyPipeline(lang: string) {
         as: 'directChildren',
       },
     },
+    // directChildren sort qilamiz
+    {
+      $set: {
+        directChildren: {
+          $sortArray: {
+            input: '$directChildren',
+            sortBy: { nameUz: 1 }, // yoki slugUz: 1; tartibni nimaga qarab istasang
+          },
+        },
+        allDescendants: {
+          $sortArray: {
+            input: '$allDescendants',
+            sortBy: { nameUz: 1 }, // descendants ham sorted
+          },
+        },
+      },
+    },
     {
       $project: {
         _id: 1,
