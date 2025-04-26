@@ -112,7 +112,7 @@ export class ProductService {
       categoryName: string;
     }[] = [];
 
-    const match: any = { isDeleted: false };
+    const match: any = { isDeleted: false, status: 0 };
 
     if (body.sort === 'more-expensive') {
       sort = { currentPrice: -1 };
