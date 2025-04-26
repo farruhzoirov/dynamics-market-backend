@@ -3,6 +3,8 @@ import { FileMetadata } from '../schema/file-meta.schema';
 
 export const deleteFiles = async (images: FileMetadata[]) => {
   for (const image of images) {
-    await fs.unlink(image.path);
+    if (fs.access(image.path)) {
+      await fs.unlink(image.path);
+    }
   }
 };

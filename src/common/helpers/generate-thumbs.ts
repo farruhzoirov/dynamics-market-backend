@@ -1,6 +1,6 @@
-import path from 'path';
-import fs from 'fs/promises';
-import sharp from 'sharp';
+import * as path from 'path';
+import * as fs from 'fs/promises';
+import * as sharp from 'sharp';
 import { FileMetadataDto } from 'src/shared/dto/file-meta.dto';
 
 export const generateThumbs = async (images: FileMetadataDto[]) => {

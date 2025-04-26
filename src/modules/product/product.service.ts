@@ -35,10 +35,6 @@ import {
   ModelDataNotFoundByIdException,
 } from 'src/common/errors/model/model-based.exceptions';
 import { IHierarchyPayload } from 'src/shared/interfaces/hierarchy-payload';
-
-import * as sharp from 'sharp';
-import * as path from 'node:path';
-import * as fs from 'node:fs/promises';
 import { FileMetadataDto } from '../../shared/dto/file-meta.dto';
 import { generateThumbs } from 'src/common/helpers/generate-thumbs';
 import { deleteFiles } from 'src/common/helpers/delete-files';
