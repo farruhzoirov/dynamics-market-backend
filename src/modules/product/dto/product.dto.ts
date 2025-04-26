@@ -170,6 +170,11 @@ export class AddProductDto extends BaseModelDto {
   @Type(() => FileMetadataDto)
   images: FileMetadataDto[];
 
+  @ApiProperty({ enum: InStockStatus })
+  @IsOptional()
+  @IsEnum(InStockStatus)
+  availability: InStockStatus;
+
   @ApiProperty()
   @IsOptional()
   details: any;
