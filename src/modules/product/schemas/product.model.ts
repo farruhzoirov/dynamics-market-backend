@@ -1,6 +1,7 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import mongoose, { HydratedDocument } from 'mongoose';
 import { FileMetadata } from 'src/common/schema/file-meta.schema';
+import { InStockStatus } from 'src/shared/enums/stock-status.enum';
 
 export type ProductDocument = HydratedDocument<Product>;
 export type ProductViewDocument = HydratedDocument<ProductViews>;
@@ -62,7 +63,7 @@ export class Product {
   @Prop({ type: Number, default: null })
   oldPrice: number;
 
-  @Prop({ type: Number, default: 0, required: true })
+  @Prop({ type: Number, default: null })
   currentPrice: number;
 
   @Prop({ type: Number, default: 0 })
@@ -135,8 +136,8 @@ export class Product {
   @Prop({ type: Date, default: null })
   viewedAt: Date;
 
-  @Prop({ type: Boolean, default: true })
-  inStock: boolean;
+  @Prop({ enum: InStockStatus, default: InStockStatus.IN_STOCK })
+  availability: InStockStatus;
 
   @Prop({ type: mongoose.Schema.Types.Mixed })
   details: any;

@@ -19,6 +19,7 @@ import {
   UniversalQueryDto,
   UpdateBaseModelDto,
 } from 'src/shared/dto/base-model.dto';
+import { InStockStatus } from 'src/shared/enums/stock-status.enum';
 
 // enum SortByPrice {
 //   CHEAPER = 'cheaper',
@@ -236,10 +237,10 @@ export class UpdateProductDto extends UpdateBaseModelDto {
   @IsNumber()
   status: number;
 
-  @ApiProperty()
+  @ApiProperty({ enum: InStockStatus })
   @IsOptional()
-  @IsBoolean()
-  inStock: boolean;
+  @IsEnum(InStockStatus)
+  availability: InStockStatus;
 
   @ApiProperty()
   @IsOptional()
