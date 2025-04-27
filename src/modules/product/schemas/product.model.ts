@@ -2,6 +2,7 @@ import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import mongoose, { HydratedDocument } from 'mongoose';
 import { FileMetadata } from 'src/common/schema/file-meta.schema';
 import { InStockStatus } from 'src/shared/enums/stock-status.enum';
+import { IHierarchyPayload } from 'src/shared/interfaces/hierarchy-payload';
 
 export type ProductDocument = HydratedDocument<Product>;
 export type ProductViewDocument = HydratedDocument<ProductViews>;
@@ -114,26 +115,13 @@ export class Product {
     ],
     default: [],
   })
-  hierarchy: [
-    {
-      categoryId: string;
-      categorySlugUz: string;
-      categorySlugRu: string;
-      categorySlugEn: string;
-      categoryNameUz: string;
-      categoryNameRu: string;
-      categoryNameEn: string;
-    },
-  ];
+  hierarchy: IHierarchyPayload[];
 
   @Prop({ type: [String], default: [] })
   hierarchyPath: string[];
 
   @Prop({ type: Number, default: 0 })
   views: number;
-
-  @Prop({ type: Date, default: null })
-  viewedAt: Date;
 
   @Prop({ enum: InStockStatus, default: InStockStatus.IN_STOCK })
   availability: InStockStatus;

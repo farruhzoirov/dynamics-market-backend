@@ -17,8 +17,12 @@ export class CartController {
   }
 
   @Post('update')
-  async updateCart(@Body() body: UpdateCartDto) {}
+  async updateCart(@Body() body: UpdateCartDto, @User() user: IJwtPayload) {
+    await this.cartService.updateCart(body, user);
+  }
 
   @Post('delete')
-  async deleteCart(@Body() body: DeleteCartDto) {}
+  async deleteCart(@Body() body: DeleteCartDto) {
+    await this.cartService.deleteCart(body);
+  }
 }

@@ -27,18 +27,11 @@ export class CategoryService {
     @InjectModel(Product.name)
     private readonly productModel: Model<ProductDocument>,
     private readonly buildCategoryHierarchyService: BuildCategoryHierarchyService,
-    private readonly redisService: RedisService,
   ) {}
 
   async getCategoriesForFront(lang: string) {
-    // const cacheKey = `categories:${lang}`;
-    // const cachedData = await this.redisService.getData(cacheKey);
-    // if (cachedData) {
-    //   return { data: cachedData };
-    // }
     const pipeline = await buildCategoryHierarchyPipeline(lang);
     const categories = await this.categoryModel.aggregate(pipeline).exec();
-    // await this.redisService.setData(cacheKey, categories);
     return { data: categories };
   }
 

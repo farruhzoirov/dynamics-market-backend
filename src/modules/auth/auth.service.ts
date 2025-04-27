@@ -4,9 +4,7 @@ import { Model } from 'mongoose';
 import * as jwt from 'jsonwebtoken';
 import { OAuth2Client } from 'google-auth-library';
 import { ConfigService } from '@nestjs/config';
-// Schemas
 import { User, UserDocument } from '../user/schemas/user.schema';
-// Interfaces
 import { IJwtPayload } from '../../shared/interfaces/jwt-payload';
 import { VerifyIdTokenException } from '../../common/errors/auth/verify-id-token.exception';
 

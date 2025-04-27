@@ -4,10 +4,11 @@ import { AppModule } from './app.module';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { NestExpressApplication } from '@nestjs/platform-express';
 import { ValidationError } from 'class-validator';
-import * as process from 'node:process';
-import * as dotenv from 'dotenv';
 import { AllExceptionsTo200Interceptor } from './common/interceptors/universal-response';
 import { ErrorCodes } from './common/errors/error-codes';
+
+import * as process from 'node:process';
+import * as dotenv from 'dotenv';
 
 dotenv.config();
 
@@ -27,6 +28,7 @@ async function bootstrap() {
     .setVersion('1.0')
     .addServer(`http://localhost:5000`, 'Local environment')
     .addServer('https://backend.dynamics-market.uz', 'Production')
+    .addServer('https://ffba-185-213-230-61.ngrok-free.app', 'Tunnelling.ngrok')
     .addBearerAuth()
     .build();
 
@@ -52,7 +54,7 @@ async function bootstrap() {
   app.useStaticAssets('uploads', { prefix: '/uploads' });
   app.useGlobalInterceptors(new AllExceptionsTo200Interceptor());
   const PORT = process.env.PORT || 5000;
-  app.listen(PORT, '0.0.0.0', () => {
+  await app.listen(PORT, '0.0.0.0', () => {
     console.log(`Server started on port ${PORT}.`);
   });
 }

@@ -12,7 +12,7 @@ export class AddToCartDto {
   @IsOptional()
   @IsNumber()
   @Min(1)
-  @Max(4)
+  @Max(1000)
   quantity: number;
 }
 
@@ -25,7 +25,7 @@ export class UpdateCartDto {
   @ApiProperty()
   @IsOptional()
   @IsNumber()
-  @Max(4)
+  @Max(1000)
   @Min(1)
   quantity: number;
 }

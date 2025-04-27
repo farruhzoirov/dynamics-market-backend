@@ -37,7 +37,6 @@ import {
 import { IHierarchyPayload } from 'src/shared/interfaces/hierarchy-payload';
 import { FileMetadataDto } from '../../shared/dto/file-meta.dto';
 import { generateThumbs } from 'src/common/helpers/generate-thumbs';
-import { deleteFiles } from 'src/common/helpers/delete-files';
 
 @Injectable()
 export class ProductService {
@@ -101,7 +100,7 @@ export class ProductService {
     body: GetProductsListForFrontDto,
     lang: string,
   ) {
-    const { category, brands, price } = body;
+    const { category, brands } = body;
     let sort: Record<string, 1 | -1> = { createdAt: -1, views: -1 };
     const limit = body.limit ? body.limit : 12;
     const skip = body.page ? (body.page - 1) * limit : 0;
@@ -113,15 +112,6 @@ export class ProductService {
     }[] = [];
 
     const match: any = { isDeleted: false, status: 1 };
-
-    if (body.sort === 'more-expensive') {
-      sort = { currentPrice: -1 };
-    }
-
-    if (body.sort === 'cheaper') {
-      sort = { currentPrice: 1 };
-    }
-
     if (category) {
       const findCategory = await this.categoryModel
         .findOne({ [`slug${lang}`]: category })
@@ -154,11 +144,6 @@ export class ProductService {
         };
       }
       match.brandId = { $in: brandIds };
-    }
-
-    if (price && price.split('').includes('-')) {
-      const [minPrice, maxPrice] = price.split('-');
-      match.currentPrice = { $gte: +minPrice, $lte: +maxPrice };
     }
 
     const pipeline = await buildProductPipeline(match, sort, lang, limit, skip);
@@ -202,11 +187,11 @@ export class ProductService {
       const slugRu = generateUniqueSlugForProduct(nameRu);
       const slugEn = generateUniqueSlugForProduct(nameEn);
       const sku = await generateUniqueSKU(this.productModel);
+      const thumbs: FileMetadataDto[] = await generateThumbs(images);
       const { hierarchyPath, hierarchy } =
         await this.buildCategoryHierarchyService.buildCategoryHierarchy(
           categoryId,
         );
-      const thumbs: FileMetadataDto[] = await generateThumbs(images);
 
       const createBody = {
         ...body,
@@ -291,15 +276,9 @@ export class ProductService {
             { _id: productId },
             {
               $inc: { views: 1 },
-              $set: { viewedAt: new Date() },
             },
           ),
         ]);
-      } else {
-        await this.productModel.updateOne(
-          { _id: productId },
-          { $set: { viewedAt: new Date() } },
-        );
       }
     } catch (err) {
       console.error('View update error:', err);

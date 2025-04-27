@@ -55,6 +55,8 @@ export async function buildProductPipeline(
         status: 1,
         inStock: 1,
         views: 1,
+        hierarchyPath: 1,
+        availability: 1,
         hierarchy: {
           $map: {
             input: { $ifNull: ['$hierarchy', []] },
@@ -70,8 +72,6 @@ export async function buildProductPipeline(
             },
           },
         },
-        hierarchyPath: 1,
-
         brand: {
           _id: '$brand._id',
           logo: '$brand.logo',
@@ -138,6 +138,8 @@ export async function buildOneProductPipeline(
         status: 1,
         inStock: 1,
         views: 1,
+        hierarchyPath: 1,
+        availability: 1,
         hierarchy: {
           $map: {
             input: { $ifNull: ['$hierarchy', []] },
@@ -153,7 +155,6 @@ export async function buildOneProductPipeline(
             },
           },
         },
-        hierarchyPath: 1,
       },
     },
   ];

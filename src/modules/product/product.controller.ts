@@ -32,39 +32,9 @@ import { plainToInstance } from 'class-transformer';
 import { validateOrReject } from 'class-validator';
 
 @Controller('product')
-@ApiBearerAuth()
-// @ApiHeaders([
-//   {
-//     name: 'Accept-Language',
-//     enum: ['uz', 'ru', 'en'],
-//     description: 'Tilni ko‘rsatish kerak: uz, ru yoki en',
-//     required: false,
-//   },
-//   {
-//     name: 'App-Type',
-//     enum: ['admin', 'user'],
-//     description: 'App Type ko‘rsatish kerak: admin yoki user',
-//     required: false,
-//   },
-// ])
 @UsePipes(new ValidationPipe({ whitelist: true }))
 export class ProductController {
   constructor(private readonly productService: ProductService) {}
-
-  // @ApiHeaders([
-  //   {
-  //     name: 'Accept-Language',
-  //     enum: ['uz', 'ru', 'en'],
-  //     description: 'Tilni ko‘rsatish kerak: uz, ru yoki en',
-  //     required: false,
-  //   },
-  //   {
-  //     name: 'App-Type',
-  //     enum: ['admin', 'user'],
-  //     description: 'App Type ko‘rsatish kerak: admin yoki user',
-  //     required: false,
-  //   },
-  // ])
   @HttpCode(HttpStatus.OK)
   @Post('list')
   async getProductsForFront(
@@ -117,12 +87,14 @@ export class ProductController {
     }
   }
 
+  @ApiBearerAuth()
   @Post('add')
   async addProduct(@Body() body: AddProductDto) {
     await this.productService.addProduct(body);
     return new AddedSuccessResponse();
   }
 
+  @ApiBearerAuth()
   @HttpCode(HttpStatus.OK)
   @Post('update')
   async updateProduct(@Body() updateBody: UpdateProductDto) {
@@ -130,6 +102,7 @@ export class ProductController {
     return new UpdatedSuccessResponse();
   }
 
+  @ApiBearerAuth()
   @HttpCode(HttpStatus.OK)
   @Post('delete')
   async deleteProduct(@Body() body: DeleteProductDto) {

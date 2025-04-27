@@ -15,7 +15,7 @@ import { BuildCategoryHierarchyService } from 'src/shared/services/build-hierarc
       { name: Product.name, schema: ProductSchema },
     ]),
   ],
-  providers: [CategoryService, BuildCategoryHierarchyService, RedisService],
+  providers: [CategoryService, BuildCategoryHierarchyService],
   controllers: [CategoryController],
   exports: [CategoryService],
 })
