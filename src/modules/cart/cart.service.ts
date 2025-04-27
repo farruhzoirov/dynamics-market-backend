@@ -22,6 +22,11 @@ export class CartService {
         $match: { userId: user._id },
       },
       {
+        $addFields: {
+          productId: { $toObjectId: '$productId' },
+        },
+      },
+      {
         $lookup: {
           from: 'products',
           localField: 'productId',
@@ -30,66 +35,63 @@ export class CartService {
         },
       },
       {
-        $unwind: '$product',
+        $unwind: {
+          path: '$product',
+        },
       },
       {
         $project: {
           _id: 1,
           quantity: 1,
+          userId: 1,
           product: {
-            name: lang ? { $ifNull: [`$name${lang}`, null] } : null,
-            description: lang
-              ? { $ifNull: [`$description${lang}`, null] }
-              : null,
-            slug: lang ? { $ifNull: [`$slug${lang}`, null] } : null,
+            name: { $ifNull: [`$product.name${lang}`, null] },
+            description: { $ifNull: [`$product.description${lang}`, null] },
+            slug: { $ifNull: [`$product.slug${lang}`, null] },
             attributes: {
               $map: {
-                input: { $ifNull: ['$attributes', []] },
+                input: { $ifNull: ['$product.attributes', []] },
                 as: 'attribute',
                 in: {
-                  name: lang
-                    ? { $ifNull: [`$$attribute.name${lang}`, null] }
-                    : null,
-                  value: lang
-                    ? { $ifNull: [`$$attribute.value${lang}`, null] }
-                    : null,
+                  name: { $ifNull: [`$$attribute.name${lang}`, null] },
+                  value: { $ifNull: [`$$attribute.value${lang}`, null] },
                 },
               },
             },
-            sku: 1,
-            oldPrice: 1,
-            currentPrice: 1,
-            quantity: 1,
-            rate: 1,
-            categoryId: 1,
-            brandId: 1,
-            images: 1,
-            status: 1,
-            inStock: 1,
-            views: 1,
-            hierarchyPath: 1,
-            availability: 1,
+            sku: '$product.sku',
+            oldPrice: '$product.oldPrice',
+            currentPrice: '$product.currentPrice',
+            quantity: '$product.quantity',
+            rate: '$product.rate',
+            categoryId: '$product.categoryId',
+            brandId: '$product.brandId',
+            images: '$product.images',
+            status: '$product.status',
+            inStock: '$product.inStock',
+            views: '$product.views',
+            hierarchyPath: '$product.hierarchyPath',
+            availability: '$product.availability',
             hierarchy: {
               $map: {
-                input: { $ifNull: ['$hierarchy', []] },
+                input: { $ifNull: ['$product.hierarchy', []] },
                 as: 'item',
                 in: {
                   categoryId: '$$item.categoryId',
-                  categorySlug: lang
-                    ? { $ifNull: [`$$item.categorySlug${lang}`, null] }
-                    : null,
-                  categoryName: lang
-                    ? { $ifNull: [`$$item.categoryName${lang}`, null] }
-                    : null,
+                  categorySlug: {
+                    $ifNull: [`$$item.categorySlug${lang}`, null],
+                  },
+                  categoryName: {
+                    $ifNull: [`$$item.categoryName${lang}`, null],
+                  },
                 },
               },
             },
             brand: {
-              _id: '$brand._id',
-              logo: '$brand.logo',
-              name: lang ? { $ifNull: [`$brand.name${lang}`, null] } : null,
-              website: 1,
-              slug: 1,
+              _id: '$product.brand._id',
+              logo: '$product.brand.logo',
+              name: { $ifNull: [`$product.brand.name${lang}`, null] },
+              website: '$product.brand.website',
+              slug: '$product.brand.slug',
             },
           },
         },
