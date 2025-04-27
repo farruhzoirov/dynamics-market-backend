@@ -8,10 +8,14 @@ RUN npm install --force
 
 COPY . .
 
+RUN npm install pm2 -g
+
 RUN npm run build
 
 
-CMD ["node", "dist/main.js"]
+
+
+CMD ["pm2-runtime", "dist/main.js", "-i", "max"]
 
 
 
