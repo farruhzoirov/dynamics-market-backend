@@ -8,10 +8,11 @@ import {
   DeletedSuccessResponse,
   UpdatedSuccessResponse,
 } from 'src/shared/success/success-responses';
-import { AcceptAppTypePipe } from 'src/common/pipes/app-type.pipe';
 import { AcceptLanguagePipe } from 'src/common/pipes/language.pipe';
+import { ApiBearerAuth } from '@nestjs/swagger';
 
 @Controller('card')
+@ApiBearerAuth()
 export class CartController {
   constructor(private readonly cartService: CartService) {}
 
