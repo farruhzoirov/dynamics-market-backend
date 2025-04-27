@@ -10,7 +10,7 @@ export class Cart {
   @Prop({ type: mongoose.Types.ObjectId, default: null, required: true })
   userId: mongoose.Types.ObjectId;
 
-  @Prop({ type: Number, default: 0 })
+  @Prop({ type: Number, default: 1 })
   quantity: number;
 }
 

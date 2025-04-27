@@ -100,7 +100,6 @@ export class CartService {
   }
 
   async addToCart(body: AddToCartDto, user: IJwtPayload) {
-    const defaultQuantity = 1;
     const userId = user._id;
 
     const findUser = await this.userModel.findById(userId);
@@ -123,7 +122,6 @@ export class CartService {
     if (!findCart) {
       await this.cartModel.create({
         productId: body.productId,
-        quantity: defaultQuantity,
         userId,
       });
     }
