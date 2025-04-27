@@ -19,7 +19,7 @@ export class CartService {
   async getCartList(user: IJwtPayload, lang: string) {
     const findCartList = await this.cartModel.aggregate([
       {
-        $match: { userId: new mongoose.Types.ObjectId(user._id) },
+        $match: { userId: user._id },
       },
       {
         $lookup: {
@@ -100,6 +100,7 @@ export class CartService {
   }
 
   async addToCart(body: AddToCartDto, user: IJwtPayload) {
+    const defaultQuantity = 1;
     const userId = user._id;
 
     const findUser = await this.userModel.findById(userId);
@@ -121,7 +122,8 @@ export class CartService {
 
     if (!findCart) {
       await this.cartModel.create({
-        ...body,
+        productId: body.productId,
+        quantity: defaultQuantity,
         userId,
       });
     }
