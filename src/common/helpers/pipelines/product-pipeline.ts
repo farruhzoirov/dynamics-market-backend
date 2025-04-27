@@ -99,13 +99,13 @@ export async function buildProductPipeline(
 }
 
 export async function buildOneProductPipeline(
-  slug: string,
+  filter: any,
   lang: string,
 ): Promise<PipelineStage[]> {
   const pipeline: PipelineStage[] = [
     {
       $match: {
-        [`slug${lang}`]: slug,
+        ...filter,
       },
     },
     {

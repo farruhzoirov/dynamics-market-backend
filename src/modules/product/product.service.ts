@@ -80,15 +80,15 @@ export class ProductService {
       return {};
     }
     const ip = req.ip;
-    const findProduct = await this.productModel
-      .findOne({ [`slug${lang}`]: body.slug })
-      .lean();
+    const searchableFields = ['slugUz', 'slugRu', 'slugEn'];
+    const filter = await universalSearchQuery(body.slug, searchableFields);
+    const findProduct = await this.productModel.findOne(filter).lean();
 
     if (!findProduct) {
       return {};
     }
 
-    const pipeline = await buildOneProductPipeline(body.slug, lang);
+    const pipeline = await buildOneProductPipeline(filter, lang);
     const data = await this.productModel.aggregate(pipeline).exec();
     this.updateProductViewsInBackground(findProduct._id.toString(), ip);
     return {
