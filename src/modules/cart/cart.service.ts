@@ -72,6 +72,7 @@ export class CartService {
     if (!findCart) {
       throw new BadRequestException('Cart not found. Error deleting cart');
     }
+
     await this.cartModel.findByIdAndDelete(body._id);
   }
 }
