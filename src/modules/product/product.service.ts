@@ -225,10 +225,9 @@ export class ProductService {
         updateBody.categoryId,
       );
 
-    // if (images.length) {
-    //   await deleteFiles(findProduct.images);
-    //   updateBody.thumbs = await generateThumbs(updateBody.images);
-    // }
+    if (images.length) {
+      updateBody.thumbs = await generateThumbs(updateBody.images);
+    }
 
     const forUpdateBody = {
       ...updateBody,
