@@ -109,6 +109,20 @@ export async function buildOneProductPipeline(
       },
     },
     {
+      $lookup: {
+        from: 'brands',
+        localField: 'brandId',
+        foreignField: '_id',
+        as: 'brand',
+      },
+    },
+    {
+      $unwind: {
+        path: '$brand',
+        preserveNullAndEmptyArrays: true,
+      },
+    },
+    {
       $project: {
         name: lang ? { $ifNull: [`$name${lang}`, null] } : null,
         description: lang ? { $ifNull: [`$description${lang}`, null] } : null,
@@ -134,6 +148,13 @@ export async function buildOneProductPipeline(
         rate: 1,
         categoryId: 1,
         brandId: 1,
+        brand: {
+          _id: '$brand._id',
+          logo: '$brand.logo',
+          name: lang ? { $ifNull: [`$brand.name${lang}`, null] } : null,
+          website: 1,
+          slug: 1,
+        },
         images: 1,
         status: 1,
         inStock: 1,
