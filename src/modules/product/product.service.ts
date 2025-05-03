@@ -89,7 +89,6 @@ export class ProductService {
     if (!findProduct) {
       return {};
     }
-
     const pipeline = await buildOneProductPipeline(filter, lang);
     const data = await this.productModel.aggregate(pipeline).exec();
     this.updateProductViewsInBackground(findProduct._id.toString(), ip);
