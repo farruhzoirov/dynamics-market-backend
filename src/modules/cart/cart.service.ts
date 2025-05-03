@@ -121,10 +121,18 @@ export class CartService {
       productId: body.productId,
     });
 
+    if (findCart) {
+      const quantity = findCart.quantity + body.quantity;
+      await this.cartModel.findByIdAndUpdate(findCart._id, {
+        $set: { quantity: quantity },
+      });
+    }
+
     if (!findCart) {
       await this.cartModel.create({
         productId: body.productId,
         userId,
+        quantity: body.quantity ? body.quantity : 1,
       });
     }
   }
@@ -132,7 +140,6 @@ export class CartService {
   async updateCart(body: UpdateCartDto, user: IJwtPayload) {
     const userId = user._id;
     const findUser = await this.userModel.findById(userId);
-    let quantity: number;
 
     if (!findUser) {
       throw new BadRequestException('User not found. Error adding to cart');
@@ -144,10 +151,8 @@ export class CartService {
       throw new BadRequestException('Cart not found. Error updating cart');
     }
 
-    quantity = findCart.quantity + body.quantity;
-
     await this.cartModel.findByIdAndUpdate(body._id, {
-      $set: { quantity: quantity },
+      $set: { quantity: body.quantity },
     });
   }
 
