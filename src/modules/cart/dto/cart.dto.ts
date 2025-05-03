@@ -23,7 +23,6 @@ export class UpdateCartDto {
   _id: string;
 
   @ApiProperty()
-  @IsOptional()
   @IsNumber()
   @Max(1000)
   @Min(1)
