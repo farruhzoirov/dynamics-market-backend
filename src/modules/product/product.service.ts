@@ -76,12 +76,14 @@ export class ProductService {
   }
 
   async getProductForFront(body: GetProductDto, req: Request, lang: string) {
+    console.log(body.slug);
     if (!body.slug) {
       return {};
     }
     const ip = req.ip;
     const searchableFields = ['slugUz', 'slugRu', 'slugEn'];
     const filter = await universalSearchQuery(body.slug, searchableFields);
+    console.log(filter);
     const findProduct = await this.productModel.findOne(filter).lean();
 
     if (!findProduct) {
@@ -91,9 +93,7 @@ export class ProductService {
     const pipeline = await buildOneProductPipeline(filter, lang);
     const data = await this.productModel.aggregate(pipeline).exec();
     this.updateProductViewsInBackground(findProduct._id.toString(), ip);
-    return {
-      data,
-    };
+    return data.length ? data[0] : null;
   }
 
   async getProductsListForFront(
