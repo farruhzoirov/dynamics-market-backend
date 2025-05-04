@@ -48,7 +48,6 @@ export class CartService {
         $project: {
           _id: 1,
           quantity: 1,
-          userId: 1,
           product: {
             name: { $ifNull: [`$product.name${lang}`, null] },
             description: { $ifNull: [`$product.description${lang}`, null] },
