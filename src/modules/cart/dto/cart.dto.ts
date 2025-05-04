@@ -1,6 +1,9 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsNumber, IsOptional, IsString, Max, Min } from 'class-validator';
 import { IsObjectId } from 'src/common/decorators/object-id.decarator';
+import { UniversalQueryDto } from 'src/shared/dto/base-model.dto';
+
+export class GetCartListDto extends UniversalQueryDto {}
 
 export class AddToCartDto {
   @ApiProperty()
