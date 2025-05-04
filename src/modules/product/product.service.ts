@@ -76,14 +76,12 @@ export class ProductService {
   }
 
   async getProductForFront(body: GetProductDto, req: Request, lang: string) {
-    console.log(body.slug);
     if (!body.slug) {
       return {};
     }
     const ip = req.ip;
     const searchableFields = ['slugUz', 'slugRu', 'slugEn'];
     const filter = await universalSearchQuery(body.slug, searchableFields);
-    console.log(filter);
     const findProduct = await this.productModel.findOne(filter).lean();
 
     if (!findProduct) {

@@ -10,7 +10,7 @@ export async function buildCategoryHierarchyPipeline(lang: string) {
         connectFromField: '_id',
         connectToField: 'parentId',
         as: 'allDescendants',
-        maxDepth: 3,
+        maxDepth: 2,
       },
     },
     {
@@ -26,13 +26,13 @@ export async function buildCategoryHierarchyPipeline(lang: string) {
         directChildren: {
           $sortArray: {
             input: '$directChildren',
-            sortBy: { nameUz: 1 }, 
+            sortBy: { nameUz: 1 },
           },
         },
         allDescendants: {
           $sortArray: {
             input: '$allDescendants',
-            sortBy: { nameUz: 1 }
+            sortBy: { nameUz: 1 },
           },
         },
       },

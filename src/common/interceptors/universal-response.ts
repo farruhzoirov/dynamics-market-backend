@@ -12,6 +12,7 @@ export class AllExceptionsTo200Interceptor implements NestInterceptor {
   intercept(context: ExecutionContext, next: CallHandler): Observable<any> {
     const ctx = context.switchToHttp();
     const response = ctx.getResponse();
+    console.log('ok');
     return next.handle().pipe(
       catchError((error) => {
         const errorResponse = {

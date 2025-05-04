@@ -76,3 +76,4 @@ CategorySchema.index({ slugRu: 1 });
 CategorySchema.index({ slugEn: 1 });
 CategorySchema.index({ nameUz: 1, nameRu: 1, nameEn: 1 });
 CategorySchema.index({ parentId: 1 });
+CategorySchema.index({ isDeleted: 1 });

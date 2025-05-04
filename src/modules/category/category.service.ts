@@ -30,8 +30,10 @@ export class CategoryService {
   ) {}
 
   async getCategoriesForFront(lang: string) {
+    console.time('start');
     const pipeline = await buildCategoryHierarchyPipeline(lang);
     const categories = await this.categoryModel.aggregate(pipeline).exec();
+    console.timeEnd('start');
     return { data: categories };
   }
 

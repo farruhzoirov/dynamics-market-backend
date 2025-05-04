@@ -6,7 +6,12 @@ import {
   HttpStatus,
   HttpCode,
 } from '@nestjs/common';
-import { AddToCartDto, DeleteCartDto, UpdateCartDto } from './dto/cart.dto';
+import {
+  AddToCartDto,
+  DeleteCartDto,
+  GetCartListDto,
+  UpdateCartDto,
+} from './dto/cart.dto';
 import { User } from 'src/common/decorators/user.decarator';
 import { IJwtPayload } from 'src/shared/interfaces/jwt-payload';
 import { CartService } from './cart.service';
@@ -26,11 +31,12 @@ export class CartController {
   @HttpCode(HttpStatus.OK)
   @Post('list')
   async getCartList(
+    @Body() body: GetCartListDto,
     @Headers('accept-language') lang: string,
     @User() user: IJwtPayload,
   ) {
     lang = new AcceptLanguagePipe().transform(lang);
-    const cartList = await this.cartService.getCartList(user, lang);
+    const cartList = await this.cartService.getCartList(body, user, lang);
     return cartList;
   }
 
