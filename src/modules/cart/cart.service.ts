@@ -1,7 +1,12 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import mongoose, { Model } from 'mongoose';
-import { AddToCartDto, DeleteCartDto, UpdateCartDto } from './dto/cart.dto';
+import {
+  AddToCartDto,
+  DeleteCartDto,
+  GetCartListDto,
+  UpdateCartDto,
+} from './dto/cart.dto';
 import { IJwtPayload } from 'src/shared/interfaces/jwt-payload';
 import { Cart, CartDocument } from './schemas/cart.schema';
 import { Product, ProductDocument } from '../product/schemas/product.model';
@@ -16,7 +21,7 @@ export class CartService {
     @InjectModel(User.name) private userModel: Model<UserDocument>,
   ) {}
 
-  async getCartList(user: IJwtPayload, lang: string) {
+  async getCartList(body: GetCartListDto, user: IJwtPayload, lang: string) {
     const findCartList = await this.cartModel.aggregate([
       {
         $match: { userId: user._id },
@@ -71,6 +76,7 @@ export class CartService {
             views: '$product.views',
             hierarchyPath: '$product.hierarchyPath',
             availability: '$product.availability',
+            thumbs: '$product.thumbs',
             hierarchy: {
               $map: {
                 input: { $ifNull: ['$product.hierarchy', []] },
@@ -121,7 +127,12 @@ export class CartService {
       productId: body.productId,
     });
 
-    if (findCart) {
+    if (
+      findCart &&
+      body.quantity &&
+      typeof body.quantity === 'number' &&
+      body.quantity > 0
+    ) {
       const quantity = findCart.quantity + body.quantity;
       await this.cartModel.findByIdAndUpdate(findCart._id, {
         $set: { quantity: quantity },
