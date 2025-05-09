@@ -39,11 +39,23 @@ export class CartService {
           as: 'product',
         },
       },
+      { $unwind: { path: '$product' } },
+
       {
-        $unwind: {
-          path: '$product',
+        $lookup: {
+          from: 'brands',
+          localField: 'product.brandId',
+          foreignField: '_id',
+          as: 'product.brand',
         },
       },
+      {
+        $unwind: {
+          path: '$product.brand',
+          preserveNullAndEmptyArrays: true,
+        },
+      },
+
       {
         $project: {
           _id: 1,
