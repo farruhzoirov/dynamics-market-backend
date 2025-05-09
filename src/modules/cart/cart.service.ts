@@ -22,6 +22,9 @@ export class CartService {
   ) {}
 
   async getCartList(body: GetCartListDto, user: IJwtPayload, lang: string) {
+    const limit = body.limit ? body.limit : 12;
+    const skip = body.page ? (body.page - 1) * limit : 0;
+
     const findCartList = await this.cartModel.aggregate([
       {
         $match: { userId: user._id },
@@ -113,9 +116,21 @@ export class CartService {
           },
         },
       },
+      {
+        $skip: skip,
+      },
+      {
+        $limit: limit,
+      },
     ]);
-
-    return findCartList;
+    const total = await this.cartModel.countDocuments({
+      userId: user._id,
+    });
+    return {
+      data: findCartList,
+      total,
+      pages: Math.ceil(total / limit),
+    };
   }
 
   async addToCart(body: AddToCartDto, user: IJwtPayload) {
