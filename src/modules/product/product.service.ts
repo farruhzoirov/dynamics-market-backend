@@ -131,7 +131,7 @@ export class ProductService {
     if (brands?.length) {
       const brandIds = await this.brandModel
         .find({
-          [`slug${lang}`]: { $in: brands },
+          [`slug`]: { $in: brands },
         })
         .distinct('_id');
       if (!brandIds.length) {

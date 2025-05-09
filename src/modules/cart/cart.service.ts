@@ -87,7 +87,7 @@ export class CartService {
             views: '$product.views',
             hierarchyPath: '$product.hierarchyPath',
             availability: '$product.availability',
-            thumbs: '$product.thumbs',
+            thumbs: { $ifNull: ['$product.thumbs', []] },
             hierarchy: {
               $map: {
                 input: { $ifNull: ['$product.hierarchy', []] },
