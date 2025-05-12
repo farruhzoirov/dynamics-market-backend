@@ -15,10 +15,13 @@ export const getFilteredResultsWithTotal = async (
     search: body?.search || null,
   };
   const skip = (payload.page - 1) * payload.limit;
-  const filter: Record<string, any> = await universalSearchQuery(
-    payload.search,
-    searchFields as string[],
-  );
+  let filter: Record<string, any> = {};
+  if (payload.search) {
+    filter = await universalSearchQuery(
+      payload.search,
+      searchFields as string[],
+    );
+  }
 
   filter.isDeleted = false;
 
