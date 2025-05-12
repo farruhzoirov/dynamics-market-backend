@@ -2,8 +2,8 @@ import { BadRequestException, Injectable } from '@nestjs/common';
 import {
   CreateOrderDto,
   DeleteOrderDto,
-  GetAllOrdersDto,
   GetOrderDto,
+  GetOrdersDto,
   UpdateOrderDto,
 } from './dto/order.dto';
 import { IJwtPayload } from 'src/shared/interfaces/jwt-payload';
@@ -25,7 +25,7 @@ export class OrderService {
     @InjectModel(Counter.name) private counterModel: Model<CounterDocument>,
   ) {}
 
-  async getOrdersList(body: GetAllOrdersDto) {
+  async getOrdersList(body: GetOrdersDto) {
     const [data, total] = await getFilteredResultsWithTotal(
       body,
       this.orderModel,
@@ -38,7 +38,9 @@ export class OrderService {
     };
   }
 
-  async getOrdersByUserId(user: IJwtPayload, lang: string) {
+  async getOrdersByUserId(body: GetOrdersDto, user: IJwtPayload, lang: string) {
+    const limit = body.limit ? body.limit : 12;
+    const skip = body.page ? (body.page - 1) * limit : 0;
     const userId = user._id;
     const findOrders = await this.orderModel.aggregate([
       {
@@ -69,9 +71,23 @@ export class OrderService {
           },
         },
       },
+      {
+        $skip: skip,
+      },
+      {
+        $limit: limit,
+      },
     ]);
 
-    return findOrders;
+    const total = await this.orderModel.countDocuments({
+      userId: userId,
+      isDeleted: false,
+    });
+    return {
+      data: findOrders,
+      total,
+      pages: Math.ceil(total / limit),
+    };
   }
 
   async getOrder(body: GetOrderDto, user: IJwtPayload, lang: string) {

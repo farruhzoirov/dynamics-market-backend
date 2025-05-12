@@ -12,8 +12,8 @@ import {
 import {
   CreateOrderDto,
   DeleteOrderDto,
-  GetAllOrdersDto,
   GetOrderDto,
+  GetOrdersDto,
   UpdateOrderDto,
 } from './dto/order.dto';
 import { User } from 'src/common/decorators/user.decarator';
@@ -51,7 +51,7 @@ export class OrderController {
   @HttpCode(HttpStatus.OK)
   @Post('list')
   async getOrdersList(
-    @Body() body: GetAllOrdersDto,
+    @Body() body: GetOrdersDto,
     @User() user: IJwtPayload,
     @Req() req: Request,
   ) {
@@ -65,7 +65,7 @@ export class OrderController {
       return data;
     }
     if (appType === AppType.USER) {
-      data = await this.orderService.getOrdersByUserId(user, lang);
+      data = await this.orderService.getOrdersByUserId(body, user, lang);
       return data;
     }
     return data;

@@ -15,7 +15,7 @@ import {
   UniversalQueryDto,
 } from 'src/shared/dto/base-model.dto';
 
-export class GetAllOrdersDto extends UniversalQueryDto {}
+export class GetOrdersDto extends UniversalQueryDto {}
 
 export class GetOrderDto {
   @ApiProperty()
