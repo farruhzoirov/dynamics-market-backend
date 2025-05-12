@@ -30,10 +30,8 @@ export class CategoryService {
   ) {}
 
   async getCategoriesForFront(lang: string) {
-    console.time('start');
     const pipeline = await buildCategoryHierarchyPipeline(lang);
     const categories = await this.categoryModel.aggregate(pipeline).exec();
-    console.timeEnd('start');
     return { data: categories };
   }
 
@@ -142,38 +140,4 @@ export class CategoryService {
     }
     await this.categoryModel.updateOne({ _id }, { isDeleted: true });
   }
-
-  // async regenerateCategorySlugs(): Promise<{ updatedCount: number }> {
-  //   const categories = await this.categoryModel.find().lean();
-
-  //   let updatedCount = 0;
-
-  //   for (const category of categories) {
-  //     const { nameUz, nameRu, nameEn } = category;
-
-  //     const slugUz = generateUniqueSlug(nameUz);
-  //     const slugRu = generateUniqueSlug(nameRu);
-  //     const slugEn = generateUniqueSlug(nameEn);
-  //     const { hierarchyPath, hierarchy } =
-  //       await this.buildCategoryHierarchyService.buildCategoryHierarchy(
-  //         category._id.toString(),
-  //       );
-
-  //     await this.categoryModel.updateOne(
-  //       { _id: category._id },
-  //       {
-  //         $set: {
-  //           hierarchy,
-  //           hierarchyPath,
-  //           slugUz,
-  //           slugRu,
-  //           slugEn,
-  //         },
-  //       },
-  //     );
-  //     updatedCount++;
-  //   }
-
-  //   return { updatedCount };
-  // }
 }

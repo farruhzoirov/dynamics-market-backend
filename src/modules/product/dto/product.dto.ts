@@ -22,13 +22,6 @@ import {
 } from 'src/shared/dto/base-model.dto';
 import { InStockStatus } from 'src/shared/enums/stock-status.enum';
 
-// enum SortByPrice {
-//   CHEAPER = 'cheaper',
-//   MOREEXPENSIVE = 'more-expensive',
-//   HIGHRATING = 'high-rating',
-// }
-
-type SortByPrice = 'cheaper' | 'more-expensive' | 'high-rating';
 class AttributeDto {
   @ApiProperty()
   @IsString()
@@ -55,6 +48,12 @@ class AttributeDto {
   valueEn: string;
 }
 
+export class SearchProductsDto {
+  @ApiProperty()
+  @IsString()
+  search: string;
+}
+
 export class GetProductsListForFrontDto extends UniversalQueryDto {
   @ApiProperty()
   @IsOptional()
@@ -70,10 +69,6 @@ export class GetProductsListForFrontDto extends UniversalQueryDto {
   @IsOptional()
   @IsString()
   price: string;
-
-  @ApiProperty({ example: 'cheaper' })
-  @IsOptional()
-  sort: SortByPrice;
 }
 
 export class GetProductsListDto extends UniversalQueryDto {

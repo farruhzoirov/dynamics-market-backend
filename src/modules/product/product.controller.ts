@@ -15,10 +15,11 @@ import {
   GetProductDto,
   GetProductsListDto,
   GetProductsListForFrontDto,
+  SearchProductsDto,
   UpdateProductDto,
 } from './dto/product.dto';
 import { ProductService } from './product.service';
-import { ApiBearerAuth, ApiHeader, ApiHeaders } from '@nestjs/swagger';
+import { ApiBearerAuth } from '@nestjs/swagger';
 import {
   AddedSuccessResponse,
   DeletedSuccessResponse,
@@ -35,6 +36,10 @@ import { validateOrReject } from 'class-validator';
 @UsePipes(new ValidationPipe({ whitelist: true }))
 export class ProductController {
   constructor(private readonly productService: ProductService) {}
+
+  @Post('search')
+  async searchProducts(@Body() body: SearchProductsDto) {}
+
   @HttpCode(HttpStatus.OK)
   @Post('list')
   async getProductsForFront(

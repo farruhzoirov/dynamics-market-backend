@@ -28,6 +28,7 @@ import {
   GetProductDto,
   GetProductsListDto,
   GetProductsListForFrontDto,
+  SearchProductsDto,
   UpdateProductDto,
 } from './dto/product.dto';
 import {
@@ -51,6 +52,8 @@ export class ProductService {
     private readonly brandModel: Model<BrandDocument>,
     private readonly buildCategoryHierarchyService: BuildCategoryHierarchyService,
   ) {}
+
+  async searchProducts(body: SearchProductsDto) {}
 
   async getProduct(body: GetProductDto) {
     if (!body.slug && !body._id) {

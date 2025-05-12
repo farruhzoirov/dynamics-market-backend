@@ -54,6 +54,11 @@ export class CreateOrderDto {
   @IsString()
   companyName?: string;
 
+  @ApiProperty({ example: 'Dynamics marketga buyurtma ' })
+  @IsString()
+  @IsOptional()
+  comment: string;
+
   @ApiProperty({ example: '+998975450409' })
   @IsString()
   @IsPhoneNumber()
@@ -89,6 +94,11 @@ export class UpdateOrderDto {
   @IsOptional()
   @IsString()
   companyName?: string;
+
+  @ApiProperty({ example: 'Dynamics marketga buyurtma ' })
+  @IsString()
+  @IsOptional()
+  comment: string;
 
   @ApiProperty({ example: '+998975450409' })
   @IsString()
