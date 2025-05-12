@@ -54,6 +54,7 @@ export class OrderService {
           _id: 1,
           orderCode: 1,
           status: 1,
+          comment: 1,
           items: {
             $map: {
               input: { $ifNull: ['$items', []] },

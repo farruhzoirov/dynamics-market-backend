@@ -32,10 +32,10 @@ export class Order {
   ])
   items: ProductItem[];
 
-  @Prop({ default: '' })
+  @Prop({ required: true })
   orderCode: string;
 
-  @Prop({ required: true })
+  @Prop({ default: '' })
   comment: string;
 
   @Prop({
