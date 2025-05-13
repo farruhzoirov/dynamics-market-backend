@@ -16,6 +16,7 @@ import { ProductItem } from 'src/shared/interfaces/product-items';
 import { Counter, CounterDocument } from './schema/counter.model';
 import { getFilteredResultsWithTotal } from 'src/common/helpers/universal-query-builder';
 import {
+  buildCartItemsPipeline,
   buildSingleOrderPipeline,
   buildUserOrdersPipeline,
 } from 'src/common/helpers/pipelines/order.pipeline';
@@ -26,7 +27,6 @@ export class OrderService {
   constructor(
     @InjectModel(Order.name) private orderModel: Model<OrderDocument>,
     @InjectModel(Cart.name) private cartModel: Model<CartDocument>,
-    @InjectModel(Product.name) private productModel: Model<ProductDocument>,
     @InjectModel(Counter.name) private counterModel: Model<CounterDocument>,
   ) {}
 
@@ -84,13 +84,13 @@ export class OrderService {
 
   async create(body: CreateOrderDto, user: IJwtPayload) {
     const userId = user._id;
-
     const findCart = await this.cartModel.findOne({ userId });
 
     if (!findCart) {
       throw new BadRequestException('Error creating order, Cart not found');
     }
-    const pipeline = await buildCategoryHierarchyPipeline(userId);
+
+    const pipeline = await buildCartItemsPipeline(userId);
     const cartItems = await this.cartModel.aggregate(pipeline);
 
     if (!cartItems.length) {
@@ -106,6 +106,7 @@ export class OrderService {
       quantity: item.quantity,
       price: item.product.currentPrice ?? null,
     }));
+
     await Promise.all([
       await this.orderModel.create({
         ...body,
