@@ -15,6 +15,11 @@ import { Product, ProductDocument } from '../product/schemas/product.model';
 import { ProductItem } from 'src/shared/interfaces/product-items';
 import { Counter, CounterDocument } from './schema/counter.model';
 import { getFilteredResultsWithTotal } from 'src/common/helpers/universal-query-builder';
+import {
+  buildSingleOrderPipeline,
+  buildUserOrdersPipeline,
+} from 'src/common/helpers/pipelines/order.pipeline';
+import { buildCategoryHierarchyPipeline } from 'src/common/helpers/pipelines/category-hierarchy-pipeline';
 
 @Injectable()
 export class OrderService {
@@ -42,49 +47,14 @@ export class OrderService {
     const limit = body.limit ? body.limit : 12;
     const skip = body.page ? (body.page - 1) * limit : 0;
     const userId = user._id;
-    const findOrders = await this.orderModel.aggregate([
-      {
-        $match: {
-          userId: userId,
-          isDeleted: false,
-        },
-      },
-      {
-        $project: {
-          _id: 1,
-          orderCode: 1,
-          status: 1,
-          comment: 1,
-          createdAt: 1,
-          items: {
-            $map: {
-              input: { $ifNull: ['$items', []] },
-              as: 'item',
-              in: {
-                productId: '$$item.productId',
-                name: lang ? { $ifNull: [`$$item.name${lang}`, null] } : null,
-                quantity: '$$item.quantity',
-                price: '$$item.price',
-              },
-            },
-          },
-          itemsCount: {
-            $size: { $ifNull: ['$items', []] },
-          },
-        },
-      },
-      {
-        $skip: skip,
-      },
-      {
-        $limit: limit,
-      },
+    const pipeline = await buildUserOrdersPipeline(userId, lang, skip, limit);
+    const [findOrders, total] = await Promise.all([
+      await this.orderModel.aggregate(pipeline),
+      await this.orderModel.countDocuments({
+        userId: userId,
+        isDeleted: false,
+      }),
     ]);
-
-    const total = await this.orderModel.countDocuments({
-      userId: userId,
-      isDeleted: false,
-    });
     return {
       data: findOrders,
       total,
@@ -96,7 +66,7 @@ export class OrderService {
     if (!body._id && !body.orderCode) {
       throw new BadRequestException('order Id or orderCode is required');
     }
-    const match: Record<string, any> = {};
+    const match: Record<string, string | boolean> = {};
     match.userId = user._id;
     match.isDeleted = false;
 
@@ -107,39 +77,8 @@ export class OrderService {
     if (body.orderCode) {
       match.orderCode = body.orderCode;
     }
-
-    const findOrder = await this.orderModel.aggregate([
-      {
-        $match: match,
-      },
-      {
-        $project: {
-          _id: 1,
-          orderCode: 1,
-          firstName: 1,
-          lastName: 1,
-          email: 1,
-          phone: 1,
-          customerType: 1,
-          companyName: 1,
-          status: 1,
-          createdAt: 1,
-          items: {
-            $map: {
-              input: { $ifNull: ['$items', []] },
-              as: 'item',
-              in: {
-                productId: '$$item.productId',
-                name: lang ? { $ifNull: [`$$item.name${lang}`, null] } : null,
-                quantity: '$$item.quantity',
-                price: '$$item.price',
-              },
-            },
-          },
-        },
-      },
-    ]);
-
+    const pipeline = await buildSingleOrderPipeline(match, lang);
+    const findOrder = await this.orderModel.aggregate(pipeline);
     return findOrder.length ? findOrder[0] : null;
   }
 
@@ -151,47 +90,15 @@ export class OrderService {
     if (!findCart) {
       throw new BadRequestException('Error creating order, Cart not found');
     }
+    const pipeline = await buildCategoryHierarchyPipeline(userId);
+    const cartItems = await this.cartModel.aggregate(pipeline);
 
-    const orderItems = await this.cartModel.aggregate([
-      {
-        $match: {
-          userId: userId,
-        },
-      },
-      {
-        $addFields: {
-          productId: { $toObjectId: '$productId' },
-        },
-      },
-      {
-        $lookup: {
-          from: 'products',
-          localField: 'productId',
-          foreignField: '_id',
-          as: 'product',
-        },
-      },
-      { $unwind: { path: '$product' } },
-
-      {
-        $project: {
-          quantity: 1,
-          product: {
-            _id: 1,
-            nameUz: 1,
-            nameRu: 1,
-            nameEn: 1,
-            currentPrice: '$product.currentPrice',
-          },
-        },
-      },
-    ]);
-
-    if (!orderItems.length) {
+    if (!cartItems.length) {
       throw new BadRequestException('Error creating order, Cart may be empty');
     }
     const orderCode = await this.getNextOrderCode();
-    const items: ProductItem[] = orderItems.map((item) => ({
+
+    const items: ProductItem[] = cartItems.map((item) => ({
       productId: item.product._id.toString(),
       nameUz: item.product.nameUz,
       nameRu: item.product.nameRu,
