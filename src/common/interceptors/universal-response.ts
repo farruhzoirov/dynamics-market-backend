@@ -6,6 +6,7 @@ import {
 } from '@nestjs/common';
 import { Observable, throwError } from 'rxjs';
 import { catchError } from 'rxjs/operators';
+import { ErrorCodes } from '../errors/error-codes';
 
 @Injectable()
 export class AllExceptionsTo200Interceptor implements NestInterceptor {
@@ -16,7 +17,9 @@ export class AllExceptionsTo200Interceptor implements NestInterceptor {
       catchError((error) => {
         const errorResponse = {
           success: false,
-          errorCode: error.response?.errorCode | error.errorCode || null,
+          errorCode:
+            error.response?.errorCode | error.errorCode ||
+            ErrorCodes.UNHANDLED_ERROR,
           message: error.message || 'Server Side Error',
         };
 

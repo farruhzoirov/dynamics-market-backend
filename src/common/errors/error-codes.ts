@@ -22,4 +22,5 @@ export enum ErrorCodes {
   MODEL_DATA_NOT_FOUND_BY_ID = 116,
 
   VALIDATION_ERROR = 117,
+  UNHANDLED_ERROR = 500,
 }
