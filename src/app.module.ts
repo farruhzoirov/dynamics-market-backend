@@ -15,6 +15,7 @@ import { RolesGuard } from './common/guards/roles.guard';
 import databaseConfig, { CONFIG_DATABASE } from './config/database.config';
 import { CartModule } from './modules/cart/cart.module';
 import { OrderModule } from './modules/order/order.module';
+import { SearchModule } from './modules/elasticsearch/elasticsearch.module';
 import googleConfig from './config/google.config';
 import jwtConfig from './config/jwt.config';
 import redisConfig from './config/redis.config';
@@ -45,6 +46,7 @@ import redisConfig from './config/redis.config';
     CartModule,
     FileUploadModule,
     OrderModule,
+    SearchModule,
   ],
   providers: [
     {

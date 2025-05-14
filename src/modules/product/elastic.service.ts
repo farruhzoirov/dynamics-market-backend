@@ -52,14 +52,14 @@ export class ProductService {
     @InjectModel(Brand.name)
     private readonly brandModel: Model<BrandDocument>,
     private readonly buildCategoryHierarchyService: BuildCategoryHierarchyService,
-    private readonly elasticSearchService: SearchService,
+    private readonly elasticsearchService: SearchService,
   ) {}
 
   async searchProducts(body: SearchProductsDto, lang: string) {
     const from = body.page ? (body.page - 1) * (body.limit || 12) : 0;
     const size = body.limit || 12;
 
-    const searchResults = await this.elasticSearchService.search(
+    const searchResults = await this.elasticsearchService.search(
       body.search,
       lang,
       from,
@@ -111,6 +111,7 @@ export class ProductService {
     return sortedProducts;
   }
 
+  // MongoDB orqali qidirish (zaxira uchun)
   async searchProductsWithMongoDB(body: SearchProductsDto, lang: string) {
     const regex = new RegExp(body.search, 'i');
     let sort: Record<string, 1 | -1> = { createdAt: -1, views: -1 };
@@ -194,6 +195,37 @@ export class ProductService {
       .exec();
 
     return searchProduct;
+  }
+
+  // Barcha mahsulotlarni indekslash metodi
+  async indexAllProducts() {
+    const batchSize = 100;
+    let page = 1;
+    let hasMoreProducts = true;
+    let successCount = 0;
+
+    while (hasMoreProducts) {
+      const skip = (page - 1) * batchSize;
+      const products = await this.productModel
+        .find()
+        .skip(skip)
+        .limit(batchSize)
+        .lean();
+
+      if (products.length === 0) {
+        hasMoreProducts = false;
+        break;
+      }
+
+      const indexed = await this.elasticsearchService.bulkIndex(products);
+      if (indexed) {
+        successCount += products.length;
+      }
+
+      page++;
+    }
+
+    return successCount;
   }
 
   async getProduct(body: GetProductDto) {
@@ -344,7 +376,10 @@ export class ProductService {
         hierarchy,
         hierarchyPath,
       };
-      await this.productModel.create(createBody);
+      const newProduct = await this.productModel.create(createBody);
+
+      // Yangi mahsulotni Elasticsearch'ga indekslash
+      await this.elasticsearchService.indexProduct(newProduct);
     } catch (err) {
       console.log(`adding product ====>  ${err}`);
       throw new AddingModelException(err.message);
@@ -382,6 +417,14 @@ export class ProductService {
     await this.productModel.findByIdAndUpdate(updateBody._id, {
       $set: forUpdateBody,
     });
+
+    // Mahsulotni Elasticsearch'da ham yangilash
+    const updatedProduct = await this.productModel
+      .findById(updateBody._id)
+      .lean();
+    if (updatedProduct) {
+      await this.elasticsearchService.updateIndexedProduct(updatedProduct);
+    }
   }
 
   async deleteProduct(body: DeleteProductDto): Promise<void> {
@@ -390,6 +433,12 @@ export class ProductService {
       throw new ModelDataNotFoundByIdException('Product not found');
     }
     await this.productModel.updateOne({ _id: body._id }, { isDeleted: true });
+
+    // O'chirilganligi Elasticsearch'da aks etishi uchun ma'lumotlarni yangilash
+    const updatedProduct = await this.productModel.findById(body._id).lean();
+    if (updatedProduct) {
+      await this.elasticsearchService.updateIndexedProduct(updatedProduct);
+    }
   }
 
   async updateProductViewsInBackground(productId: string, ip: string) {
@@ -419,39 +468,17 @@ export class ProductService {
             },
           ),
         ]);
+
+        // Elasticsearch'da ko'rishlar sonini yangilash
+        const updatedProduct = await this.productModel
+          .findById(productId)
+          .lean();
+        if (updatedProduct) {
+          await this.elasticsearchService.updateIndexedProduct(updatedProduct);
+        }
       }
     } catch (err) {
       console.error('View update error:', err);
     }
-  }
-
-  async indexAllProducts() {
-    const batchSize = 100;
-    let page = 1;
-    let hasMoreProducts = true;
-    let successCount = 0;
-
-    while (hasMoreProducts) {
-      const skip = (page - 1) * batchSize;
-      const products = await this.productModel
-        .find()
-        .skip(skip)
-        .limit(batchSize)
-        .lean();
-
-      if (products.length === 0) {
-        hasMoreProducts = false;
-        break;
-      }
-
-      const indexed = await this.elasticSearchService.bulkIndex(products);
-      if (indexed) {
-        successCount += products.length;
-      }
-
-      page++;
-    }
-
-    return successCount;
   }
 }
