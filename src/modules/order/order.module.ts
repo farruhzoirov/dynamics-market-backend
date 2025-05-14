@@ -20,10 +20,6 @@ import { Counter, CounterSchema } from './schema/counter.model';
         schema: CartSchema,
       },
       {
-        name: Product.name,
-        schema: ProductSchema,
-      },
-      {
         name: Counter.name,
         schema: CounterSchema,
       },

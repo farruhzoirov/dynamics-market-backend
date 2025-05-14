@@ -38,7 +38,14 @@ export class ProductController {
   constructor(private readonly productService: ProductService) {}
 
   @Post('search')
-  async searchProducts(@Body() body: SearchProductsDto) {}
+  async searchProducts(
+    @Body() body: SearchProductsDto,
+    @Headers('Accept-Language') lang: string,
+  ) {
+    lang = new AcceptLanguagePipe().transform(lang);
+    const data = await this.productService.searchProducts(body, lang);
+    return data;
+  }
 
   @HttpCode(HttpStatus.OK)
   @Post('list')

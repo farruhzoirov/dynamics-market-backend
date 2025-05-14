@@ -64,6 +64,7 @@ export class AppModule implements NestModule {
         '/brand/list',
         '/category/list',
         '/product/list',
+        '/product/search',
         '/product/get-product',
         '/review/list',
       )

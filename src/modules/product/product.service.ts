@@ -53,7 +53,90 @@ export class ProductService {
     private readonly buildCategoryHierarchyService: BuildCategoryHierarchyService,
   ) {}
 
-  async searchProducts(body: SearchProductsDto) {}
+  async searchProducts(body: SearchProductsDto, lang: string) {
+    const regex = new RegExp(body.search, 'i');
+    let sort: Record<string, 1 | -1> = { createdAt: -1, views: -1 };
+    const limit = body.limit ? body.limit : 12;
+    const skip = body.page ? (body.page - 1) * limit : 0;
+
+    const searchProduct = this.productModel
+      .aggregate([
+        {
+          $match: {
+            isDeleted: false,
+            $or: [
+              { [`nameUz`]: regex },
+              { [`nameRu`]: regex },
+              { [`nameEn`]: regex },
+              { [`descriptionUz`]: regex },
+              { [`descriptionRu`]: regex },
+              { [`descriptionEn`]: regex },
+              { [`slugUz`]: regex },
+              { [`slugRu`]: regex },
+              { [`slugEn`]: regex },
+              { ['attributes.valueUz']: regex },
+              { ['attributes.valueRu']: regex },
+              { ['attributes.valueEn']: regex },
+              { [`attributes.nameUz`]: regex },
+              { [`attributes.nameRu`]: regex },
+              { [`attributes.nameEn`]: regex },
+              { [`keywords`]: regex },
+              { [`hierarchy.categoryNameUz`]: regex },
+              { [`hierarchy.categoryNameRu`]: regex },
+              { [`hierarchy.categoryNameEn`]: regex },
+              { [`hierarchy.categorySlugUz`]: regex },
+              { [`hierarchy.categorySlugRu`]: regex },
+              { [`hierarchy.categorySlugEn`]: regex },
+            ],
+          },
+        },
+        {
+          $project: {
+            _id: 1,
+            name: { $ifNull: [`$name${lang}`, '$nameUz'] },
+            description: { $ifNull: [`description${lang}`, '$descriptionUz'] },
+            slug: { $ifNull: [`slug${lang}`, '$slugUz'] },
+            sku: 1,
+            currentPrice: 1,
+            oldPrice: 1,
+            availability: 1,
+            images: 1,
+            thumbs: 1,
+            views: 1,
+            categoryId: 1,
+            brandId: 1,
+            attributes: {
+              $map: {
+                input: { $ifNull: ['$attributes', []] },
+                as: 'attribute',
+                in: {
+                  name: {
+                    $ifNull: [`$$attribute.name${lang}`, `$$attribute.nameUz`],
+                  },
+
+                  value: {
+                    $ifNull: [
+                      `$$attribute.value${lang}`,
+                      `$$attribute.valueUz`,
+                    ],
+                  },
+                },
+              },
+            },
+          },
+        },
+        {
+          $sort: sort,
+        },
+        {
+          $skip: skip,
+        },
+        { $limit: limit },
+      ])
+      .exec();
+
+    return searchProduct;
+  }
 
   async getProduct(body: GetProductDto) {
     if (!body.slug && !body._id) {
