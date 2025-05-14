@@ -46,7 +46,7 @@ import redisConfig from './config/redis.config';
     CartModule,
     FileUploadModule,
     OrderModule,
-    SearchModule,
+    // SearchModule,
   ],
   providers: [
     {

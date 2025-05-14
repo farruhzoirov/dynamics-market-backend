@@ -35,14 +35,8 @@ import { SearchModule } from '../elasticsearch/elasticsearch.module';
         schema: BrandSchema,
       },
     ]),
-    SearchModule,
   ],
-  providers: [
-    ProductService,
-    BuildCategoryHierarchyService,
-    SearchService,
-    ElasticsearchService,
-  ],
+  providers: [ProductService, BuildCategoryHierarchyService],
   controllers: [ProductController],
 })
 export class ProductModule {}

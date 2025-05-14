@@ -52,64 +52,64 @@ export class ProductService {
     @InjectModel(Brand.name)
     private readonly brandModel: Model<BrandDocument>,
     private readonly buildCategoryHierarchyService: BuildCategoryHierarchyService,
-    private readonly elasticSearchService: SearchService,
+    // private readonly elasticSearchService: SearchService,
   ) {}
 
-  async searchProducts(body: SearchProductsDto, lang: string) {
-    const from = body.page ? (body.page - 1) * (body.limit || 12) : 0;
-    const size = body.limit || 12;
+  // async searchProducts(body: SearchProductsDto, lang: string) {
+  //   const from = body.page ? (body.page - 1) * (body.limit || 12) : 0;
+  //   const size = body.limit || 12;
 
-    const searchResults = await this.elasticSearchService.search(
-      body.search,
-      lang,
-      from,
-      size,
-    );
+  //   const searchResults = await this.elasticSearchService.search(
+  //     body.search,
+  //     lang,
+  //     from,
+  //     size,
+  //   );
 
-    if (!searchResults.hits.length) {
-      return [];
-    }
+  //   if (!searchResults.hits.length) {
+  //     return [];
+  //   }
 
-    const productIds = searchResults.hits.map((hit) => hit._id);
+  //   const productIds = searchResults.hits.map((hit) => hit._id);
 
-    const products = await this.productModel
-      .find({ _id: { $in: productIds } })
-      .lean();
+  //   const products = await this.productModel
+  //     .find({ _id: { $in: productIds } })
+  //     .lean();
 
-    const sortedProducts = productIds
-      .map((id) => {
-        const product = products.find((p) => p._id.toString() === id);
-        if (!product) return null;
+  //   const sortedProducts = productIds
+  //     .map((id) => {
+  //       const product = products.find((p) => p._id.toString() === id);
+  //       if (!product) return null;
 
-        const hit = searchResults.hits.find((h) => h._id === id);
-        const highlight = hit?.highlight || {};
+  //       const hit = searchResults.hits.find((h) => h._id === id);
+  //       const highlight = hit?.highlight || {};
 
-        // Proyeksiya qilish
-        return {
-          _id: product._id,
-          name: product[`name${lang}`] || product.nameUz,
-          description: product[`description${lang}`] || product.descriptionUz,
-          slug: product[`slug${lang}`] || product.slugUz,
-          sku: product.sku,
-          currentPrice: product.currentPrice,
-          oldPrice: product.oldPrice,
-          availability: product.availability,
-          images: product.images,
-          thumbs: product.thumbs,
-          views: product.views,
-          categoryId: product.categoryId,
-          brandId: product.brandId,
-          highlight, // Highlight natijalarini qo'shish
-          attributes: (product.attributes || []).map((attr) => ({
-            name: attr[`name${lang}`] || attr.nameUz,
-            value: attr[`value${lang}`] || attr.valueUz,
-          })),
-        };
-      })
-      .filter(Boolean);
+  //       // Proyeksiya qilish
+  //       return {
+  //         _id: product._id,
+  //         name: product[`name${lang}`] || product.nameUz,
+  //         description: product[`description${lang}`] || product.descriptionUz,
+  //         slug: product[`slug${lang}`] || product.slugUz,
+  //         sku: product.sku,
+  //         currentPrice: product.currentPrice,
+  //         oldPrice: product.oldPrice,
+  //         availability: product.availability,
+  //         images: product.images,
+  //         thumbs: product.thumbs,
+  //         views: product.views,
+  //         categoryId: product.categoryId,
+  //         brandId: product.brandId,
+  //         highlight, // Highlight natijalarini qo'shish
+  //         attributes: (product.attributes || []).map((attr) => ({
+  //           name: attr[`name${lang}`] || attr.nameUz,
+  //           value: attr[`value${lang}`] || attr.valueUz,
+  //         })),
+  //       };
+  //     })
+  //     .filter(Boolean);
 
-    return sortedProducts;
-  }
+  //   return sortedProducts;
+  // }
 
   async searchProductsWithMongoDB(body: SearchProductsDto, lang: string) {
     const regex = new RegExp(body.search, 'i');
@@ -425,33 +425,33 @@ export class ProductService {
     }
   }
 
-  async indexAllProducts() {
-    const batchSize = 100;
-    let page = 1;
-    let hasMoreProducts = true;
-    let successCount = 0;
+  // async indexAllProducts() {
+  //   const batchSize = 100;
+  //   let page = 1;
+  //   let hasMoreProducts = true;
+  //   let successCount = 0;
 
-    while (hasMoreProducts) {
-      const skip = (page - 1) * batchSize;
-      const products = await this.productModel
-        .find()
-        .skip(skip)
-        .limit(batchSize)
-        .lean();
+  //   while (hasMoreProducts) {
+  //     const skip = (page - 1) * batchSize;
+  //     const products = await this.productModel
+  //       .find()
+  //       .skip(skip)
+  //       .limit(batchSize)
+  //       .lean();
 
-      if (products.length === 0) {
-        hasMoreProducts = false;
-        break;
-      }
+  //     if (products.length === 0) {
+  //       hasMoreProducts = false;
+  //       break;
+  //     }
 
-      const indexed = await this.elasticSearchService.bulkIndex(products);
-      if (indexed) {
-        successCount += products.length;
-      }
+  //     const indexed = await this.elasticSearchService.bulkIndex(products);
+  //     if (indexed) {
+  //       successCount += products.length;
+  //     }
 
-      page++;
-    }
+  //     page++;
+  //   }
 
-    return successCount;
-  }
+  //   return successCount;
+  // }
 }
