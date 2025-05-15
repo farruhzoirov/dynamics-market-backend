@@ -64,6 +64,7 @@ export const buildSingleOrderPipeline = async (
         customerType: 1,
         companyName: 1,
         createdAt: 1,
+        status: 1,
         items: {
           $map: {
             input: { $ifNull: ['$items', []] },
