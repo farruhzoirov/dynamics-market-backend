@@ -64,7 +64,7 @@ export class SearchService {
         this.logger.log(`Created index: ${this.indexName}`);
       }
     } catch (error) {
-      this.logger.error(`Error creating index: ${error.message}`);
+      this.logger.error(`Error creating index: ${error}`);
     }
   }
 
@@ -163,7 +163,6 @@ export class SearchService {
     try {
       const namePath = `name${lang}`;
       const descPath = `description${lang}`;
-
       const { hits } = await this.elasticsearchService.search({
         index: this.indexName,
         from,
@@ -172,9 +171,12 @@ export class SearchService {
           bool: {
             must: [{ term: { isDeleted: false } }, { term: { status: 1 } }],
             should: [
-              { match: { [namePath]: { query, boost: 3.0 } } },
-              { match: { [descPath]: { query, boost: 1.0 } } },
-              { match: { sku: { query, boost: 5.0 } } },
+              { match: { ['nameUz']: { query, boost: 3.0 } } },
+              { match: { ['nameRu']: { query, boost: 3.0 } } },
+              { match: { ['nameEn']: { query, boost: 3.0 } } },
+              { match: { ['descriptionUz']: { query, boost: 2.0 } } },
+              { match: { ['descriptionRu']: { query, boost: 2.0 } } },
+              { match: { ['descriptionEn']: { query, boost: 2.0 } } },
               { match: { keywords: { query, boost: 2.0 } } },
               {
                 nested: {
@@ -182,7 +184,9 @@ export class SearchService {
                   query: {
                     bool: {
                       should: [
-                        { match: { [`attributes.value${lang}`]: query } },
+                        { match: { [`attributes.valueUz`]: query } },
+                        { match: { [`attributes.valueRu`]: query } },
+                        { match: { [`attributes.valueEn`]: query } },
                       ],
                     },
                   },
@@ -206,12 +210,19 @@ export class SearchService {
       return {
         total: hits.total,
         hits: hits.hits.map((hit) => ({
-          ...(hit._source as object),
           _id: hit._id,
-          score: hit._score,
-          highlight: hit.highlight,
         })),
       };
+
+      // return {
+      //   total: hits.total,
+      //   hits: hits.hits.map((hit) => ({
+      //     ...(hit._source as object),
+      //     _id: hit._id,
+      //     score: hit._score,
+      //     highlight: hit.highlight,
+      //   })),
+      // };
     } catch (error) {
       this.logger.error(`Error searching: ${error.message}`);
       return {

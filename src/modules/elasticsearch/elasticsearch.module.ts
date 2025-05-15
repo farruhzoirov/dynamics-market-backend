@@ -12,6 +12,7 @@ import { ElasticsearchController } from './elasticsearch.controller';
     }),
   ],
   providers: [SearchService],
+  exports: [SearchService],
   controllers: [ElasticsearchController],
 })
 export class SearchModule {}

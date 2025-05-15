@@ -59,10 +59,10 @@ export const buildSingleOrderPipeline = async (
         firstName: 1,
         lastName: 1,
         email: 1,
+        price: 1,
         phone: 1,
         customerType: 1,
         companyName: 1,
-        status: 1,
         createdAt: 1,
         items: {
           $map: {

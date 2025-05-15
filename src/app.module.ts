@@ -46,7 +46,7 @@ import redisConfig from './config/redis.config';
     CartModule,
     FileUploadModule,
     OrderModule,
-    // SearchModule,
+    SearchModule,
   ],
   providers: [
     {
@@ -69,6 +69,7 @@ export class AppModule implements NestModule {
         '/product/search',
         '/product/get-product',
         '/review/list',
+        '/product/index-products',
       )
       .forRoutes('*');
   }

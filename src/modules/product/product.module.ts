@@ -11,8 +11,7 @@ import {
 import { Category, CategorySchema } from '../category/schemas/category.schema';
 import { BuildCategoryHierarchyService } from 'src/shared/services/build-hierarchy.service';
 import { Brand, BrandSchema } from '../brand/schemas/brand.schema';
-import { SearchService } from '../elasticsearch/elasticsearch.service';
-import { ElasticsearchService } from '@nestjs/elasticsearch';
+
 import { SearchModule } from '../elasticsearch/elasticsearch.module';
 
 @Module({
@@ -35,6 +34,7 @@ import { SearchModule } from '../elasticsearch/elasticsearch.module';
         schema: BrandSchema,
       },
     ]),
+    SearchModule,
   ],
   providers: [ProductService, BuildCategoryHierarchyService],
   controllers: [ProductController],
