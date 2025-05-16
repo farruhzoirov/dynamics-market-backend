@@ -44,6 +44,47 @@ export const buildUserOrdersPipeline = async (
   ];
 };
 
+// export const buildSingleOrderPipeline = async (
+//   match: Record<string, string | boolean>,
+//   lang: string,
+// ) => {
+//   return [
+//     {
+//       $match: match,
+//     },
+//     {
+//       $project: {
+//         _id: 1,
+//         orderCode: 1,
+//         firstName: 1,
+//         lastName: 1,
+//         email: 1,
+//         price: 1,
+//         phone: 1,
+//         customerType: 1,
+//         companyName: 1,
+//         createdAt: 1,
+//         status: 1,
+//         items: {
+//           $map: {
+//             input: { $ifNull: ['$items', []] },
+//             as: 'item',
+//             in: {
+//               productId: '$$item.productId',
+//               name: lang ? { $ifNull: [`$$item.name${lang}`, null] } : null,
+//               quantity: '$$item.quantity',
+//               price: '$$item.price',
+//             },
+//           },
+//         },
+//       },
+//     },
+//   ];
+// };
+
+
+
+
 export const buildSingleOrderPipeline = async (
   match: Record<string, string | boolean>,
   lang: string,
@@ -53,61 +94,56 @@ export const buildSingleOrderPipeline = async (
       $match: match,
     },
     {
-      $lookup: {
-        from: "products", // Replace with your actual products collection name
-        localField: "items.productId",
-        foreignField: "_id",
-        as: "productDetails"
-      }
+      $unwind: {
+        path: '$items',
+        preserveNullAndEmptyArrays: true,
+      },
     },
     {
-      $project: {
-        _id: 1,
-        orderCode: 1,
-        firstName: 1,
-        lastName: 1,
-        email: 1,
-        price: 1,
-        phone: 1,
-        customerType: 1,
-        companyName: 1,
-        createdAt: 1,
-        status: 1,
-        items: {
-          $map: {
-            input: { $ifNull: ['$items', []] },
-            as: 'item',
-            in: {
-              productId: '$$item.productId',
-              name: lang ? { $ifNull: [`$$item.name.${lang}`, null] } : null,
-              quantity: '$$item.quantity',
-              price: '$$item.price',
-              thumbs: {
-                $let: {
-                  vars: {
-                    productMatch: {
-                      $arrayElemAt: [
-                        {
-                          $filter: {
-                            input: "$productDetails",
-                            as: "product",
-                            cond: { $eq: ["$$product._id", "$$item.productId"] }
-                          }
-                        },
-                        0
-                      ]
-                    }
-                  },
-                  in: "$$productMatch.thumbs"
-                }
-              }
-            },
-          },
-        },
+      $lookup: {
+        from: 'products',
+        localField: 'items.productId',
+        foreignField: '_id',
+        as: 'productDetails',
+      },
+    },
+    {
+      $unwind: {
+        path: '$productDetails',
+        preserveNullAndEmptyArrays: true,
+      },
+    },
+    {
+      $addFields: {
+        'items.thumbs': '$productDetails.thumbs',
+        'items.name': lang
+          ? { $ifNull: [`$items.name${lang}`, null] }
+          : null,
+        'quantity': '$items.quantity',
+        price: '$items.price',
+      },
+    },
+    {
+      $group: {
+        _id: '$_id',
+        orderCode: { $first: '$orderCode' },
+        firstName: { $first: '$firstName' },
+        lastName: { $first: '$lastName' },
+        email: { $first: '$email' },
+        price: { $first: '$price' },
+        phone: { $first: '$phone' },
+        customerType: { $first: '$customerType' },
+        companyName: { $first: '$companyName' },
+        createdAt: { $first: '$createdAt' },
+        status: { $first: '$status' },
+        items: { $push: '$items' },
       },
     },
   ];
 };
+
+
+
 
 export const buildCartItemsPipeline = (userId: string) => {
   return [
