@@ -25,13 +25,11 @@ export class BrandService {
   async getBrandsList(
     body: GetBrandListsDto,
   ): Promise<{ data: any; total: number }> {
-    console.time('start');
     const [data, total] = await getFilteredResultsWithTotal(
       body,
       this.brandModel,
       ['nameUz', 'nameRu', 'nameEn'],
     );
-    console.timeEnd('start');
     return {
       data,
       total,

@@ -164,7 +164,7 @@ export const buildSingleOrderPipeline = async (
 
 
 
-export const buildCartItemsPipeline = (userId: string) => {
+export const buildCartItemsPipeline = async (userId: string) => {
   return [
     {
       $match: {

@@ -11,7 +11,6 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Order, OrderDocument } from './schema/order.model';
 import { Model } from 'mongoose';
 import { Cart, CartDocument } from '../cart/schemas/cart.schema';
-import { Product, ProductDocument } from '../product/schemas/product.model';
 import { ProductItem } from 'src/shared/interfaces/product-items';
 import { Counter, CounterDocument } from './schema/counter.model';
 import { getFilteredResultsWithTotal } from 'src/common/helpers/universal-query-builder';
@@ -20,7 +19,6 @@ import {
   buildSingleOrderPipeline,
   buildUserOrdersPipeline,
 } from 'src/common/helpers/pipelines/order.pipeline';
-import { buildCategoryHierarchyPipeline } from 'src/common/helpers/pipelines/category-hierarchy-pipeline';
 
 @Injectable()
 export class OrderService {
@@ -67,17 +65,20 @@ export class OrderService {
     if (!body._id && !body.orderCode) {
       throw new BadRequestException('order Id or orderCode is required');
     }
-    const match: Record<string, string | boolean> = {};
+    const match: Record<string, string | boolean> = {
+
+    };
+    const orderMap = [
+      { bodyKey: '_id', matchKey: '_id', },
+      { bodyKey: 'orderCode', matchKey: 'orderCode'}
+    ]
     match.userId = user._id;
     match.isDeleted = false;
-
-    if (body._id) {
-      match._id = body._id;
-    }
-
-    if (body.orderCode) {
-      match.orderCode = body.orderCode;
-    }
+    orderMap.forEach(({bodyKey, matchKey}) => {
+      if (body[bodyKey]) {
+        match[matchKey] = body[bodyKey];
+      }
+    });
     const pipeline = await buildSingleOrderPipeline(match, lang);
     const findOrder = await this.orderModel.aggregate(pipeline);
     return findOrder.length ? findOrder[0] : null;
