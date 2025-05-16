@@ -107,7 +107,7 @@ export class OrderService {
       price: item.product.currentPrice ?? null,
     }));
 
-    await Promise.all([
+    const [createdOrder]= await Promise.all([
       await this.orderModel.create({
         ...body,
         orderCode,
@@ -116,6 +116,7 @@ export class OrderService {
       }),
       await this.cartModel.deleteMany({ userId }),
     ]);
+    return createdOrder.orderCode;
   }
 
   async update(body: UpdateOrderDto) {

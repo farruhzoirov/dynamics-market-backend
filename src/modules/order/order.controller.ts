@@ -86,8 +86,12 @@ export class OrderController {
 
   @Post('create')
   async createOrder(@Body() body: CreateOrderDto, @User() user: IJwtPayload) {
-    await this.orderService.create(body, user);
-    return new AddedSuccessResponse();
+    const orderCode = await this.orderService.create(body, user);
+    const response = new AddedSuccessResponse();
+    return {
+      ...response,
+      orderCode: orderCode,
+    }
   }
 
   @HttpCode(HttpStatus.OK)
