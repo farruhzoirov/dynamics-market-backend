@@ -1,6 +1,7 @@
 export const buildUserOrdersPipeline = async (
   userId: string,
   lang: string,
+  sort: Record<string, any>,
   skip: number,
   limit: number,
 ) => {
@@ -34,6 +35,9 @@ export const buildUserOrdersPipeline = async (
           $size: { $ifNull: ['$items', []] },
         },
       },
+    },
+    {
+      $sort: sort
     },
     {
       $skip: skip,

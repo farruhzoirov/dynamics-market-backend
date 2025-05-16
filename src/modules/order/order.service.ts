@@ -44,10 +44,11 @@ export class OrderService {
   }
 
   async getOrdersByUserId(body: GetOrdersDto, user: IJwtPayload, lang: string) {
+    const sort: Record<string, any> = {createdAt: -1};
     const limit = body.limit ? body.limit : 12;
     const skip = body.page ? (body.page - 1) * limit : 0;
     const userId = user._id;
-    const pipeline = await buildUserOrdersPipeline(userId, lang, skip, limit);
+    const pipeline = await buildUserOrdersPipeline(userId,  lang, sort, skip, limit);
     const [findOrders, total] = await Promise.all([
       await this.orderModel.aggregate(pipeline),
       await this.orderModel.countDocuments({
