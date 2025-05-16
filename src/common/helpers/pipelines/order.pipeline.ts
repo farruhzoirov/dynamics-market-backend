@@ -102,11 +102,23 @@ export const buildSingleOrderPipeline = async (
     {
       $lookup: {
         from: 'products',
-        localField: 'items.productId',
-        foreignField: '_id',
+        let: { pid: '$items.productId' },
+        pipeline: [
+          {
+            $match: {
+              $expr: { $eq: ['$_id', { $toObjectId: '$$pid' }] },
+            },
+          },
+          {
+            $project: {
+              thumbs: 1,
+            },
+          },
+        ],
         as: 'productDetails',
       },
     },
+
     {
       $unwind: {
         path: '$productDetails',
