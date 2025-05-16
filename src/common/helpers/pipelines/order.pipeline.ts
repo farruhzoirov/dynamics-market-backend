@@ -112,6 +112,7 @@ export const buildSingleOrderPipeline = async (
           {
             $project: {
               thumbs: 1,
+              [`slug${lang}`]: 1
             },
           },
         ],
@@ -128,6 +129,8 @@ export const buildSingleOrderPipeline = async (
     {
       $addFields: {
         'items.thumbs': '$productDetails.thumbs',
+        'items.productId': 'items.productId',
+        'items.slug': `$productDetails.slug${lang}`,
         'items.name': lang
           ? { $ifNull: [`$items.name${lang}`, null] }
           : null,
