@@ -53,6 +53,14 @@ export const buildSingleOrderPipeline = async (
       $match: match,
     },
     {
+      $lookup: {
+        from: "products", // Replace with your actual products collection name
+        localField: "items.productId",
+        foreignField: "_id",
+        as: "productDetails"
+      }
+    },
+    {
       $project: {
         _id: 1,
         orderCode: 1,
@@ -65,16 +73,34 @@ export const buildSingleOrderPipeline = async (
         companyName: 1,
         createdAt: 1,
         status: 1,
-        thumbs: 1,
         items: {
           $map: {
             input: { $ifNull: ['$items', []] },
             as: 'item',
             in: {
               productId: '$$item.productId',
-              name: lang ? { $ifNull: [`$$item.name${lang}`, null] } : null,
+              name: lang ? { $ifNull: [`$$item.name.${lang}`, null] } : null,
               quantity: '$$item.quantity',
               price: '$$item.price',
+              thumbs: {
+                $let: {
+                  vars: {
+                    productMatch: {
+                      $arrayElemAt: [
+                        {
+                          $filter: {
+                            input: "$productDetails",
+                            as: "product",
+                            cond: { $eq: ["$$product._id", "$$item.productId"] }
+                          }
+                        },
+                        0
+                      ]
+                    }
+                  },
+                  in: "$$productMatch.thumbs"
+                }
+              }
             },
           },
         },
