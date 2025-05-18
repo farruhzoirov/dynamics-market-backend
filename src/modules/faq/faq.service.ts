@@ -7,6 +7,7 @@ import {
   GetFaqListDto,
   DeleteFaqDto,
   FaqOrderItemDto,
+  GetFaqDto,
 } from './dto/faq.dto';
 import { Faq, FaqDocument } from './schema/faq.schema';
 import { AppType } from 'src/shared/enums/app-type.enum';
@@ -19,11 +20,14 @@ export class FaqService {
 
   async getFaqList(appType: string, lang?: string) {
     if (appType === AppType.ADMIN) {
-      return await this.faqModel.find().sort({ index: 1 }).lean();
+      return await this.faqModel
+        .find({ isDeleted: false })
+        .sort({ index: 1 })
+        .lean();
     }
 
     const data = await this.faqModel
-      .find()
+      .find({ isDeleted: false })
       .sort({ index: 1 })
       .select(`question${lang} answer${lang} index`)
       .lean();
@@ -37,6 +41,21 @@ export class FaqService {
       ...body,
       index: count,
     });
+  }
+
+  async getFaqById(body: GetFaqDto, appType: string, lang?: string) {
+    if (appType === AppType.ADMIN) {
+      return await this.faqModel
+        .findOne({ _id: body._id, isDeleted: false })
+        .lean();
+    }
+
+    const data = await this.faqModel
+      .findOne({ _id: body._id, isDeleted: false })
+      .select(`question${lang} answer${lang} index`)
+      .lean();
+
+    return data;
   }
 
   async update(body: UpdateFaqDto) {

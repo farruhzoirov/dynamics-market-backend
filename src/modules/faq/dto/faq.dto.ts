@@ -53,6 +53,13 @@ export class AddFaqDto {
   answerEn: string;
 }
 
+export class GetFaqDto {
+  @ApiProperty()
+  @IsObjectId()
+  @IsString()
+  _id: string;
+}
+
 export class UpdateFaqDto {
   @ApiProperty()
   @IsObjectId()

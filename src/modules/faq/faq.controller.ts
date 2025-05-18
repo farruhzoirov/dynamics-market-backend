@@ -17,6 +17,7 @@ import { FaqService } from './faq.service';
 import {
   AddFaqDto,
   DeleteFaqDto,
+  GetFaqDto,
   GetFaqListDto,
   UpdateFaqDto,
 } from './dto/faq.dto';
@@ -33,7 +34,9 @@ export class FaqController {
     @Headers('Accept-Language') lang: string,
     @Headers('App-Type') appType: string,
   ) {
-    lang = new AcceptLanguagePipe().transform(lang);
+    if (lang) {
+      lang = new AcceptLanguagePipe().transform(lang);
+    }
     appType = new AcceptAppTypePipe().transform(appType);
     const faqList = await this.faqService.getFaqList(appType, lang);
     return faqList;
@@ -43,6 +46,21 @@ export class FaqController {
   async addToFaq(@Body() body: AddFaqDto) {
     await this.faqService.create(body);
     return new AddedSuccessResponse();
+  }
+
+  @HttpCode(HttpStatus.OK)
+  @Post('get-faq')
+  async getFaqById(
+    @Body() body: GetFaqDto,
+    @Headers('Accept-Language') lang: string,
+    @Headers('App-Type') appType: string,
+  ) {
+    if (lang) {
+      lang = new AcceptLanguagePipe().transform(lang);
+    }
+    appType = new AcceptAppTypePipe().transform(appType);
+    const getFaqById = await this.faqService.getFaqById(body, appType, lang);
+    return getFaqById;
   }
 
   @HttpCode(HttpStatus.OK)
