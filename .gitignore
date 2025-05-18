@@ -1,4 +1,5 @@
 node_modules
+amocrm-token.json
 dist
 .env
 .idea
