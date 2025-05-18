@@ -13,6 +13,7 @@ import {
 import { Faq, FaqDocument } from './schema/faq.schema';
 import { AppType } from 'src/shared/enums/app-type.enum';
 import { timeStamp } from 'console';
+import { GetNewsListDto } from '../news/dto/news.dto';
 
 @Injectable()
 export class FaqService {

@@ -18,6 +18,7 @@ import { OrderModule } from './modules/order/order.module';
 import { SearchModule } from './modules/elasticsearch/elasticsearch.module';
 // import { AmocrmModule } from './shared/module/amocrm/amocrm.module';
 import { FaqModule } from './modules/faq/faq.module';
+import { NewsModule } from './modules/news/news.module';
 import googleConfig from './config/google.config';
 import jwtConfig from './config/jwt.config';
 import redisConfig from './config/redis.config';
@@ -58,6 +59,7 @@ import redisConfig from './config/redis.config';
     SearchModule,
     // AmocrmModule,
     FaqModule,
+    NewsModule,
   ],
   providers: [
     {
@@ -82,6 +84,8 @@ export class AppModule implements NestModule {
         '/review/list',
         '/faq/list',
         '/faq/get-faq',
+        '/news/list',
+        '/news/get-news',
         '/product/index-products',
         '/order/amocrm',
       )
