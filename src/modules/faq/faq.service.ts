@@ -12,6 +12,7 @@ import {
 } from './dto/faq.dto';
 import { Faq, FaqDocument } from './schema/faq.schema';
 import { AppType } from 'src/shared/enums/app-type.enum';
+import { timeStamp } from 'console';
 
 @Injectable()
 export class FaqService {
@@ -27,11 +28,26 @@ export class FaqService {
         .lean();
     }
 
-    const data = await this.faqModel
-      .find({ isDeleted: false, status: 1 })
-      .sort({ index: 1 })
-      .select(`question${lang} answer${lang} index`)
-      .lean();
+    const data = await this.faqModel.aggregate([
+      {
+        $match: {
+          isDeleted: false,
+          status: 1,
+        },
+      },
+      {
+        $project: {
+          question: {
+            $getField: { field: `question${lang}`, input: '$$ROOT' },
+          },
+          answer: { $getField: { field: `answer${lang}`, input: '$$ROOT' } },
+          index: 1,
+        },
+      },
+      {
+        $sort: { index: 1 },
+      },
+    ]);
 
     return data;
   }
