@@ -101,7 +101,9 @@ export class UpdateFaqDto {
   @Min(0)
   @Max(1)
   status: number;
+}
 
+export class UpdateFaqsOrderDto {
   @ApiProperty({
     type: FaqOrderItemDto,
     isArray: true,
@@ -115,7 +117,7 @@ export class UpdateFaqDto {
   @IsOptional()
   @ValidateNested({ each: true })
   @Type(() => FaqOrderItemDto)
-  order: FaqOrderItemDto[];
+  orders: FaqOrderItemDto[];
 }
 
 export class DeleteFaqDto extends DeleteBaseModelDto {}

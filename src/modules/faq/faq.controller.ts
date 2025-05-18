@@ -20,6 +20,7 @@ import {
   GetFaqDto,
   GetFaqListDto,
   UpdateFaqDto,
+  UpdateFaqsOrderDto,
 } from './dto/faq.dto';
 import { AcceptAppTypePipe } from 'src/common/pipes/app-type.pipe';
 
@@ -68,6 +69,13 @@ export class FaqController {
   async updateFaq(@Body() body: UpdateFaqDto) {
     await this.faqService.update(body);
     return new UpdatedSuccessResponse();
+  }
+
+  @HttpCode(HttpStatus.OK)
+  @Post('update-order')
+  async updateFaqsOrder(@Body() body: UpdateFaqsOrderDto) {
+    await this.faqService.updateFaqsOrder(body);
+    return new UpdatedSuccessResponse('FaqsOrder updated');
   }
 
   @HttpCode(HttpStatus.OK)

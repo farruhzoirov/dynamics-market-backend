@@ -35,3 +35,4 @@ export class Faq {
 
 export const FaqSchema = SchemaFactory.createForClass(Faq);
 FaqSchema.index({ isDeleted: 1 });
+FaqSchema.index({ status: 1 });

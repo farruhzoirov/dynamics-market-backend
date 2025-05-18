@@ -8,6 +8,7 @@ import {
   DeleteFaqDto,
   FaqOrderItemDto,
   GetFaqDto,
+  UpdateFaqsOrderDto,
 } from './dto/faq.dto';
 import { Faq, FaqDocument } from './schema/faq.schema';
 import { AppType } from 'src/shared/enums/app-type.enum';
@@ -27,7 +28,7 @@ export class FaqService {
     }
 
     const data = await this.faqModel
-      .find({ isDeleted: false })
+      .find({ isDeleted: false, status: 1 })
       .sort({ index: 1 })
       .select(`question${lang} answer${lang} index`)
       .lean();
@@ -58,26 +59,20 @@ export class FaqService {
     return data;
   }
 
-  async update(body: UpdateFaqDto) {
+  async update(updateBody: UpdateFaqDto) {
     const findFaq = await this.faqModel.findOne({
-      _id: body._id,
+      _id: updateBody._id,
       isDeleted: false,
     });
     if (!findFaq) throw new NotFoundException('Faq not found');
 
-    const { order, ...updateBody } = body;
-
-    if (order?.length) {
-      await this.updateFaqsOrder(order);
-    }
-
-    await this.faqModel.findByIdAndUpdate(body._id, {
+    await this.faqModel.findByIdAndUpdate(updateBody._id, {
       $set: updateBody,
     });
   }
 
-  async updateFaqsOrder(orders: FaqOrderItemDto[]) {
-    const bulkOps = orders.map(({ _id, index }) => ({
+  async updateFaqsOrder(body: UpdateFaqsOrderDto) {
+    const bulkOps = body.orders.map(({ _id, index }) => ({
       updateOne: {
         filter: { _id },
         update: { $set: { index: index } },
