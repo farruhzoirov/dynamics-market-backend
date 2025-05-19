@@ -138,6 +138,7 @@ export class OrderService {
   }
 
   async getOrdersByUserId(body: GetOrdersDto, user: IJwtPayload, lang: string) {
+    console.time('OrdersService');
     const sort: Record<string, any> = { createdAt: -1 };
     const limit = body.limit ? body.limit : 12;
     const skip = body.page ? (body.page - 1) * limit : 0;
@@ -156,6 +157,8 @@ export class OrderService {
         isDeleted: false,
       }),
     ]);
+    console.timeEnd('OrdersService');
+    console.log('OrdersService');
     return {
       data: findOrders,
       total,

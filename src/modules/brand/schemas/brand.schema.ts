@@ -34,3 +34,4 @@ export class Brand {
 export const BrandSchema = SchemaFactory.createForClass(Brand);
 BrandSchema.index({ slug: 1 });
 BrandSchema.index({ nameUz: 1, nameRu: 1, nameEn: 1 });
+BrandSchema.index({isDeleted: 1});

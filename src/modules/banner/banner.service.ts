@@ -42,12 +42,14 @@ export class BannerService {
   }
 
   async getBannersListForFront(lang: string) {
+    console.time('BannerService');
     const pipeline = await buildBannerPipeline(lang);
     const [data, total] = await Promise.all([
       this.bannerModel.aggregate(pipeline).exec(),
       this.bannerModel.countDocuments({ isDeleted: false }),
     ]);
-
+    console.timeEnd('BannerService');
+    console.log('BannerService');
     return {
       data,
       total,

@@ -37,16 +37,20 @@ export class BrandService {
   }
 
   async getBrandsListForFront(lang: string) {
+    console.time('BrandService');
     const pipeline = await buildBrandPipeline(lang);
     const [data, total] = await Promise.all([
       await this.brandModel.aggregate(pipeline).exec(),
       await this.brandModel.countDocuments({ isDeleted: false }),
     ]);
+    console.timeEnd('BrandService');
+    console.log('BrandService');
 
     return {
       data,
       total,
     };
+
   }
 
   async addBrand(body: AddBrandDto): Promise<void> {
