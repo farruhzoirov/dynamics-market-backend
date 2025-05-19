@@ -6,8 +6,6 @@ services:
     restart: always
     env_file:
       - .env
-    ports:
-      - '5000:5000'
     volumes:
       - ./uploads:/usr/src/app/uploads
     depends_on:
@@ -17,9 +15,8 @@ services:
   redis:
     image: redis:latest
     container_name: redis
+    network_mode: host
     restart: always
-    ports:
-      - '6379:6379'
     volumes:
       - redis_data:/data
     command: redis-server --replicaof no one
@@ -35,23 +32,20 @@ services:
       - xpack.security.transport.ssl.enabled=false
       - bootstrap.memory_lock=true
       - ES_JAVA_OPTS=-Xms1g -Xmx1g
+      - network.bind_host=127.0.0.1
     ulimits:
       memlock:
         soft: -1
         hard: -1
     volumes:
       - esdata:/usr/share/elasticsearch/data
-    ports:
-      - '9200:9200'
 
   kibana:
     image: docker.elastic.co/kibana/kibana:8.13.4
     network_mode: host
     container_name: kibana
-    ports:
-      - '5601:5601'
     environment:
-      - ELASTICSEARCH_HOSTS=http://elasticsearch:9200
+      - ELASTICSEARCH_HOSTS=http://127.0.0.1:9200
     depends_on:
       - elasticsearch
 
