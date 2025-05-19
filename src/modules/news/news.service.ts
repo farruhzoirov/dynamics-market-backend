@@ -20,7 +20,6 @@ import {
 } from 'src/common/helpers/generate-slug';
 import { universalSearchQuery } from 'src/common/helpers/universal-search-query';
 import { getFilteredResultsWithTotal } from 'src/common/helpers/universal-query-builder';
-import { Matches } from 'class-validator';
 
 @Injectable()
 export class NewsService {

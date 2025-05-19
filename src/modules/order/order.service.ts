@@ -20,6 +20,8 @@ import {
   buildUserOrdersPipeline,
 } from 'src/common/helpers/pipelines/order.pipeline';
 import { ConnectAmocrmService } from 'src/shared/module/amocrm/connect-amocrm.service';
+import { OrderStatus } from '../../shared/enums/order-status.enum';
+import { CustomerType } from '../../shared/enums/customer-type.enum';
 
 @Injectable()
 export class OrderService {
@@ -52,10 +54,35 @@ export class OrderService {
             values: [{ value: orderData.email }],
           },
           {
-            field_id: 594001, // "lastName" field_id
-            values: [{ value: orderData.items }],
+            field_id: 594417, // "Items" field_id (masalan, 594001)
+            values: [{ value: JSON.stringify(orderData.items) }], // JSON string sifatida
+          },
+          {
+            field_id: 594421, // "Comment" field_id
+            values: [{ value: orderData.comment || "" }],
+          },
+          {
+            field_id: 594665,
+            values: [{ value: orderData.customerType }],
+          },
+          {
+            field_id: 594885, // "Company Name" field_id
+            values: [{ value: orderData.companyName || "" }],
+          },
+          {
+            field_id: 594887, // "Phone" field_id
+            values: [{ value: orderData.phone }],
+          },
+          {
+            field_id: 594891, // "Is Deleted" field_id
+            values: [{ value: orderData.isDeleted }],
+          },
+          {
+            field_id: 594889, // "Is Deleted" field_id
+            values: [{ value: orderData.status }],
           },
         ],
+
       });
       const leads = await client.request.get(`/api/v4/leads`);
       const customFields = await client.request.get(`/api/v4/leads/custom_fields`);
@@ -106,7 +133,31 @@ export class OrderService {
         lastName: 'Sultonbayev',
         email: 'sultonbayevogabek@gmail.com',
       });
-      return data;
+
+      const dummyOrderCancelled: any = {
+        firstName: "Jasur",
+        lastName: "Karimov",
+        email: "jasur.karimov@example.com",
+        userId: "987656",
+        items: [
+          {
+            productId: "66f8a1b2c3d4e5f678901237",
+            nameUz: "Planshet",
+            nameRu: "Планшет",
+            nameEn: "Tablet",
+            quantity: 1,
+            price: null, // Narx belgilanmagan
+          },
+        ],
+        orderCode: "ORD-2025-003",
+        comment: "Mijoz buyurtmani bekor qildi.",
+        customerType: CustomerType.INDIVIDUAL,
+        companyName: null,
+        phone: "+998909876543",
+        status: 1,
+        isDeleted: true,
+      };
+      return dummyOrderCancelled;
     } catch (error) {
       console.error(
         '❌ Error creating lead:',
