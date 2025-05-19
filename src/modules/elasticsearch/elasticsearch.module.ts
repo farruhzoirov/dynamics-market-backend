@@ -7,7 +7,7 @@ import { ElasticsearchController } from './elasticsearch.controller';
   imports: [
     ElasticsearchModule.registerAsync({
       useFactory: () => ({
-        node: 'http://172.18.0.2:9200',
+        node: 'http://elasticsearch:9200',
       }),
     }),
   ],
