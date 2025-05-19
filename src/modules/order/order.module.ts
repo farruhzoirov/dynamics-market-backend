@@ -7,6 +7,7 @@ import { Order, OrderSchema } from './schema/order.model';
 import { Cart, CartSchema } from '../cart/schemas/cart.schema';
 import { Product, ProductSchema } from '../product/schemas/product.model';
 import { Counter, CounterSchema } from './schema/counter.model';
+import { ConnectAmocrmService } from 'src/shared/module/amocrm/connect-amocrm.service';
 
 @Module({
   imports: [
@@ -26,6 +27,6 @@ import { Counter, CounterSchema } from './schema/counter.model';
     ]),
   ],
   controllers: [OrderController],
-  providers: [OrderService],
+  providers: [OrderService, ConnectAmocrmService],
 })
 export class OrderModule {}

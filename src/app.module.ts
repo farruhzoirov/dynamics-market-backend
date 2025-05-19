@@ -16,13 +16,13 @@ import databaseConfig, { CONFIG_DATABASE } from './config/database.config';
 import { CartModule } from './modules/cart/cart.module';
 import { OrderModule } from './modules/order/order.module';
 import { SearchModule } from './modules/elasticsearch/elasticsearch.module';
-// import { AmocrmModule } from './shared/module/amocrm/amocrm.module';
+import { AmocrmModule } from './shared/module/amocrm/amocrm.module';
 import { FaqModule } from './modules/faq/faq.module';
 import { NewsModule } from './modules/news/news.module';
 import googleConfig from './config/google.config';
 import jwtConfig from './config/jwt.config';
 import redisConfig from './config/redis.config';
-// import amocrmConfig from './config/amocrm.config';
+import amocrmConfig from './config/amocrm.config';
 
 @Module({
   imports: [
@@ -32,7 +32,7 @@ import redisConfig from './config/redis.config';
         googleConfig,
         jwtConfig,
         redisConfig,
-        // amocrmConfig,
+        amocrmConfig,
       ],
       envFilePath: '.env',
       isGlobal: true,
@@ -57,7 +57,7 @@ import redisConfig from './config/redis.config';
     FileUploadModule,
     OrderModule,
     SearchModule,
-    // AmocrmModule,
+    AmocrmModule,
     FaqModule,
     NewsModule,
   ],

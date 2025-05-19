@@ -48,6 +48,11 @@ export class OrderController {
       required: false,
     },
   ])
+  @Get('amocrm')
+  async getOrderCode() {
+    const response = await this.orderService.createCustomFieldForOrders();
+    return response;
+  }
   @HttpCode(HttpStatus.OK)
   @Post('list')
   async getOrdersList(
@@ -91,7 +96,7 @@ export class OrderController {
     return {
       ...response,
       orderCode: orderCode,
-    }
+    };
   }
 
   @HttpCode(HttpStatus.OK)

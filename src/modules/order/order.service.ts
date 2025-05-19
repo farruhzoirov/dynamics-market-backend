@@ -19,6 +19,7 @@ import {
   buildSingleOrderPipeline,
   buildUserOrdersPipeline,
 } from 'src/common/helpers/pipelines/order.pipeline';
+import { ConnectAmocrmService } from 'src/shared/module/amocrm/connect-amocrm.service';
 
 @Injectable()
 export class OrderService {
@@ -26,7 +27,102 @@ export class OrderService {
     @InjectModel(Order.name) private orderModel: Model<OrderDocument>,
     @InjectModel(Cart.name) private cartModel: Model<CartDocument>,
     @InjectModel(Counter.name) private counterModel: Model<CounterDocument>,
+    private readonly connectAmocrmService: ConnectAmocrmService,
   ) {}
+
+  async addOrderFieldsToLead(leadId: number, orderData: any) {
+    try {
+      const client = this.connectAmocrmService.getClient();
+      const response = await client.request.patch(`/api/v4/leads/${leadId}`, {
+        custom_fields_values: [
+          {
+            field_id: 590867, // "Order Code" field_id
+            values: [{ value: orderData.orderCode }],
+          },
+          {
+            field_id: 590875, // "firstName" field_id
+            values: [{ value: orderData.firstName }],
+          },
+          {
+            field_id: 590877, // "lastName" field_id
+            values: [{ value: orderData.lastName }],
+          },
+          {
+            field_id: 590931, // "lastName" field_id
+            values: [{ value: orderData.email }],
+          },
+        ],
+      });
+
+      console.log('✅ Lead updated with custom fields:', response.data);
+      return response.data;
+    } catch (error) {
+      console.error(
+        '❌ Error updating lead with custom fields:',
+        error.response?.data || error.message,
+      );
+      throw error;
+    }
+  }
+
+  async createLead() {
+    try {
+      const client = this.connectAmocrmService.getClient();
+      const customBody = {
+        orderCode: 'ORD-003',
+        firstName: 'Ogabek',
+        lastName: 'Sultonbayev',
+        email: 'sultonbayevogabek@gmail.com',
+      };
+
+      const response = (await client.request.post('/api/v4/leads', [
+        {
+          name: `${customBody.firstName} ${customBody.lastName} ${customBody.email}`, // Lead nomi
+        },
+      ])) as any;
+
+      const leadId = response.data._embedded.leads[0].id; // Yaratilgan lead ID
+      const data = await this.addOrderFieldsToLead(leadId, {
+        orderCode: 'ORD-003',
+        firstName: 'Ogabek',
+        lastName: 'Sultonbayev',
+        email: 'sultonbayevogabek@gmail.com',
+      });
+      return data;
+    } catch (error) {
+      console.error(
+        '❌ Error creating lead:',
+        error.response?.data || error.message,
+      );
+      throw error;
+    }
+  }
+
+  async createCustomFieldForOrders() {
+    try {
+      // const client = this.connectAmocrmService.getClient();
+      // const response = await client.request.post(
+      //   '/api/v4/leads/custom_fields',
+      //   [
+      //     {
+      //       name: 'Email', // Custom field nomi
+      //       type: 'text', // Maydon turi (text, number, date va boshqalar)
+      //       sort: 10, // Maydonning tartib raqami
+      //     },
+      //   ],
+      // );
+      const response = await this.createLead();
+
+      console.log('✅ Custom field created for orders:', response);
+      return response;
+    } catch (error) {
+      console.error(
+        '❌ Error creating custom field for orders:',
+        error.response?.data || error.message,
+      );
+      throw error;
+    }
+  }
 
   async getOrdersList(body: GetOrdersDto) {
     const [data, total] = await getFilteredResultsWithTotal(
@@ -42,11 +138,17 @@ export class OrderService {
   }
 
   async getOrdersByUserId(body: GetOrdersDto, user: IJwtPayload, lang: string) {
-    const sort: Record<string, any> = {createdAt: -1};
+    const sort: Record<string, any> = { createdAt: -1 };
     const limit = body.limit ? body.limit : 12;
     const skip = body.page ? (body.page - 1) * limit : 0;
     const userId = user._id;
-    const pipeline = await buildUserOrdersPipeline(userId,  lang, sort, skip, limit);
+    const pipeline = await buildUserOrdersPipeline(
+      userId,
+      lang,
+      sort,
+      skip,
+      limit,
+    );
     const [findOrders, total] = await Promise.all([
       await this.orderModel.aggregate(pipeline),
       await this.orderModel.countDocuments({
@@ -65,16 +167,14 @@ export class OrderService {
     if (!body._id && !body.orderCode) {
       throw new BadRequestException('order Id or orderCode is required');
     }
-    const match: Record<string, string | boolean> = {
-
-    };
+    const match: Record<string, string | boolean> = {};
     const orderMap = [
-      { bodyKey: '_id', matchKey: '_id', },
-      { bodyKey: 'orderCode', matchKey: 'orderCode'}
-    ]
+      { bodyKey: '_id', matchKey: '_id' },
+      { bodyKey: 'orderCode', matchKey: 'orderCode' },
+    ];
     match.userId = user._id;
     match.isDeleted = false;
-    orderMap.forEach(({bodyKey, matchKey}) => {
+    orderMap.forEach(({ bodyKey, matchKey }) => {
       if (body[bodyKey]) {
         match[matchKey] = body[bodyKey];
       }
@@ -109,7 +209,7 @@ export class OrderService {
       price: item.product.currentPrice ?? null,
     }));
 
-    const [createdOrder]= await Promise.all([
+    const [createdOrder] = await Promise.all([
       await this.orderModel.create({
         ...body,
         orderCode,
