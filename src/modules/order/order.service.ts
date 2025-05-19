@@ -36,7 +36,7 @@ export class OrderService {
       const response = await client.request.patch(`/api/v4/leads/${leadId}`, {
         custom_fields_values: [
           {
-            field_id: 590867, // "Order Code" field_id
+            // field_id: 590867, // "Order Code" field_id
             values: [{ value: orderData.orderCode }],
           },
           {
@@ -51,11 +51,21 @@ export class OrderService {
             field_id: 590931, // "lastName" field_id
             values: [{ value: orderData.email }],
           },
+          {
+            field_id: 594001, // "lastName" field_id
+            values: [{ value: orderData.items }],
+          },
         ],
       });
+      const leads = await client.request.get(`/api/v4/leads`);
+      const customFields = await client.request.get(`/api/v4/leads/custom_fields`);
 
       console.log('✅ Lead updated with custom fields:', response.data);
-      return response.data;
+      return {
+        response: response.data,
+        leads: leads.data,
+        customFields: customFields.data,
+      };
     } catch (error) {
       console.error(
         '❌ Error updating lead with custom fields:',
@@ -73,6 +83,14 @@ export class OrderService {
         firstName: 'Ogabek',
         lastName: 'Sultonbayev',
         email: 'sultonbayevogabek@gmail.com',
+        items: [{
+            productId: "66f8a1b2c3d4e5f678901235",
+            nameUz: "Naushniklar",
+            nameRu: "Наушники",
+            nameEn: "Headphones",
+            price : 49.99,
+            quantity: 1
+        }]
       };
 
       const response = (await client.request.post('/api/v4/leads', [

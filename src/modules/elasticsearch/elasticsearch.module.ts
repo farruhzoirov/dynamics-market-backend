@@ -6,8 +6,12 @@ import { ElasticsearchController } from './elasticsearch.controller';
 @Module({
   imports: [
     ElasticsearchModule.registerAsync({
-      useFactory: () => ({
+      useFactory: async () => ({
         node: 'http://127.0.0.1:9200',
+        maxRetries: 10,
+        requestTimeout: 5000,
+        pingTimeout: 5000,
+        sniffOnStart: true,
       }),
     }),
   ],

@@ -43,7 +43,7 @@ export class NewsService {
     const sort: Record<string, any> = { createdAt: -1 };
     const limit = body.limit ? body.limit : 12;
     const skip = body.page ? (body.page - 1) * limit : 0;
-    const match: Record<string, any> = {};
+    let match: Record<string, any> = {};
     match.isDeleted = false;
     match.status = 1;
     const searchPayload = await universalSearchQuery(body.search, [
@@ -51,7 +51,7 @@ export class NewsService {
       'titleRu',
       'titleEn',
     ]);
-    match.push(searchPayload);
+    match = Object.assign(match, searchPayload);
     const [data, total] = await Promise.all([
       await this.newsModel.aggregate([
         {
@@ -140,7 +140,7 @@ export class NewsService {
   }
 
   async getOneNews(body: GetOneNewsDto, appType: string, lang?: string) {
-    const match: Record<string, any> = {};
+    let match: Record<string, any> = {};
     if (!body._id && !body.slug) {
       return {};
     }
@@ -155,7 +155,7 @@ export class NewsService {
         'slugRu',
         'slugEn',
       ]);
-      match.push(searchPayload);
+      match = Object.assign(match, searchPayload);
     }
 
     if (appType === AppType.ADMIN) {
