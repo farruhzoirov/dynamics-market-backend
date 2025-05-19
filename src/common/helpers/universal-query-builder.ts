@@ -16,15 +16,16 @@ export const getFilteredResultsWithTotal = async (
   };
   const skip = (payload.page - 1) * payload.limit;
   let filter: Record<string, any> = {};
+  const sort: Record<string, any> = {
+    createdAt: -1
+  };
   if (payload.search) {
     filter = await universalSearchQuery(
       payload.search,
       searchFields as string[],
     );
   }
-
   filter.isDeleted = false;
-
   if (body.parentId || body.parentId === null) {
     filter.parentId = body.parentId;
   }
@@ -40,6 +41,7 @@ export const getFilteredResultsWithTotal = async (
     await currentModel
       .find(filter)
       .skip(skip)
+      .sort(sort)
       .limit(payload.limit)
       .select(selectedFields)
       .lean()
