@@ -37,17 +37,21 @@ export class NewsService {
       return {
         data,
         total,
-        pages: body.limit ? Math.ceil(total / body.limit) : 0,
+        pages: body.limit ? Math.ceil(total / body.limit) : 1,
       };
     }
     const sort: Record<string, any> = { createdAt: -1 };
     const limit = body.limit ? body.limit : 12;
     const skip = body.page ? (body.page - 1) * limit : 0;
-
     const match: Record<string, any> = {};
     match.isDeleted = false;
     match.status = 1;
-
+    const searchPayload = await universalSearchQuery(body.search, [
+      'titleUz',
+      'titleRu',
+      'titleEn',
+    ]);
+    match.push(searchPayload);
     const [data, total] = await Promise.all([
       await this.newsModel.aggregate([
         {
