@@ -71,6 +71,12 @@ export class NewsService {
                 input: '$$ROOT',
               },
             },
+            slug: {
+              $getField: {
+                field: `slug${lang}`,
+                input: '$$ROOT',
+              },
+            },
             imageUrl: 1,
             createdAt: 1,
           },
