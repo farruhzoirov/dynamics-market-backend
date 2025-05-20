@@ -55,6 +55,13 @@ export const NewsSchema = SchemaFactory.createForClass(News);
 NewsSchema.index({ slugUz: 1 });
 NewsSchema.index({ slugRu: 1 });
 NewsSchema.index({ slugEn: 1 });
-NewsSchema.index({ titleUz: 1, titleRu: 1, titleEn: 1 });
+NewsSchema.index({
+  titleUz: 1, titleRu: 1, titleEn: 1,
+  slugUz: 1, slugRu: 1, slugEn: 1,
+  shortDescUz: 1, shortDescRu: 1, shortDescEn: 1,
+  contentUz: 1, contentRu: 1, contentEn: 1,
+  createdAt: 1, updatedAt: 1
+});
 NewsSchema.index({ isDeleted: 1 });
 NewsSchema.index({ status: 1 });
+

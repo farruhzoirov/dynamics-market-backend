@@ -30,7 +30,22 @@ export class NewsService {
       const [data, total] = await getFilteredResultsWithTotal(
         body,
         this.newsModel,
-        ['titleUz', 'titleRu', 'titleEn'],
+        [
+          'titleUz',
+          'titleRu',
+          'titleEn',
+          'slugUz',
+          'slugRu',
+          'slugEn',
+          'shortDescUz',
+          'shortDescRu',
+          'shortDescEn',
+          'contentUz',
+          'contentRu',
+          'contentEn',
+          'createdAt',
+          'updatedAt'
+        ],
       );
 
       return {
@@ -49,6 +64,17 @@ export class NewsService {
       'titleUz',
       'titleRu',
       'titleEn',
+      'slugUz',
+      'slugRu',
+      'slugEn',
+      'shortDescUz',
+      'shortDescRu',
+      'shortDescEn',
+      'contentUz',
+      'contentRu',
+      'contentEn',
+      'createdAt',
+      'updatedAt'
     ]);
     match = Object.assign(match, searchPayload);
     const [data, total] = await Promise.all([
