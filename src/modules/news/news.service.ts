@@ -151,8 +151,6 @@ export class NewsService {
       throw new ModelDataNotFoundByIdException('News not found');
     }
 
-
-
     const { titleUz, titleRu, titleEn } = updateBody;
     const slugUz = findNews.titleUz !== titleUz ? generateUniqueNewsSlug(titleUz) : null;
     const slugRu = findNews.titleRu !== titleRu ? generateUniqueNewsSlug(titleRu) : null;
