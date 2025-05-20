@@ -220,7 +220,7 @@ export class NewsService {
         },
       },
     ]);
-    return data.length ? data[0] : {};
+    return data.length ? data[0] : null;
   }
 
   async delete(body: DeleteNewsDto) {
