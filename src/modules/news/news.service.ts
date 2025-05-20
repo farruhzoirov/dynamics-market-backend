@@ -72,9 +72,7 @@ export class NewsService {
       'shortDescEn',
       'contentUz',
       'contentRu',
-      'contentEn',
-      'createdAt',
-      'updatedAt'
+      'contentEn'
     ]);
     match = Object.assign(match, searchPayload);
     const [data, total] = await Promise.all([
