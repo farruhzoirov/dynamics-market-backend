@@ -151,10 +151,12 @@ export class NewsService {
       throw new ModelDataNotFoundByIdException('News not found');
     }
 
+
+
     const { titleUz, titleRu, titleEn } = updateBody;
-    const slugUz = titleUz ? generateUniqueNewsSlug(titleUz) : null;
-    const slugRu = titleRu ? generateUniqueNewsSlug(titleRu) : null;
-    const slugEn = titleEn ? generateUniqueNewsSlug(titleEn) : null;
+    const slugUz = findNews.titleUz !== titleUz ? generateUniqueNewsSlug(titleUz) : null;
+    const slugRu = findNews.titleRu !== titleRu ? generateUniqueNewsSlug(titleRu) : null;
+    const slugEn = findNews.titleEn !== titleEn ? generateUniqueNewsSlug(titleEn) : null;
 
     const forUpdateBody = {
       ...updateBody,
@@ -220,7 +222,7 @@ export class NewsService {
         },
       },
     ]);
-    return data ? data[0] : {};
+    return data.length ? data[0] : {};
   }
 
   async delete(body: DeleteNewsDto) {
