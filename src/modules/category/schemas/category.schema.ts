@@ -66,6 +66,9 @@ export class Category {
   @Prop({ type: [String], default: [] })
   hierarchyPath: string[];
 
+  @Prop({ type: FileMetadata, default: null })
+  image: FileMetadata[];
+
   @Prop({ default: 1 })
   status: number;
 }

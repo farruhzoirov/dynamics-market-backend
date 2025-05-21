@@ -33,12 +33,11 @@ export class AddCategoryDto extends BaseModelDto {
   @IsString()
   parentId: string;
 
-  @ApiProperty({ type: [FileMetadataDto] })
+  @ApiProperty({ type: FileMetadataDto })
   @IsOptional()
-  @IsArray()
-  @ValidateNested({ each: true })
+  @ValidateNested()
   @Type(() => FileMetadataDto)
-  images: FileMetadataDto[];
+  image: FileMetadataDto;
 
   hierarchy: string[];
 }
@@ -54,12 +53,11 @@ export class UpdateCategoryDto extends UpdateBaseModelDto {
   @IsNumber()
   status: number;
 
-  @ApiProperty({ type: [FileMetadataDto] })
+  @ApiProperty({ type: FileMetadataDto })
   @IsOptional()
-  @IsArray()
-  @ValidateNested({ each: true })
+  @ValidateNested()
   @Type(() => FileMetadataDto)
-  images: FileMetadataDto[];
+  image: FileMetadataDto;
 }
 
 export class DeleteCategoryDto extends DeleteBaseModelDto {}
