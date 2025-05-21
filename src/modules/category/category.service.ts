@@ -19,6 +19,7 @@ import { IHierarchyPayload } from 'src/shared/interfaces/hierarchy-payload';
 import { buildCategoryHierarchyPipeline } from 'src/common/helpers/pipelines/category-hierarchy-pipeline';
 import { RedisService } from 'src/shared/module/redis/redis.service';
 import { BuildCategoryHierarchyService } from 'src/shared/services/build-hierarchy.service';
+import { find } from 'rxjs';
 @Injectable()
 export class CategoryService {
   constructor(
@@ -30,11 +31,8 @@ export class CategoryService {
   ) {}
 
   async getCategoriesForFront(lang: string) {
-    console.time('CategoriesService');
     const pipeline = await buildCategoryHierarchyPipeline(lang);
     const categories = await this.categoryModel.aggregate(pipeline).exec();
-    console.timeEnd('CategoriesService');
-    console.log('CategoriesService');
     return { data: categories };
   }
 
@@ -91,7 +89,7 @@ export class CategoryService {
       throw new ModelDataNotFoundByIdException('Category not found');
     }
 
-    if (updateBody?.parentId !== findCategory.parentId.toString()) {
+    if (updateBody?.parentId && findCategory.parentId !== null) {
       const { hierarchyPath, hierarchy } =
         await this.buildCategoryHierarchyService.buildCategoryHierarchy(
           updateBody._id.toString(),
