@@ -61,7 +61,6 @@ export class CreateOrderDto {
 
   @ApiProperty({ example: '+998975450409' })
   @IsString()
-  @IsPhoneNumber()
   phone: string;
 }
 
@@ -103,7 +102,6 @@ export class UpdateOrderDto {
   @ApiProperty({ example: '+998975450409' })
   @IsString()
   @IsOptional()
-  @IsPhoneNumber()
   phone: string;
 
   @ApiProperty({ enum: OrderStatus, example: OrderStatus.new })
