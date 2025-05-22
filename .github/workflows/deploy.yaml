@@ -35,6 +35,11 @@ jobs:
             MONGODB_URI=${{ secrets.MONGODB_URI }}
             GOOGLE_CLIENT_ID=${{ secrets.GOOGLE_CLIENT_ID }}
             JWT_SECRET_KEY=${{ secrets.JWT_SECRET_KEY }}
+            AMOCRM_REDIRECT_URL=${{ secrets.AMOCRM_REDIRECT_URL }}
+            AMOCRM_DOMAIN=${{ secrets.AMOCRM_DOMAIN }}
+            AMOCRM_CLIENT_SECRET=${{ secrets.AMOCRM_CLIENT_SECRET }}
+            AMOCRM_CLIENT_ID=${{ secrets.AMOCRM_CLIENT_ID }}
+
             EOL
 
             docker-compose down
