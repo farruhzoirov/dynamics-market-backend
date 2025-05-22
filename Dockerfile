@@ -11,7 +11,6 @@ COPY . .
 
 RUN npm run build
 
-CMD ["node", "amocrm0-auth.js"]
 
 CMD ["node", "dist/main.js"]
 

@@ -1,8 +1,14 @@
-import { Client } from 'amocrm-js';
-import fs from 'fs';
+// import { Client } from 'amocrm-js';
+// import fs from 'fs';
 
-import dotenv from 'dotenv';
+// import dotenv from 'dotenv';
 
+const { Client } = require('amocrm-js');
+// import fs from 'fs';
+const fs = require('fs');
+const dotenv = require('dotenv');
+
+// import dotenv from 'dotenv';
 dotenv.config();
 
 const client = new Client({
