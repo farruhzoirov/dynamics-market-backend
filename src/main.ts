@@ -27,6 +27,8 @@ async function bootstrap() {
     .setDescription('These apis for dynamics market')
     .setVersion('1.0')
     .addServer(`http://localhost:5000`, 'Local environment')
+    .addServer(`http://localhost:4000`, 'Local environment-2')
+
     .addServer('https://backend.dynamics-market.uz', 'Production')
     .addServer('https://ffba-185-213-230-61.ngrok-free.app', 'Tunnelling.ngrok')
     .addBearerAuth()

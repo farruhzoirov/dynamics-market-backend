@@ -37,6 +37,7 @@
     "@nestjs/swagger": "^11.0.1",
     "amocrm-js": "^3.6.0",
     "amocrm-nestjs": "^1.0.17",
+    "axios": "^1.9.0",
     "cache-manager": "^6.4.1",
     "cache-manager-redis-store": "^3.0.1",
     "class-transformer": "^0.5.1",

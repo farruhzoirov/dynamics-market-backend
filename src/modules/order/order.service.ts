@@ -19,9 +19,8 @@ import {
   buildSingleOrderPipeline,
   buildUserOrdersPipeline,
 } from 'src/common/helpers/pipelines/order.pipeline';
-import { ConnectAmocrmService } from 'src/shared/module/amocrm/connect-amocrm.service';
-import { OrderStatus } from '../../shared/enums/order-status.enum';
-import { CustomerType } from '../../shared/enums/customer-type.enum';
+
+import { OrderWithAmoCrmService } from 'src/shared/module/amocrm/services/order.service';
 
 @Injectable()
 export class OrderService {
@@ -29,169 +28,8 @@ export class OrderService {
     @InjectModel(Order.name) private orderModel: Model<OrderDocument>,
     @InjectModel(Cart.name) private cartModel: Model<CartDocument>,
     @InjectModel(Counter.name) private counterModel: Model<CounterDocument>,
-    private readonly connectAmocrmService: ConnectAmocrmService,
+    private readonly orderWithAmocrmService: OrderWithAmoCrmService,
   ) {}
-
-  async addOrderFieldsToLead(leadId: number, orderData: any) {
-    try {
-      const client = this.connectAmocrmService.getClient();
-      const response = await client.request.patch(`/api/v4/leads/${leadId}`, {
-        custom_fields_values: [
-          {
-            // field_id: 590867, // "Order Code" field_id
-            values: [{ value: orderData.orderCode }],
-          },
-          {
-            field_id: 590875, // "firstName" field_id
-            values: [{ value: orderData.firstName }],
-          },
-          {
-            field_id: 590877, // "lastName" field_id
-            values: [{ value: orderData.lastName }],
-          },
-          {
-            field_id: 590931, // "lastName" field_id
-            values: [{ value: orderData.email }],
-          },
-          {
-            field_id: 594417, // "Items" field_id (masalan, 594001)
-            values: [{ value: JSON.stringify(orderData.items) }], // JSON string sifatida
-          },
-          {
-            field_id: 594421, // "Comment" field_id
-            values: [{ value: orderData.comment || "" }],
-          },
-          {
-            field_id: 594665,
-            values: [{ value: orderData.customerType }],
-          },
-          {
-            field_id: 594885, // "Company Name" field_id
-            values: [{ value: orderData.companyName || "" }],
-          },
-          {
-            field_id: 594887, // "Phone" field_id
-            values: [{ value: orderData.phone }],
-          },
-          {
-            field_id: 594891, // "Is Deleted" field_id
-            values: [{ value: orderData.isDeleted }],
-          },
-          {
-            field_id: 594889, // "Is Deleted" field_id
-            values: [{ value: orderData.status }],
-          },
-        ],
-
-      });
-      const leads = await client.request.get(`/api/v4/leads`);
-      const customFields = await client.request.get(`/api/v4/leads/custom_fields`);
-
-      console.log('✅ Lead updated with custom fields:', response.data);
-      return {
-        response: response.data,
-        leads: leads.data,
-        customFields: customFields.data,
-      };
-    } catch (error) {
-      console.error(
-        '❌ Error updating lead with custom fields:',
-        error.response?.data || error.message,
-      );
-      throw error;
-    }
-  }
-
-  async createLead() {
-    try {
-      const client = this.connectAmocrmService.getClient();
-      const customBody = {
-        orderCode: 'ORD-003',
-        firstName: 'Ogabek',
-        lastName: 'Sultonbayev',
-        email: 'sultonbayevogabek@gmail.com',
-        items: [{
-            productId: "66f8a1b2c3d4e5f678901235",
-            nameUz: "Naushniklar",
-            nameRu: "Наушники",
-            nameEn: "Headphones",
-            price : 49.99,
-            quantity: 1
-        }]
-      };
-
-      const response = (await client.request.post('/api/v4/leads', [
-        {
-          name: `${customBody.firstName} ${customBody.lastName} ${customBody.email}`, // Lead nomi
-        },
-      ])) as any;
-
-      const leadId = response.data._embedded.leads[0].id; // Yaratilgan lead ID
-      const data = await this.addOrderFieldsToLead(leadId, {
-        orderCode: 'ORD-003',
-        firstName: 'Ogabek',
-        lastName: 'Sultonbayev',
-        email: 'sultonbayevogabek@gmail.com',
-      });
-
-      const dummyOrderCancelled: any = {
-        firstName: "Jasur",
-        lastName: "Karimov",
-        email: "jasur.karimov@example.com",
-        userId: "987656",
-        items: [
-          {
-            productId: "66f8a1b2c3d4e5f678901237",
-            nameUz: "Planshet",
-            nameRu: "Планшет",
-            nameEn: "Tablet",
-            quantity: 1,
-            price: null, // Narx belgilanmagan
-          },
-        ],
-        orderCode: "ORD-2025-003",
-        comment: "Mijoz buyurtmani bekor qildi.",
-        customerType: CustomerType.INDIVIDUAL,
-        companyName: null,
-        phone: "+998909876543",
-        status: 1,
-        isDeleted: true,
-      };
-      return dummyOrderCancelled;
-    } catch (error) {
-      console.error(
-        '❌ Error creating lead:',
-        error.response?.data || error.message,
-      );
-      throw error;
-    }
-  }
-
-  async createCustomFieldForOrders() {
-    try {
-      // const client = this.connectAmocrmService.getClient();
-      // const response = await client.request.post(
-      //   '/api/v4/leads/custom_fields',
-      //   [
-      //     {
-      //       name: 'Email', // Custom field nomi
-      //       type: 'text', // Maydon turi (text, number, date va boshqalar)
-      //       sort: 10, // Maydonning tartib raqami
-      //     },
-      //   ],
-      // );
-      const response = await this.createLead();
-
-      console.log('✅ Custom field created for orders:', response);
-      return response;
-    } catch (error) {
-      console.error(
-        '❌ Error creating custom field for orders:',
-        error.response?.data || error.message,
-      );
-      throw error;
-    }
-  }
 
   async getOrdersList(body: GetOrdersDto) {
     const [data, total] = await getFilteredResultsWithTotal(
@@ -207,7 +45,6 @@ export class OrderService {
   }
 
   async getOrdersByUserId(body: GetOrdersDto, user: IJwtPayload, lang: string) {
-    console.time('OrdersService');
     const sort: Record<string, any> = { createdAt: -1 };
     const limit = body.limit ? body.limit : 12;
     const skip = body.page ? (body.page - 1) * limit : 0;
@@ -226,8 +63,6 @@ export class OrderService {
         isDeleted: false,
       }),
     ]);
-    console.timeEnd('OrdersService');
-    console.log('OrdersService');
     return {
       data: findOrders,
       total,
@@ -261,7 +96,7 @@ export class OrderService {
     const findCart = await this.cartModel.findOne({ userId });
 
     if (!findCart) {
-      throw new BadRequestException('Error creating order, Cart not found');
+      throw new BadRequestException('Error creating order, Cart may be empty');
     }
 
     const pipeline = await buildCartItemsPipeline(userId);
@@ -289,6 +124,7 @@ export class OrderService {
         items,
       }),
       await this.cartModel.deleteMany({ userId }),
+      await this.orderWithAmocrmService.createLead(body, items, orderCode),
     ]);
     return createdOrder.orderCode;
   }

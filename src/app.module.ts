@@ -88,6 +88,7 @@ export class AppModule implements NestModule {
         '/news/get-news',
         '/product/index-products',
         '/order/amocrm',
+        '/amocrm/code',
       )
       .forRoutes('*');
   }
