@@ -39,7 +39,7 @@ jobs:
             AMOCRM_DOMAIN=${{ secrets.AMOCRM_DOMAIN }}
             AMOCRM_CLIENT_SECRET=${{ secrets.AMOCRM_CLIENT_SECRET }}
             AMOCRM_CLIENT_ID=${{ secrets.AMOCRM_CLIENT_ID }}
-
+            AMOCRM_CODE=${{secrets.AMOCRM_CODE}}
             EOL
 
             docker-compose down
