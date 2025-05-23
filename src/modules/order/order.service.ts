@@ -113,6 +113,7 @@ export class OrderService {
       nameRu: item.product.nameRu,
       nameEn: item.product.nameEn,
       quantity: item.quantity,
+      sku: item.product.sku,
       price: item.product.currentPrice ?? null,
     }));
 

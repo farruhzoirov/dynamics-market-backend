@@ -80,7 +80,7 @@ export class OrderWithAmoCrmService {
       const leadId = response.data._embedded.leads[0].id;
       let itemsDetails: string = '';
       items.map((item) => {
-        itemsDetails += `${item.nameEn} ,`;
+        itemsDetails += `${item.sku}-${item.nameEn},`;
       });
       await this.addOrderDataToLead(leadId, body, itemsDetails, orderCode);
     } catch (error) {

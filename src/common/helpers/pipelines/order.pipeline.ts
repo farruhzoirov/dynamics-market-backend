@@ -194,6 +194,7 @@ export const buildCartItemsPipeline = async (userId: string) => {
           nameUz: 1,
           nameRu: 1,
           nameEn: 1,
+          sku: 1,
           currentPrice: '$product.currentPrice',
         },
       },

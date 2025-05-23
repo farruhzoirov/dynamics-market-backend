@@ -26,6 +26,7 @@ export class Order {
       nameUz: { type: String, required: true },
       nameRu: { type: String, required: true },
       nameEn: { type: String, required: true },
+      sku: { type: String, required: true },
       quantity: { type: Number, required: true },
       price: { type: Number, default: null },
     },

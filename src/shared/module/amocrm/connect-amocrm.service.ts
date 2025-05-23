@@ -6,14 +6,13 @@ import {
 } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { Client } from 'amocrm-js';
-import axios from 'axios';
 import * as fs from 'fs';
 import * as path from 'path';
 
 @Injectable()
 export class ConnectAmocrmService implements OnModuleInit, OnModuleDestroy {
   private readonly logger = new Logger(ConnectAmocrmService.name);
-  private client: Client;
+  private readonly client: Client;
   private tokenPath = path.join(process.cwd(), 'amocrm-token.json');
   private renewTimeout: NodeJS.Timeout | null = null;
 
@@ -112,7 +111,6 @@ export class ConnectAmocrmService implements OnModuleInit, OnModuleDestroy {
     }
   }
 
-  // 5️⃣ Timer tozalash
   onModuleDestroy() {
     if (this.renewTimeout) {
       clearTimeout(this.renewTimeout);
