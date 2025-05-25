@@ -8,6 +8,7 @@ services:
       - .env
     volumes:
       - ./uploads:/usr/src/app/uploads
+      - ./amocrm-token.json:/usr/src/app/amocrm-token.json
     depends_on:
       - redis
       - elasticsearch
