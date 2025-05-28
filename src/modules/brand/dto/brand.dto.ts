@@ -1,5 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import {
+  IsBoolean,
   IsNumber,
   IsObject,
   IsOptional,
@@ -29,6 +30,11 @@ export class AddBrandDto extends BaseModelDto {
   @IsUrl()
   @IsString()
   website: string;
+
+  @ApiProperty()
+  @IsOptional()
+  @IsBoolean()
+  isPopular: boolean;
 }
 
 export class UpdateBrandDto extends UpdateBaseModelDto {
@@ -47,6 +53,11 @@ export class UpdateBrandDto extends UpdateBaseModelDto {
   @IsUrl()
   @IsString()
   website: string;
+
+  @ApiProperty()
+  @IsOptional()
+  @IsBoolean()
+  isPopular: boolean;
 }
 
 export class DeleteBrandDto extends DeleteBaseModelDto {}
