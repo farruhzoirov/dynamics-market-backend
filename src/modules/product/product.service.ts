@@ -62,7 +62,7 @@ export class ProductService {
     const limit = body.limit || 12;
     let pages = 0;
     const searchResults = await this.elasticSearchService.search(
-      body.search,
+      body,
       lang,
       skip,
       limit,

@@ -48,7 +48,12 @@ class AttributeDto {
   valueEn: string;
 }
 
-export class SearchProductsDto extends UniversalQueryDto {}
+export class SearchProductsDto extends UniversalQueryDto {
+  @ApiProperty()
+  @IsOptional()
+  @IsObjectId()
+  categoryId: string;
+}
 
 export class GetProductsListForFrontDto extends UniversalQueryDto {
   @ApiProperty()
