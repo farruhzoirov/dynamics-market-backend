@@ -5,5 +5,6 @@ export const generateUniqueSKU = async (
   productModel: Model<ProductDocument>,
 ): Promise<string> => {
   const productCount = await productModel.countDocuments();
-  return `${productCount + 1}`;
+  const skuNumber = productCount + 1;
+  return skuNumber.toString().padStart(5, '0');
 };
