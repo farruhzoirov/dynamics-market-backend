@@ -12,6 +12,7 @@ export async function buildBrandPipeline(lang: string) {
         logo: 1,
         website: 1,
         status: 1,
+        isPopular: 1,
       },
     },
   ];
