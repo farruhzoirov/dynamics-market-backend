@@ -19,127 +19,125 @@ export class SearchService {
 
   private async initIndex() {
     try {
-      const indexExists = await this.elasticsearchService.indices.exists({
-        index: this.indexName,
-      });
+      await this.deleteIndex();
 
-      if (!indexExists) {
-        await this.elasticsearchService.indices.create({
-          index: this.indexName,
-          body: {
-            settings: {
-              analysis: {
-                tokenizer: {
-                  ngram_tokenizer: {
-                    type: 'ngram',
-                    min_gram: 1,
-                    max_gram: 10,
-                    token_chars: ['letter', 'digit'],
-                  },
-                },
-                analyzer: {
-                  ngram_analyzer: {
-                    type: 'custom',
-                    tokenizer: 'ngram_tokenizer',
-                    filter: ['lowercase'],
-                  },
+      await this.elasticsearchService.indices.create({
+        index: this.indexName,
+        body: {
+          settings: {
+            index: {
+              max_ngram_diff: 9,
+            },
+            analysis: {
+              tokenizer: {
+                ngram_tokenizer: {
+                  type: 'ngram',
+                  min_gram: 1,
+                  max_gram: 10,
+                  token_chars: ['letter', 'digit'],
                 },
               },
-            },
-            mappings: {
-              properties: {
-                nameUz: {
-                  type: 'text',
-                  analyzer: 'ngram_analyzer',
-                  search_analyzer: 'ngram_analyzer', // Qidiruvda ham ngram ishlatiladi
+              analyzer: {
+                ngram_analyzer: {
+                  type: 'custom',
+                  tokenizer: 'ngram_tokenizer',
+                  filter: ['lowercase'],
                 },
-                nameRu: {
-                  type: 'text',
-                  analyzer: 'ngram_analyzer',
-                  search_analyzer: 'ngram_analyzer',
-                },
-                nameEn: {
-                  type: 'text',
-                  analyzer: 'ngram_analyzer',
-                  search_analyzer: 'ngram_analyzer',
-                },
-                descriptionUz: {
-                  type: 'text',
-                  analyzer: 'ngram_analyzer',
-                  search_analyzer: 'ngram_analyzer',
-                },
-                descriptionRu: {
-                  type: 'text',
-                  analyzer: 'ngram_analyzer',
-                  search_analyzer: 'ngram_analyzer',
-                },
-                descriptionEn: {
-                  type: 'text',
-                  analyzer: 'ngram_analyzer',
-                  search_analyzer: 'ngram_analyzer',
-                },
-                slugUz: { type: 'keyword' },
-                slugRu: { type: 'keyword' },
-                slugEn: { type: 'keyword' },
-                attributes: {
-                  type: 'nested',
-                  properties: {
-                    nameUz: {
-                      type: 'text',
-                      analyzer: 'ngram_analyzer',
-                      search_analyzer: 'ngram_analyzer',
-                    },
-                    nameRu: {
-                      type: 'text',
-                      analyzer: 'ngram_analyzer',
-                      search_analyzer: 'ngram_analyzer',
-                    },
-                    nameEn: {
-                      type: 'text',
-                      analyzer: 'ngram_analyzer',
-                      search_analyzer: 'ngram_analyzer',
-                    },
-                    valueUz: {
-                      type: 'text',
-                      analyzer: 'ngram_analyzer',
-                      search_analyzer: 'ngram_analyzer',
-                    },
-                    valueRu: {
-                      type: 'text',
-                      analyzer: 'ngram_analyzer',
-                      search_analyzer: 'ngram_analyzer',
-                    },
-                    valueEn: {
-                      type: 'text',
-                      analyzer: 'ngram_analyzer',
-                      search_analyzer: 'ngram_analyzer',
-                    },
-                  },
-                },
-                oldPrice: { type: 'float' },
-                currentPrice: { type: 'float' },
-                quantity: { type: 'integer' },
-                categoryId: { type: 'keyword' },
-                brandId: { type: 'keyword' },
-                status: { type: 'integer' },
-                isDeleted: { type: 'boolean' },
-                keywords: {
-                  type: 'text',
-                  analyzer: 'ngram_analyzer',
-                  search_analyzer: 'ngram_analyzer',
-                },
-                hierarchyPath: { type: 'keyword' },
-                views: { type: 'integer' },
-                availability: { type: 'keyword' },
               },
             },
           },
-        });
-
-        this.logger.log(`Indeks yaratildi: ${this.indexName}`);
-      }
+          mappings: {
+            properties: {
+              nameUz: {
+                type: 'text',
+                analyzer: 'ngram_analyzer',
+                search_analyzer: 'ngram_analyzer',
+              },
+              nameRu: {
+                type: 'text',
+                analyzer: 'ngram_analyzer',
+                search_analyzer: 'ngram_analyzer',
+              },
+              nameEn: {
+                type: 'text',
+                analyzer: 'ngram_analyzer',
+                search_analyzer: 'ngram_analyzer',
+              },
+              descriptionUz: {
+                type: 'text',
+                analyzer: 'ngram_analyzer',
+                search_analyzer: 'ngram_analyzer',
+              },
+              descriptionRu: {
+                type: 'text',
+                analyzer: 'ngram_analyzer',
+                search_analyzer: 'ngram_analyzer',
+              },
+              descriptionEn: {
+                type: 'text',
+                analyzer: 'ngram_analyzer',
+                search_analyzer: 'ngram_analyzer',
+              },
+              slugUz: { type: 'keyword' },
+              slugRu: { type: 'keyword' },
+              slugEn: { type: 'keyword' },
+              attributes: {
+                type: 'nested',
+                properties: {
+                  nameUz: {
+                    type: 'text',
+                    analyzer: 'ngram_analyzer',
+                    search_analyzer: 'ngram_analyzer',
+                  },
+                  nameRu: {
+                    type: 'text',
+                    analyzer: 'ngram_analyzer',
+                    search_analyzer: 'ngram_analyzer',
+                  },
+                  nameEn: {
+                    type: 'text',
+                    analyzer: 'ngram_analyzer',
+                    search_analyzer: 'ngram_analyzer',
+                  },
+                  valueUz: {
+                    type: 'text',
+                    analyzer: 'ngram_analyzer',
+                    search_analyzer: 'ngram_analyzer',
+                  },
+                  valueRu: {
+                    type: 'text',
+                    analyzer: 'ngram_analyzer',
+                    search_analyzer: 'ngram_analyzer',
+                  },
+                  valueEn: {
+                    type: 'text',
+                    analyzer: 'ngram_analyzer',
+                    search_analyzer: 'ngram_analyzer',
+                  },
+                },
+              },
+              oldPrice: { type: 'float' },
+              currentPrice: { type: 'float' },
+              quantity: { type: 'integer' },
+              categoryId: { type: 'keyword' },
+              brandId: { type: 'keyword' },
+              status: { type: 'integer' },
+              isDeleted: { type: 'boolean' },
+              keywords: {
+                type: 'text',
+                analyzer: 'ngram_analyzer',
+                search_analyzer: 'ngram_analyzer',
+              },
+              hierarchyPath: { type: 'keyword' },
+              views: { type: 'integer' },
+              availability: { type: 'keyword' },
+            },
+          },
+        },
+      });
+      this.logger.log(`Indeks yaratildi: ${this.indexName}`);
     } catch (error) {
-      this.logger.error(`Indeks yaratishda xatolik: ${error}`);
+      this.logger.error(`Indeks yaratishda xatolik: ${error.message}`);
     }
   }
 
@@ -226,6 +224,23 @@ export class SearchService {
     } catch (error) {
       this.logger.error(`Error removing indexed product: ${error.message}`);
       return false;
+    }
+  }
+
+  private async deleteIndex() {
+    try {
+      const indexExists = await this.elasticsearchService.indices.exists({
+        index: this.indexName,
+      });
+
+      if (indexExists) {
+        await this.elasticsearchService.indices.delete({
+          index: this.indexName,
+        });
+        this.logger.log(`Indeks o'chirildi: ${this.indexName}`);
+      }
+    } catch (error) {
+      this.logger.error(`Indeksni o'chirishda xatolik: ${error.message}`);
     }
   }
 
