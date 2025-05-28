@@ -60,7 +60,7 @@ export class ProductService {
     const size = body.limit || 12;
 
     const searchResults = await this.elasticsearchService.search(
-      body.search,
+      body,
       lang,
       from,
       size,
