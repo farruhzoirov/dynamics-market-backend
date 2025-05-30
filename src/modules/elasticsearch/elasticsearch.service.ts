@@ -3,6 +3,7 @@ import { ElasticsearchService as NestElasticsearchService } from '@nestjs/elasti
 import { Product } from '../product/schemas/product.model';
 import mongoose from 'mongoose';
 import { SearchProductsDto } from '../product/dto/product.dto';
+import { IElasticSearchPayload } from 'src/shared/interfaces/e-search-payload';
 
 interface IProduct extends Product {
   _id: mongoose.Types.ObjectId;
@@ -84,41 +85,41 @@ export class SearchService {
               hierarchyPath: { type: 'keyword' },
               views: { type: 'integer' },
               availability: { type: 'keyword' },
-              // attributes: {
-              //   type: 'nested',
-              //   properties: {
-              //     nameUz: {
-              //       type: 'text',
-              //       analyzer: 'ngram_analyzer',
-              //       search_analyzer: 'ngram_analyzer',
-              //     },
-              //     nameRu: {
-              //       type: 'text',
-              //       analyzer: 'ngram_analyzer',
-              //       search_analyzer: 'ngram_analyzer',
-              //     },
-              //     nameEn: {
-              //       type: 'text',
-              //       analyzer: 'ngram_analyzer',
-              //       search_analyzer: 'ngram_analyzer',
-              //     },
-              //     valueUz: {
-              //       type: 'text',
-              //       analyzer: 'ngram_analyzer',
-              //       search_analyzer: 'ngram_analyzer',
-              //     },
-              //     valueRu: {
-              //       type: 'text',
-              //       analyzer: 'ngram_analyzer',
-              //       search_analyzer: 'ngram_analyzer',
-              //     },
-              //     valueEn: {
-              //       type: 'text',
-              //       analyzer: 'ngram_analyzer',
-              //       search_analyzer: 'ngram_analyzer',
-              //     },
-              //   },
-              // },
+              attributes: {
+                type: 'nested',
+                properties: {
+                  nameUz: {
+                    type: 'text',
+                    analyzer: 'ngram_analyzer',
+                    search_analyzer: 'ngram_analyzer',
+                  },
+                  nameRu: {
+                    type: 'text',
+                    analyzer: 'ngram_analyzer',
+                    search_analyzer: 'ngram_analyzer',
+                  },
+                  nameEn: {
+                    type: 'text',
+                    analyzer: 'ngram_analyzer',
+                    search_analyzer: 'ngram_analyzer',
+                  },
+                  valueUz: {
+                    type: 'text',
+                    analyzer: 'ngram_analyzer',
+                    search_analyzer: 'ngram_analyzer',
+                  },
+                  valueRu: {
+                    type: 'text',
+                    analyzer: 'ngram_analyzer',
+                    search_analyzer: 'ngram_analyzer',
+                  },
+                  valueEn: {
+                    type: 'text',
+                    analyzer: 'ngram_analyzer',
+                    search_analyzer: 'ngram_analyzer',
+                  },
+                },
+              },
               keywords: {
                 type: 'text',
                 analyzer: 'ngram_analyzer',
@@ -205,7 +206,7 @@ export class SearchService {
           isDeleted: product.isDeleted,
           availibility: product.availability,
           hierarchyPath: product.hierarchyPath,
-          // attributes: product.attributes,
+          attributes: product.attributes,
           keywords: product.keywords,
         },
       });
@@ -232,7 +233,7 @@ export class SearchService {
           slugRu: product.slugRu,
           slugEn: product.slugEn,
           sku: product.sku,
-          // attributes: product.attributes,
+          attributes: product.attributes,
           keywords: product.keywords,
           status: product.status,
           isDeleted: product.isDeleted,
@@ -247,7 +248,7 @@ export class SearchService {
     }
   }
 
-  async removeIndexedProduct(productId: string) {
+  async deleteIndexedProduct(productId: string) {
     try {
       await this.elasticsearchService.delete({
         index: this.indexName,
@@ -319,37 +320,26 @@ export class SearchService {
                   { match: { keywords: { query, boost: 2.0 } } },
                   { match: { availibility: { query, boost: 2.0 } } },
 
-                  // {
-                  //   nested: {
-                  //     path: 'attributes',
-                  //     query: {
-                  //       bool: {
-                  //         should: [
-                  //           { match: { 'attributes.valueUz': query } },
-                  //           { match: { 'attributes.valueRu': query } },
-                  //           { match: { 'attributes.valueEn': query } },
-                  //         ],
-                  //       },
-                  //     },
-                  //   },
-                  // },
+                  {
+                    nested: {
+                      path: 'attributes',
+                      query: {
+                        bool: {
+                          should: [
+                            { match: { 'attributes.valueUz': query } },
+                            { match: { 'attributes.valueRu': query } },
+                            { match: { 'attributes.valueEn': query } },
+                          ],
+                        },
+                      },
+                    },
+                  },
                 ]
               : [],
             minimum_should_match: query ? 1 : 0,
           },
         },
-        // highlight: {
-        //   fields: {
-        //     [namePath]: {},
-        //     [descPath]: {},
-        //     sku: {},
-        //     keywords: {},
-        //     [attrPath]: {},
-        //   },
-        // },
       });
-
-      console.log('Search results:', hits);
 
       return {
         total: hits.total,
@@ -385,7 +375,7 @@ export class SearchService {
           isDeleted: product.isDeleted,
           hierarchyPath: product.hierarchyPath,
           availability: product.availability,
-          // attributes: product.attributes,
+          attributes: product.attributes,
           keywords: product.keywords,
         },
       ]);

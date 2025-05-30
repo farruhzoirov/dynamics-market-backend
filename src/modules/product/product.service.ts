@@ -39,7 +39,6 @@ import { IHierarchyPayload } from 'src/shared/interfaces/hierarchy-payload';
 import { FileMetadataDto } from '../../shared/dto/file-meta.dto';
 import { generateThumbs } from 'src/common/helpers/generate-thumbs';
 import { SearchService } from '../elasticsearch/elasticsearch.service';
-import { resourceLimits } from 'worker_threads';
 
 @Injectable()
 export class ProductService {
@@ -326,7 +325,8 @@ export class ProductService {
         hierarchy,
         hierarchyPath,
       };
-      await this.productModel.create(createBody);
+      const newPoruct = await this.productModel.create(createBody);
+      await this.elasticSearchService.indexProduct(newPoruct);
     } catch (err) {
       console.log(`adding product ====>  ${err}`);
       throw new AddingModelException(err.message);
@@ -361,9 +361,14 @@ export class ProductService {
       hierarchy,
       hierarchyPath,
     };
-    await this.productModel.findByIdAndUpdate(updateBody._id, {
-      $set: forUpdateBody,
-    });
+    const updatedProduct = await this.productModel.findByIdAndUpdate(
+      updateBody._id,
+      {
+        $set: forUpdateBody,
+      },
+      { new: true },
+    );
+    await this.elasticSearchService.updateIndexedProduct(updatedProduct);
   }
 
   async deleteProduct(body: DeleteProductDto): Promise<void> {
@@ -372,6 +377,7 @@ export class ProductService {
       throw new ModelDataNotFoundByIdException('Product not found');
     }
     await this.productModel.updateOne({ _id: body._id }, { isDeleted: true });
+    await this.elasticSearchService.deleteIndexedProduct(body._id.toString());
   }
 
   async updateProductViewsInBackground(productId: string, ip: string) {
