@@ -1,4 +1,4 @@
-import { Injectable, Logger } from '@nestjs/common';
+import { Injectable, Logger, OnModuleInit } from '@nestjs/common';
 import { ElasticsearchService as NestElasticsearchService } from '@nestjs/elasticsearch';
 import { Product } from '../product/schemas/product.model';
 import mongoose from 'mongoose';
@@ -20,20 +20,16 @@ export class SearchService {
   private async initIndex() {
     try {
       await this.deleteIndex();
-
       await this.elasticsearchService.indices.create({
         index: this.indexName,
         body: {
           settings: {
-            index: {
-              max_ngram_diff: 9,
-            },
             analysis: {
               tokenizer: {
                 ngram_tokenizer: {
                   type: 'ngram',
-                  min_gram: 1,
-                  max_gram: 10,
+                  min_gram: 3,
+                  max_gram: 3,
                   token_chars: ['letter', 'digit'],
                 },
               },
@@ -46,6 +42,7 @@ export class SearchService {
               },
             },
           },
+
           mappings: {
             properties: {
               nameUz: {
@@ -78,59 +75,55 @@ export class SearchService {
                 analyzer: 'ngram_analyzer',
                 search_analyzer: 'ngram_analyzer',
               },
+              sku: { type: 'keyword' },
               slugUz: { type: 'keyword' },
               slugRu: { type: 'keyword' },
               slugEn: { type: 'keyword' },
-              attributes: {
-                type: 'nested',
-                properties: {
-                  nameUz: {
-                    type: 'text',
-                    analyzer: 'ngram_analyzer',
-                    search_analyzer: 'ngram_analyzer',
-                  },
-                  nameRu: {
-                    type: 'text',
-                    analyzer: 'ngram_analyzer',
-                    search_analyzer: 'ngram_analyzer',
-                  },
-                  nameEn: {
-                    type: 'text',
-                    analyzer: 'ngram_analyzer',
-                    search_analyzer: 'ngram_analyzer',
-                  },
-                  valueUz: {
-                    type: 'text',
-                    analyzer: 'ngram_analyzer',
-                    search_analyzer: 'ngram_analyzer',
-                  },
-                  valueRu: {
-                    type: 'text',
-                    analyzer: 'ngram_analyzer',
-                    search_analyzer: 'ngram_analyzer',
-                  },
-                  valueEn: {
-                    type: 'text',
-                    analyzer: 'ngram_analyzer',
-                    search_analyzer: 'ngram_analyzer',
-                  },
-                },
-              },
-              oldPrice: { type: 'float' },
-              currentPrice: { type: 'float' },
-              quantity: { type: 'integer' },
-              categoryId: { type: 'keyword' },
-              brandId: { type: 'keyword' },
               status: { type: 'integer' },
               isDeleted: { type: 'boolean' },
+              hierarchyPath: { type: 'keyword' },
+              views: { type: 'integer' },
+              availability: { type: 'keyword' },
+              // attributes: {
+              //   type: 'nested',
+              //   properties: {
+              //     nameUz: {
+              //       type: 'text',
+              //       analyzer: 'ngram_analyzer',
+              //       search_analyzer: 'ngram_analyzer',
+              //     },
+              //     nameRu: {
+              //       type: 'text',
+              //       analyzer: 'ngram_analyzer',
+              //       search_analyzer: 'ngram_analyzer',
+              //     },
+              //     nameEn: {
+              //       type: 'text',
+              //       analyzer: 'ngram_analyzer',
+              //       search_analyzer: 'ngram_analyzer',
+              //     },
+              //     valueUz: {
+              //       type: 'text',
+              //       analyzer: 'ngram_analyzer',
+              //       search_analyzer: 'ngram_analyzer',
+              //     },
+              //     valueRu: {
+              //       type: 'text',
+              //       analyzer: 'ngram_analyzer',
+              //       search_analyzer: 'ngram_analyzer',
+              //     },
+              //     valueEn: {
+              //       type: 'text',
+              //       analyzer: 'ngram_analyzer',
+              //       search_analyzer: 'ngram_analyzer',
+              //     },
+              //   },
+              // },
               keywords: {
                 type: 'text',
                 analyzer: 'ngram_analyzer',
                 search_analyzer: 'ngram_analyzer',
               },
-              hierarchyPath: { type: 'keyword' },
-              views: { type: 'integer' },
-              availability: { type: 'keyword' },
             },
           },
         },
@@ -140,6 +133,57 @@ export class SearchService {
       this.logger.error(`Indeks yaratishda xatolik: ${error.message}`);
     }
   }
+  // private async initIndex() {
+  //   try {
+  //     const indexExists = await this.elasticsearchService.indices.exists({
+  //       index: this.indexName,
+  //     });
+
+  //     if (!indexExists) {
+  //       await this.elasticsearchService.indices.create({
+  //         index: this.indexName,
+  //         mappings: {
+  //           properties: {
+  //             nameUz: { type: 'text', analyzer: 'standard' },
+  //             nameRu: { type: 'text', analyzer: 'standard' },
+  //             nameEn: { type: 'text', analyzer: 'standard' },
+  //             descriptionUz: { type: 'text', analyzer: 'standard' },
+  //             descriptionRu: { type: 'text', analyzer: 'standard' },
+  //             descriptionEn: { type: 'text', analyzer: 'standard' },
+  //             slugUz: { type: 'keyword' },
+  //             slugRu: { type: 'keyword' },
+  //             slugEn: { type: 'keyword' },
+  //             attributes: {
+  //               type: 'nested',
+  //               properties: {
+  //                 nameUz: { type: 'text' },
+  //                 nameRu: { type: 'text' },
+  //                 nameEn: { type: 'text' },
+  //                 valueUz: { type: 'text' },
+  //                 valueRu: { type: 'text' },
+  //                 valueEn: { type: 'text' },
+  //               },
+  //             },
+  //             oldPrice: { type: 'float' },
+  //             currentPrice: { type: 'float' },
+  //             quantity: { type: 'integer' },
+  //             categoryId: { type: 'keyword' },
+  //             brandId: { type: 'keyword' },
+  //             status: { type: 'integer' },
+  //             isDeleted: { type: 'boolean' },
+  //             keywords: { type: 'text' },
+  //             hierarchyPath: { type: 'keyword' },
+  //             views: { type: 'integer' },
+  //             availability: { type: 'keyword' },
+  //           },
+  //         },
+  //       });
+  //       this.logger.log(`Created index: ${this.indexName}`);
+  //     }
+  //   } catch (error) {
+  //     this.logger.error(`Error creating index: ${error}`);
+  //   }
+  // }
 
   async indexProduct(product: IProduct) {
     try {
@@ -156,18 +200,13 @@ export class SearchService {
           slugUz: product.slugUz,
           slugRu: product.slugRu,
           slugEn: product.slugEn,
-          attributes: product.attributes,
-          oldPrice: product.oldPrice,
-          currentPrice: product.currentPrice,
-          quantity: product.quantity,
-          categoryId: product.categoryId?.toString(),
-          brandId: product.brandId?.toString(),
+          sku: product.sku,
           status: product.status,
           isDeleted: product.isDeleted,
-          keywords: product.keywords,
+          availibility: product.availability,
           hierarchyPath: product.hierarchyPath,
-          views: product.views,
-          availability: product.availability,
+          // attributes: product.attributes,
+          keywords: product.keywords,
         },
       });
       return true;
@@ -193,18 +232,12 @@ export class SearchService {
           slugRu: product.slugRu,
           slugEn: product.slugEn,
           sku: product.sku,
-          attributes: product.attributes,
-          oldPrice: product.oldPrice,
-          currentPrice: product.currentPrice,
-          quantity: product.quantity,
-          categoryId: product.categoryId?.toString(),
-          brandId: product.brandId?.toString(),
+          // attributes: product.attributes,
+          keywords: product.keywords,
           status: product.status,
           isDeleted: product.isDeleted,
-          keywords: product.keywords,
+          availibility: product.availability,
           hierarchyPath: product.hierarchyPath,
-          views: product.views,
-          availability: product.availability,
         },
       });
       return true;
@@ -248,24 +281,26 @@ export class SearchService {
     body: SearchProductsDto,
     lang: string = 'Uz',
     from: number = 0,
-    size: number = 10,
+    size: number = 12,
   ) {
     try {
-      const query = body.search;
+      const query = body.search?.trim();
+      console.log('Search query:', query);
 
+      // Asosiy filterlar
       const mustQueries: any[] = [
         { term: { isDeleted: false } },
         { term: { status: 1 } },
       ];
 
+      // Kategoriya bo'yicha filter
       if (body.categoryId) {
         mustQueries.push({
           term: { hierarchyPath: body.categoryId },
         });
       }
 
-      const namePath = `name${lang}`;
-      const descPath = `description${lang}`;
+      // Elasticsearch query
       const { hits } = await this.elasticsearchService.search({
         index: this.indexName,
         from,
@@ -273,42 +308,48 @@ export class SearchService {
         query: {
           bool: {
             must: mustQueries,
-            should: [
-              { match: { ['nameUz']: { query, boost: 3.0 } } },
-              { match: { ['nameRu']: { query, boost: 3.0 } } },
-              { match: { ['nameEn']: { query, boost: 3.0 } } },
-              { match: { ['descriptionUz']: { query, boost: 2.0 } } },
-              { match: { ['descriptionRu']: { query, boost: 2.0 } } },
-              { match: { ['descriptionEn']: { query, boost: 2.0 } } },
-              { match: { keywords: { query, boost: 2.0 } } },
-              {
-                nested: {
-                  path: 'attributes',
-                  query: {
-                    bool: {
-                      should: [
-                        { match: { [`attributes.valueUz`]: query } },
-                        { match: { [`attributes.valueRu`]: query } },
-                        { match: { [`attributes.valueEn`]: query } },
-                      ],
-                    },
-                  },
-                },
-              },
-            ],
-            minimum_should_match: 1,
+            should: query
+              ? [
+                  { match: { nameUz: { query, boost: 3.0 } } },
+                  { match: { nameRu: { query, boost: 3.0 } } },
+                  { match: { nameEn: { query, boost: 3.0 } } },
+                  { match: { descriptionUz: { query, boost: 2.0 } } },
+                  { match: { descriptionRu: { query, boost: 2.0 } } },
+                  { match: { descriptionEn: { query, boost: 2.0 } } },
+                  { match: { keywords: { query, boost: 2.0 } } },
+                  { match: { availibility: { query, boost: 2.0 } } },
+
+                  // {
+                  //   nested: {
+                  //     path: 'attributes',
+                  //     query: {
+                  //       bool: {
+                  //         should: [
+                  //           { match: { 'attributes.valueUz': query } },
+                  //           { match: { 'attributes.valueRu': query } },
+                  //           { match: { 'attributes.valueEn': query } },
+                  //         ],
+                  //       },
+                  //     },
+                  //   },
+                  // },
+                ]
+              : [],
+            minimum_should_match: query ? 1 : 0,
           },
         },
-        highlight: {
-          fields: {
-            [namePath]: {},
-            [descPath]: {},
-            sku: {},
-            keywords: {},
-            [`attributes.value${lang}`]: {},
-          },
-        },
+        // highlight: {
+        //   fields: {
+        //     [namePath]: {},
+        //     [descPath]: {},
+        //     sku: {},
+        //     keywords: {},
+        //     [attrPath]: {},
+        //   },
+        // },
       });
+
+      console.log('Search results:', hits);
 
       return {
         total: hits.total,
@@ -317,7 +358,7 @@ export class SearchService {
         })),
       };
     } catch (error) {
-      this.logger.error(`Error searching: ${error.message}`);
+      this.logger.error(`Error during search: ${error?.message || error}`);
       return {
         total: { value: 0 },
         hits: [],
@@ -340,18 +381,12 @@ export class SearchService {
           slugRu: product.slugRu,
           slugEn: product.slugEn,
           sku: product.sku,
-          attributes: product.attributes,
-          oldPrice: product.oldPrice,
-          currentPrice: product.currentPrice,
-          quantity: product.quantity,
-          categoryId: product.categoryId?.toString(),
-          brandId: product.brandId?.toString(),
           status: product.status,
           isDeleted: product.isDeleted,
-          keywords: product.keywords,
           hierarchyPath: product.hierarchyPath,
-          views: product.views,
           availability: product.availability,
+          // attributes: product.attributes,
+          keywords: product.keywords,
         },
       ]);
 

@@ -55,6 +55,7 @@ export async function buildProductPipeline(
         status: 1,
         inStock: 1,
         views: 1,
+        thumbs: 1,
         hierarchyPath: 1,
         availability: 1,
         hierarchy: {
@@ -146,6 +147,7 @@ export async function buildOneProductPipeline(
         currentPrice: 1,
         quantity: 1,
         rate: 1,
+        thumbs: 1,
         categoryId: 1,
         brandId: 1,
         brand: {
