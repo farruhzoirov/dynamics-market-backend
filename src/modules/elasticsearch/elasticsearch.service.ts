@@ -3,7 +3,6 @@ import { ElasticsearchService as NestElasticsearchService } from '@nestjs/elasti
 import { Product } from '../product/schemas/product.model';
 import mongoose from 'mongoose';
 import { SearchProductsDto } from '../product/dto/product.dto';
-import { IElasticSearchPayload } from 'src/shared/interfaces/e-search-payload';
 
 interface IProduct extends Product {
   _id: mongoose.Types.ObjectId;
