@@ -19,116 +19,120 @@ export class SearchService {
 
   private async initIndex() {
     try {
-      await this.deleteIndex();
-      await this.elasticsearchService.indices.create({
+      const indexExists = await this.elasticsearchService.indices.exists({
         index: this.indexName,
-        body: {
-          settings: {
-            analysis: {
-              tokenizer: {
-                ngram_tokenizer: {
-                  type: 'ngram',
-                  min_gram: 3,
-                  max_gram: 3,
-                  token_chars: ['letter', 'digit'],
-                },
-              },
-              analyzer: {
-                ngram_analyzer: {
-                  type: 'custom',
-                  tokenizer: 'ngram_tokenizer',
-                  filter: ['lowercase'],
-                },
-              },
-            },
-          },
-
-          mappings: {
-            properties: {
-              nameUz: {
-                type: 'text',
-                analyzer: 'ngram_analyzer',
-                search_analyzer: 'ngram_analyzer',
-              },
-              nameRu: {
-                type: 'text',
-                analyzer: 'ngram_analyzer',
-                search_analyzer: 'ngram_analyzer',
-              },
-              nameEn: {
-                type: 'text',
-                analyzer: 'ngram_analyzer',
-                search_analyzer: 'ngram_analyzer',
-              },
-              descriptionUz: {
-                type: 'text',
-                analyzer: 'ngram_analyzer',
-                search_analyzer: 'ngram_analyzer',
-              },
-              descriptionRu: {
-                type: 'text',
-                analyzer: 'ngram_analyzer',
-                search_analyzer: 'ngram_analyzer',
-              },
-              descriptionEn: {
-                type: 'text',
-                analyzer: 'ngram_analyzer',
-                search_analyzer: 'ngram_analyzer',
-              },
-              sku: { type: 'keyword' },
-              slugUz: { type: 'keyword' },
-              slugRu: { type: 'keyword' },
-              slugEn: { type: 'keyword' },
-              status: { type: 'integer' },
-              isDeleted: { type: 'boolean' },
-              hierarchyPath: { type: 'keyword' },
-              views: { type: 'integer' },
-              availability: { type: 'keyword' },
-              attributes: {
-                type: 'nested',
-                properties: {
-                  nameUz: {
-                    type: 'text',
-                    analyzer: 'ngram_analyzer',
-                    search_analyzer: 'ngram_analyzer',
-                  },
-                  nameRu: {
-                    type: 'text',
-                    analyzer: 'ngram_analyzer',
-                    search_analyzer: 'ngram_analyzer',
-                  },
-                  nameEn: {
-                    type: 'text',
-                    analyzer: 'ngram_analyzer',
-                    search_analyzer: 'ngram_analyzer',
-                  },
-                  valueUz: {
-                    type: 'text',
-                    analyzer: 'ngram_analyzer',
-                    search_analyzer: 'ngram_analyzer',
-                  },
-                  valueRu: {
-                    type: 'text',
-                    analyzer: 'ngram_analyzer',
-                    search_analyzer: 'ngram_analyzer',
-                  },
-                  valueEn: {
-                    type: 'text',
-                    analyzer: 'ngram_analyzer',
-                    search_analyzer: 'ngram_analyzer',
-                  },
-                },
-              },
-              keywords: {
-                type: 'text',
-                analyzer: 'ngram_analyzer',
-                search_analyzer: 'ngram_analyzer',
-              },
-            },
-          },
-        },
       });
-      this.logger.log(`Indeks yaratildi: ${this.indexName}`);
+      if (!indexExists) {
+        await this.elasticsearchService.indices.create({
+          index: this.indexName,
+          body: {
+            settings: {
+              analysis: {
+                tokenizer: {
+                  ngram_tokenizer: {
+                    type: 'ngram',
+                    min_gram: 3,
+                    max_gram: 3,
+                    token_chars: ['letter', 'digit'],
+                  },
+                },
+                analyzer: {
+                  ngram_analyzer: {
+                    type: 'custom',
+                    tokenizer: 'ngram_tokenizer',
+                    filter: ['lowercase'],
+                  },
+                },
+              },
+            },
+
+            mappings: {
+              properties: {
+                nameUz: {
+                  type: 'text',
+                  analyzer: 'ngram_analyzer',
+                  search_analyzer: 'ngram_analyzer',
+                },
+                nameRu: {
+                  type: 'text',
+                  analyzer: 'ngram_analyzer',
+                  search_analyzer: 'ngram_analyzer',
+                },
+                nameEn: {
+                  type: 'text',
+                  analyzer: 'ngram_analyzer',
+                  search_analyzer: 'ngram_analyzer',
+                },
+                descriptionUz: {
+                  type: 'text',
+                  analyzer: 'ngram_analyzer',
+                  search_analyzer: 'ngram_analyzer',
+                },
+                descriptionRu: {
+                  type: 'text',
+                  analyzer: 'ngram_analyzer',
+                  search_analyzer: 'ngram_analyzer',
+                },
+                descriptionEn: {
+                  type: 'text',
+                  analyzer: 'ngram_analyzer',
+                  search_analyzer: 'ngram_analyzer',
+                },
+                sku: { type: 'keyword' },
+                slugUz: { type: 'keyword' },
+                slugRu: { type: 'keyword' },
+                slugEn: { type: 'keyword' },
+                status: { type: 'integer' },
+                isDeleted: { type: 'boolean' },
+                hierarchyPath: { type: 'keyword' },
+                views: { type: 'integer' },
+                availability: { type: 'keyword' },
+                attributes: {
+                  type: 'nested',
+                  properties: {
+                    nameUz: {
+                      type: 'text',
+                      analyzer: 'ngram_analyzer',
+                      search_analyzer: 'ngram_analyzer',
+                    },
+                    nameRu: {
+                      type: 'text',
+                      analyzer: 'ngram_analyzer',
+                      search_analyzer: 'ngram_analyzer',
+                    },
+                    nameEn: {
+                      type: 'text',
+                      analyzer: 'ngram_analyzer',
+                      search_analyzer: 'ngram_analyzer',
+                    },
+                    valueUz: {
+                      type: 'text',
+                      analyzer: 'ngram_analyzer',
+                      search_analyzer: 'ngram_analyzer',
+                    },
+                    valueRu: {
+                      type: 'text',
+                      analyzer: 'ngram_analyzer',
+                      search_analyzer: 'ngram_analyzer',
+                    },
+                    valueEn: {
+                      type: 'text',
+                      analyzer: 'ngram_analyzer',
+                      search_analyzer: 'ngram_analyzer',
+                    },
+                  },
+                },
+                keywords: {
+                  type: 'text',
+                  analyzer: 'ngram_analyzer',
+                  search_analyzer: 'ngram_analyzer',
+                },
+              },
+            },
+          },
+        });
+        this.logger.log(`Indeks yaratildi: ${this.indexName}`);
+      }
     } catch (error) {
       this.logger.error(`Indeks yaratishda xatolik: ${error.message}`);
     }

@@ -53,6 +53,11 @@ export class ProductController {
   ) {
     lang = new AcceptLanguagePipe().transform(lang);
     const data = await this.productService.searchProducts(body, lang);
+    // const data = await this.productService.searchProductsWithMongoDB(
+    //   body,
+    //   lang,
+    // );
+
     return data;
   }
 

@@ -1,4 +1,4 @@
-import { PipelineStage } from 'mongoose';
+import mongoose, { ObjectId, PipelineStage } from 'mongoose';
 
 export async function buildProductPipeline(
   match: any,
@@ -6,6 +6,8 @@ export async function buildProductPipeline(
   lang: string,
   limit: number | null,
   skip: number,
+  search: boolean = false,
+  productIds?: mongoose.Types.ObjectId[] | null,
 ): Promise<PipelineStage[]> {
   const pipeline: PipelineStage[] = [
     {
@@ -82,13 +84,24 @@ export async function buildProductPipeline(
         },
       },
     },
-    {
-      $sort: sort,
-    },
-    {
-      $skip: skip,
-    },
   ];
+
+  if (search && productIds) {
+    pipeline.push({
+      $addFields: {
+        sortOrder: {
+          $indexOfArray: [productIds, '$_id'],
+        },
+      },
+    });
+    pipeline.push({
+      $sort: { sortOrder: 1 },
+    });
+  } else {
+    pipeline.push({ $sort: sort });
+  }
+
+  pipeline.push({ $skip: skip });
 
   if (limit !== 0) {
     pipeline.push({

@@ -57,6 +57,7 @@ export class ProductService {
 
   async searchProducts(body: SearchProductsDto, lang: string) {
     let sort: Record<string, 1 | -1> = { createdAt: -1, views: -1 };
+    const search = true;
     const skip = body.page ? (body.page - 1) * (body.limit || 12) : 0;
     const limit = body.limit || 12;
     let pages = 0;
@@ -70,15 +71,23 @@ export class ProductService {
     if (!searchResults.hits.length) {
       return [];
     }
-
     const productIds = searchResults.hits.map(
       (hit) => new Types.ObjectId(hit._id),
     );
+
     const match = {
       isDeleted: false,
       _id: { $in: productIds },
     };
-    const pipeline = await buildProductPipeline(match, sort, lang, limit, skip);
+    const pipeline = await buildProductPipeline(
+      match,
+      sort,
+      lang,
+      limit,
+      skip,
+      search,
+      productIds,
+    );
     const [data, total] = await Promise.all([
       this.productModel.aggregate(pipeline).exec(),
       this.productModel.countDocuments(match),
@@ -132,9 +141,9 @@ export class ProductService {
         {
           $project: {
             _id: 1,
-            name: { $ifNull: [`$name${lang}`, '$nameUz'] },
-            description: { $ifNull: [`description${lang}`, '$descriptionUz'] },
-            slug: { $ifNull: [`slug${lang}`, '$slugUz'] },
+            name: { $ifNull: [`$name${lang}`, null] },
+            description: { $ifNull: [`$description${lang}`, null] },
+            slug: { $ifNull: [`$slug${lang}`, null] },
             sku: 1,
             currentPrice: 1,
             oldPrice: 1,
@@ -327,6 +336,7 @@ export class ProductService {
       };
       const newPoruct = await this.productModel.create(createBody);
       await this.elasticSearchService.indexProduct(newPoruct);
+      await this.elasticSearchService.bulkIndex([newPoruct]);
     } catch (err) {
       console.log(`adding product ====>  ${err}`);
       throw new AddingModelException(err.message);
@@ -369,6 +379,7 @@ export class ProductService {
       { new: true },
     );
     await this.elasticSearchService.updateIndexedProduct(updatedProduct);
+    await this.elasticSearchService.bulkIndex([updatedProduct]);
   }
 
   async deleteProduct(body: DeleteProductDto): Promise<void> {
