@@ -69,6 +69,7 @@ export class NewsService {
       'contentRu',
       'contentEn',
     ]);
+    console.log('searchPayload', searchPayload);
     match = Object.assign(match, searchPayload);
     const [data, total] = await Promise.all([
       await this.newsModel.aggregate([
