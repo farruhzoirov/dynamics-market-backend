@@ -40,6 +40,8 @@ jobs:
             AMOCRM_CLIENT_SECRET=${{ secrets.AMOCRM_CLIENT_SECRET }}
             AMOCRM_CLIENT_ID=${{ secrets.AMOCRM_CLIENT_ID }}
             AMOCRM_CODE=${{secrets.AMOCRM_CODE}}
+            TELEGRAM_BOT_TOKEN=${{secrets.TELEGRAM_BOT_TOKEN}}
+            ADMIN_CHAT_ID=${{secrets.ADMIN_CHAT_ID}}
             EOL
 
             docker-compose down
