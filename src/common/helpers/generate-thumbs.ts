@@ -1,7 +1,7 @@
 import * as path from 'path';
 import * as fs from 'fs/promises';
 import * as sharp from 'sharp';
-import { FileMetadataDto } from 'src/shared/dto/file-meta.dto';
+import { FileMetadataDto} from 'src/shared/dto/file-meta.dto';
 
 export const generateThumbs = async (images: FileMetadataDto[]) => {
   const thumbs: FileMetadataDto[] = [];
@@ -29,3 +29,4 @@ export const generateThumbs = async (images: FileMetadataDto[]) => {
     return thumbs;
   }
 };
+

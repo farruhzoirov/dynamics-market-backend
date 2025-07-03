@@ -16,13 +16,14 @@ import databaseConfig, { CONFIG_DATABASE } from './config/database.config';
 import { CartModule } from './modules/cart/cart.module';
 import { OrderModule } from './modules/order/order.module';
 import { SearchModule } from './modules/elasticsearch/elasticsearch.module';
-import { AmocrmModule } from './shared/module/amocrm/amocrm.module';
 import { FaqModule } from './modules/faq/faq.module';
 import { NewsModule } from './modules/news/news.module';
+import { TelegramModule } from './shared/module/telegram/telegram.module';
 import googleConfig from './config/google.config';
 import jwtConfig from './config/jwt.config';
 import redisConfig from './config/redis.config';
 import amocrmConfig from './config/amocrm.config';
+import telegramConfig from './config/telegram.config';
 
 @Module({
   imports: [
@@ -33,6 +34,7 @@ import amocrmConfig from './config/amocrm.config';
         jwtConfig,
         redisConfig,
         amocrmConfig,
+        telegramConfig,
       ],
       envFilePath: '.env',
       isGlobal: true,
@@ -42,6 +44,9 @@ import amocrmConfig from './config/amocrm.config';
       useFactory: async (configService: ConfigService) => {
         return {
           uri: configService.get(CONFIG_DATABASE).users.uri,
+          maxPoolSize: 10,
+          serverSelectionTimeoutMS: 5000,
+          socketTimeoutMS: 45000,
         };
       },
       inject: [ConfigService],
@@ -57,9 +62,9 @@ import amocrmConfig from './config/amocrm.config';
     FileUploadModule,
     OrderModule,
     SearchModule,
-    AmocrmModule,
     FaqModule,
     NewsModule,
+    TelegramModule,
   ],
   providers: [
     {
@@ -79,6 +84,7 @@ export class AppModule implements NestModule {
         '/brand/list',
         '/category/list',
         '/product/list',
+        '/product/add',
         '/product/search',
         '/product/get-product',
         '/review/list',

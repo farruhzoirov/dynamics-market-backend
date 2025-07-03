@@ -171,6 +171,11 @@ export class AddProductDto extends BaseModelDto {
   @IsEnum(InStockStatus)
   availability: InStockStatus;
 
+  @ApiProperty({ description: 'link' })
+  @Optional()
+  @IsString()
+  link: string;
+
   @ApiProperty()
   @IsOptional()
   details: any;
@@ -260,6 +265,11 @@ export class UpdateProductDto extends UpdateBaseModelDto {
   @IsOptional()
   @IsEnum(InStockStatus)
   availability: InStockStatus;
+
+  @ApiProperty({ description: 'link' })
+  @Optional()
+  @IsString()
+  link: string;
 
   @ApiProperty()
   @IsOptional()

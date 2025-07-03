@@ -19,8 +19,7 @@ import {
   buildSingleOrderPipeline,
   buildUserOrdersPipeline,
 } from 'src/common/helpers/pipelines/order.pipeline';
-
-import { OrderWithAmoCrmService } from 'src/shared/module/amocrm/services/order.service';
+import { TelegramNotificationService } from '../../shared/module/telegram/telegram.service';
 
 @Injectable()
 export class OrderService {
@@ -28,7 +27,7 @@ export class OrderService {
     @InjectModel(Order.name) private orderModel: Model<OrderDocument>,
     @InjectModel(Cart.name) private cartModel: Model<CartDocument>,
     @InjectModel(Counter.name) private counterModel: Model<CounterDocument>,
-    private readonly orderWithAmocrmService: OrderWithAmoCrmService,
+    private readonly telegramNotificationService: TelegramNotificationService,
   ) {}
 
   async getOrdersList(body: GetOrdersDto) {
@@ -125,7 +124,12 @@ export class OrderService {
         items,
       }),
       await this.cartModel.deleteMany({ userId }),
-      await this.orderWithAmocrmService.createLead(body, items, orderCode),
+      await this.telegramNotificationService.sendOrderNotification(
+        body,
+        items,
+        orderCode,
+      ),
+      // Amocrm based logic might be placed in here. For example, createLead method
     ]);
     return createdOrder.orderCode;
   }

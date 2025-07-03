@@ -7,6 +7,7 @@ import { Cart, CartSchema } from '../cart/schemas/cart.schema';
 import { Counter, CounterSchema } from './schema/counter.model';
 import { OrderWithAmoCrmService } from 'src/shared/module/amocrm/services/order.service';
 import { ConnectAmocrmService } from 'src/shared/module/amocrm/connect-amocrm.service';
+import { TelegramNotificationService } from '../../shared/module/telegram/telegram.service';
 
 @Module({
   imports: [
@@ -26,6 +27,6 @@ import { ConnectAmocrmService } from 'src/shared/module/amocrm/connect-amocrm.se
     ]),
   ],
   controllers: [OrderController],
-  providers: [OrderService, OrderWithAmoCrmService, ConnectAmocrmService],
+  providers: [OrderService, TelegramNotificationService],
 })
 export class OrderModule {}

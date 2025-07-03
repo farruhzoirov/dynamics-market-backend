@@ -334,9 +334,9 @@ export class ProductService {
         hierarchy,
         hierarchyPath,
       };
-      const newPoruct = await this.productModel.create(createBody);
-      await this.elasticSearchService.indexProduct(newPoruct);
-      await this.elasticSearchService.bulkIndex([newPoruct]);
+      const newProduct = await this.productModel.create(createBody);
+      await this.elasticSearchService.indexProduct(newProduct);
+      await this.elasticSearchService.bulkIndex([newProduct]);
     } catch (err) {
       console.log(`adding product ====>  ${err}`);
       throw new AddingModelException(err.message);

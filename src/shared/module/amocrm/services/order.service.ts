@@ -63,32 +63,32 @@ export class OrderWithAmoCrmService {
     }
   }
 
-  async createLead(
-    body: CreateOrderDto,
-    items: ProductItem[],
-    orderCode: string,
-  ) {
-    try {
-      const client = this.amoCrmService.getClient();
-
-      const response = (await client.request.post('/api/v4/leads', [
-        {
-          name: `${body.firstName} ${body.lastName}`,
-        },
-      ])) as any;
-
-      const leadId = response.data._embedded.leads[0].id;
-      let itemsDetails: string = '';
-      items.map((item) => {
-        itemsDetails += `#${item.sku}-${item.nameEn},`;
-      });
-      await this.addOrderDataToLead(leadId, body, itemsDetails, orderCode);
-    } catch (error) {
-      console.error(
-        '❌ Error creating lead:',
-        error.response?.data || error.message,
-      );
-      throw error;
-    }
-  }
+  // async createLead(
+  //   body: CreateOrderDto,
+  //   items: ProductItem[],
+  //   orderCode: string,
+  // ) {
+  //   try {
+  //     const client = this.amoCrmService.getClient();
+  //
+  //     const response = (await client.request.post('/api/v4/leads', [
+  //       {
+  //         name: `${body.firstName} ${body.lastName}`,
+  //       },
+  //     ])) as any;
+  //
+  //     const leadId = response.data._embedded.leads[0].id;
+  //     let itemsDetails: string = '';
+  //     items.map((item) => {
+  //       itemsDetails += `#${item.sku}-${item.nameEn},`;
+  //     });
+  //     await this.addOrderDataToLead(leadId, body, itemsDetails, orderCode);
+  //   } catch (error) {
+  //     console.error(
+  //       '❌ Error creating lead:',
+  //       error.response?.data || error.message,
+  //     );
+  //     throw error;
+  //   }
+  // }
 }
