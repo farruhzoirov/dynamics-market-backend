@@ -75,7 +75,7 @@ export class TelegramNotificationService {
       return sum + (item.price ? item.price * item.quantity : 0);
     }, 0);
 
-    return `🛍️ <b>НОВЫЙ ЗАКАЗ</b>
+    return `<b>НОВЫЙ ЗАКАЗ</b>
 
 ${customerInfo}
 
