@@ -3,7 +3,6 @@ import * as TelegramBot from 'node-telegram-bot-api';
 import { CreateOrderDto } from '../../../modules/order/dto/order.dto';
 import { ProductItem } from '../../interfaces/product-items';
 import { ConfigService } from '@nestjs/config';
-import { TELEGRAM } from '../../../config/telegram.config';
 
 @Injectable()
 export class TelegramNotificationService {
@@ -56,45 +55,45 @@ export class TelegramNotificationService {
     body: CreateOrderDto,
     items: ProductItem[],
   ): string {
-    const customerInfo = `
-      🆔 <b>Order Code:</b> ${orderCode}
-      👤 <b>Customer:</b> ${body.firstName} ${body.lastName}
-      📧 <b>Email:</b> ${body.email}
-      📱 <b>Phone:</b> ${body.phone}
-      🏢 <b>Customer Type:</b> ${body.customerType}
-      ${body.companyName ? `🏪 <b>Company:</b> ${body.companyName}` : ''}
-      ${body.comment ? `💬 <b>Comment:</b> ${body.comment}` : ''}
-      `;
+    const customerInfo = `🆔 <b>Номер заказа:</b> ${orderCode}
+👤 <b>Клиент:</b> ${body.firstName} ${body.lastName}
+📧 <b>Email:</b> ${body.email}
+📱 <b>Телефон:</b> ${body.phone}
+🏢 <b>Тип клиента:</b> ${body.customerType}${body.companyName ? `\n🏪 <b>Компания:</b> ${body.companyName}` : ''}${body.comment ? `\n💬 <b>Комментарий:</b> ${body.comment}` : ''}`;
 
     const itemsInfo = items
       .map((item, index) => {
-        return `
-      ${index + 1}. <b>${item.nameUz}</b>
-         📦 SKU: ${item.sku}
-         🔢 Quantity: ${item.quantity}
-         💰 Price: ${item.price ? `${item.price} so'm` : 'N/A'}
-  `;
+        return `${index + 1}. <b>${item.nameRu}</b>
+📦 <b>СКУ:</b> ${item.sku}
+🔢 <b>Количество:</b> ${item.quantity}
+💰 <b>Цена:</b> ${item.price ? `${item.price.toLocaleString()} сум` : 'Не указана'}`;
       })
-      .join('');
+      .join('\n\n');
 
     const totalItems = items.reduce((sum, item) => sum + item.quantity, 0);
     const totalPrice = items.reduce((sum, item) => {
       return sum + (item.price ? item.price * item.quantity : 0);
     }, 0);
 
-    return `
-      🛍️ <b>YANGI BUYURTMA</b>
-      
-      ${customerInfo}
-      
-      📋 <b>BUYURTMA TAFSILOTLARI:</b>
-      ${itemsInfo}
-      
-      📊 <b>JAMI:</b>
-      🔢 Total Items: ${totalItems}
-      💰 Total Price: ${totalPrice > 0 ? `${totalPrice} so'm` : 'N/A'}
-      
-      ⏰ <b>Vaqt:</b> ${new Date().toLocaleString('uz-UZ')}
-      `;
+    return `🛍️ <b>НОВЫЙ ЗАКАЗ</b>
+
+${customerInfo}
+
+📋 <b>ДЕТАЛИ ЗАКАЗА:</b>
+${itemsInfo}
+
+📊 <b>ИТОГО:</b>
+🔢 <b>Всего товаров:</b> ${totalItems}
+💰 <b>Общая сумма:</b> ${totalPrice > 0 ? `${totalPrice.toLocaleString()}$` : 'Не указана'}
+
+⏰ <b>Время:</b> ${new Date().toLocaleString('ru-RU', {
+      timeZone: 'Asia/Tashkent',
+      year: 'numeric',
+      month: '2-digit',
+      day: '2-digit',
+      hour: '2-digit',
+      minute: '2-digit',
+      second: '2-digit',
+    })}`;
   }
 }
