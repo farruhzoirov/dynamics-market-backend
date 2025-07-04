@@ -366,7 +366,7 @@ export class ProductService {
       ...(slugEn && { slugEn }),
     };
 
-    if (updateBody.categoryId) {
+    if (updateBody?.categoryId) {
       const { hierarchyPath, hierarchy } =
         await this.buildCategoryHierarchyService.buildCategoryHierarchy(
           updateBody.categoryId,
