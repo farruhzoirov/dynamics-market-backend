@@ -126,7 +126,7 @@ export class Product {
   @Prop({ enum: InStockStatus, default: InStockStatus.IN_STOCK })
   availability: InStockStatus;
 
-  @Prop({ type: String })
+  @Prop({ type: String, default: null })
   link: string;
 
   @Prop({ type: mongoose.Schema.Types.Mixed })

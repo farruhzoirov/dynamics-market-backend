@@ -172,8 +172,8 @@ export class AddProductDto extends BaseModelDto {
   availability: InStockStatus;
 
   @ApiProperty({ description: 'link' })
-  @Optional()
   @IsString()
+  @Optional()
   link: string;
 
   @ApiProperty()
@@ -267,8 +267,8 @@ export class UpdateProductDto extends UpdateBaseModelDto {
   availability: InStockStatus;
 
   @ApiProperty({ description: 'link' })
-  @Optional()
   @IsString()
+  @Optional()
   link: string;
 
   @ApiProperty()
