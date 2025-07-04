@@ -354,23 +354,27 @@ export class ProductService {
     const slugUz = nameUz ? generateUniqueSlugForProduct(nameUz) : null;
     const slugRu = nameRu ? generateUniqueSlugForProduct(nameRu) : null;
     const slugEn = nameEn ? generateUniqueSlugForProduct(nameEn) : null;
-    const { hierarchyPath, hierarchy } =
-      await this.buildCategoryHierarchyService.buildCategoryHierarchy(
-        updateBody.categoryId,
-      );
 
-    if (images.length) {
+    if (images?.length) {
       updateBody.thumbs = await generateThumbs(updateBody.images);
     }
 
-    const forUpdateBody = {
+    const forUpdateBody: Record<string, any> = {
       ...updateBody,
       ...(slugUz && { slugUz }),
       ...(slugRu && { slugRu }),
       ...(slugEn && { slugEn }),
-      hierarchy,
-      hierarchyPath,
     };
+
+    if (updateBody.categoryId) {
+      const { hierarchyPath, hierarchy } =
+        await this.buildCategoryHierarchyService.buildCategoryHierarchy(
+          updateBody.categoryId,
+        );
+      forUpdateBody.hierarchy = hierarchy;
+      forUpdateBody.hierarchyPath = hierarchyPath;
+    }
+
     const updatedProduct = await this.productModel.findByIdAndUpdate(
       updateBody._id,
       {

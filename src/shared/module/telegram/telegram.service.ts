@@ -9,12 +9,12 @@ export class TelegramNotificationService {
   public bot: TelegramBot;
   private readonly logger = new Logger(TelegramNotificationService.name);
   private readonly adminChatId: string;
-  private readonly topicId: number; // Topic ID qo'shildi
+  private readonly topicId: number;
 
   constructor(private readonly configService: ConfigService) {
     const botToken = this.configService.get('TELEGRAM').TELEGRAM_BOT_TOKEN;
     this.adminChatId = this.configService.get('TELEGRAM').ADMIN_CHAT_ID;
-    this.topicId = this.configService.get('TELEGRAM').TOPIC_ID; // Topic ID config'dan olish
+    this.topicId = this.configService.get('TELEGRAM').TOPIC_ID;
 
     if (!botToken) {
       this.logger.error('TELEGRAM_BOT_TOKEN is not set');
@@ -42,13 +42,11 @@ export class TelegramNotificationService {
 
       const message = this.formatOrderMessage(orderCode, body, items);
 
-      // Topic ID bilan xabar yuborish
       const messageOptions: any = {
         parse_mode: 'HTML',
         disable_web_page_preview: true,
       };
 
-      // Agar topic ID mavjud bo'lsa, uni qo'shish
       if (this.topicId) {
         messageOptions.message_thread_id = this.topicId;
       }
