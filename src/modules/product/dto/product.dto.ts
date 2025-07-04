@@ -173,7 +173,7 @@ export class AddProductDto extends BaseModelDto {
 
   @ApiProperty({ description: 'link' })
   @IsString()
-  @Optional()
+  @IsOptional()
   link: string;
 
   @ApiProperty()
@@ -268,7 +268,7 @@ export class UpdateProductDto extends UpdateBaseModelDto {
 
   @ApiProperty({ description: 'link' })
   @IsString()
-  @Optional()
+  @IsOptional()
   link: string;
 
   @ApiProperty()
