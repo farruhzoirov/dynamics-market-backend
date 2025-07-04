@@ -57,7 +57,7 @@ export class TelegramNotificationService {
   ): string {
     const customerInfo = `🆔 <b>Номер заказа:</b> ${orderCode}
 👤 <b>Клиент:</b> ${body.firstName} ${body.lastName}
-📧 <b>Email:</b> ${body.email}
+📧 <b>Электронная почта:</b> ${body.email}
 📱 <b>Телефон:</b> ${body.phone}
 🏢 <b>Тип клиента:</b> ${body.customerType}${body.companyName ? `\n🏪 <b>Компания:</b> ${body.companyName}` : ''}${body.comment ? `\n💬 <b>Комментарий:</b> ${body.comment}` : ''}`;
 
