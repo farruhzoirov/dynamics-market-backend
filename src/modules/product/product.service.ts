@@ -375,6 +375,11 @@ export class ProductService {
       forUpdateBody.hierarchyPath = hierarchyPath;
     }
 
+    console.log(forUpdateBody);
+
+    delete forUpdateBody._id;
+    console.log(forUpdateBody);
+
     const updatedProduct = await this.productModel.findByIdAndUpdate(
       updateBody._id,
       {
@@ -382,8 +387,8 @@ export class ProductService {
       },
       { new: true },
     );
-    await this.elasticSearchService.updateIndexedProduct(updatedProduct);
-    await this.elasticSearchService.bulkIndex([updatedProduct]);
+    // await this.elasticSearchService.updateIndexedProduct(updatedProduct);
+    // await this.elasticSearchService.bulkIndex([updatedProduct]);
   }
 
   async deleteProduct(body: DeleteProductDto): Promise<void> {
