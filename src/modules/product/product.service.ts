@@ -387,8 +387,8 @@ export class ProductService {
       },
       { new: true },
     );
-    // await this.elasticSearchService.updateIndexedProduct(updatedProduct);
-    // await this.elasticSearchService.bulkIndex([updatedProduct]);
+    await this.elasticSearchService.updateIndexedProduct(updatedProduct);
+    await this.elasticSearchService.bulkIndex([updatedProduct]);
   }
 
   async deleteProduct(body: DeleteProductDto): Promise<void> {
