@@ -16,11 +16,13 @@ export class UpdatedSuccessResponse {
   readonly statusCode: number;
   readonly message: string;
   readonly errorCode: null;
+  readonly body: any;
 
-  constructor(message: string = 'updated successfully') {
+  constructor(body?: any) {
     this.errorCode = null;
     this.statusCode = HttpStatus.OK;
-    this.message = message;
+    this.message = 'updated successfully';
+    this.body = body ? body : null;
   }
 }
 

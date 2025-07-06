@@ -345,7 +345,7 @@ export class ProductService {
 
   async updateProduct(
     updateBody: UpdateProductDto & Partial<{ thumbs: FileMetadataDto[] }>,
-  ): Promise<void> {
+  ): Promise<FileMetadataDto[]> {
     const findProduct = await this.productModel.findById(updateBody._id);
     if (!findProduct) {
       throw new ModelDataNotFoundByIdException('Product not found');
@@ -374,12 +374,7 @@ export class ProductService {
       forUpdateBody.hierarchy = hierarchy;
       forUpdateBody.hierarchyPath = hierarchyPath;
     }
-
-    console.log(forUpdateBody);
-
     delete forUpdateBody._id;
-    console.log(forUpdateBody);
-
     const updatedProduct = await this.productModel.findByIdAndUpdate(
       updateBody._id,
       {
@@ -389,6 +384,7 @@ export class ProductService {
     );
     await this.elasticSearchService.updateIndexedProduct(updatedProduct);
     await this.elasticSearchService.bulkIndex([updatedProduct]);
+    return updatedProduct.thumbs;
   }
 
   async deleteProduct(body: DeleteProductDto): Promise<void> {

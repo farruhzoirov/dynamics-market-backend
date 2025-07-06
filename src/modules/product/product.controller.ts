@@ -57,7 +57,6 @@ export class ProductController {
     //   body,
     //   lang,
     // );
-
     return data;
   }
 
@@ -124,8 +123,8 @@ export class ProductController {
   @HttpCode(HttpStatus.OK)
   @Post('update')
   async updateProduct(@Body() updateBody: UpdateProductDto) {
-    await this.productService.updateProduct(updateBody);
-    return new UpdatedSuccessResponse();
+    const response = await this.productService.updateProduct(updateBody);
+    return new UpdatedSuccessResponse(response);
   }
 
   @ApiBearerAuth()
