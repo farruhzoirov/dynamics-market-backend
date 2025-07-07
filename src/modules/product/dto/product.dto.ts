@@ -83,6 +83,11 @@ export class GetProductsListDto extends UniversalQueryDto {
   @IsObjectId()
   @IsString()
   brandId: string;
+
+  @ApiProperty({ required: false })
+  @IsOptional()
+  @IsString()
+  createdDate?: string;
 }
 
 export class GetProductDto {

@@ -1,6 +1,7 @@
 import { IUniversalQuery } from 'src/shared/interfaces/query-based';
 import { universalSearchQuery } from './universal-search-query';
 import { Model } from 'mongoose';
+import { createDateRangeFilter } from './date-filter.helper';
 
 export const getFilteredResultsWithTotal = async (
   body: IUniversalQuery,
@@ -17,7 +18,7 @@ export const getFilteredResultsWithTotal = async (
   const skip = (payload.page - 1) * payload.limit;
   let filter: Record<string, any> = {};
   const sort: Record<string, any> = {
-    createdAt: -1
+    createdAt: -1,
   };
   if (payload.search) {
     filter = await universalSearchQuery(
@@ -37,6 +38,11 @@ export const getFilteredResultsWithTotal = async (
   if (body.brandId) {
     filter.brandId = body.brandId;
   }
+
+  if (body.createdDate) {
+    filter.createdAt = createDateRangeFilter(body.createdDate);
+  }
+
   return await Promise.all([
     await currentModel
       .find(filter)
