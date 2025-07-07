@@ -318,7 +318,10 @@ export class ProductService {
       const slugRu = generateUniqueSlugForProduct(nameRu);
       const slugEn = generateUniqueSlugForProduct(nameEn);
       const sku = await generateUniqueSKU(this.productModel);
-      const thumbs: FileMetadataDto[] = await generateThumbs(images);
+      let thumbs: FileMetadataDto[] = [];
+      if (images && images?.length) {
+        thumbs = await generateThumbs(images);
+      }
       const { hierarchyPath, hierarchy } =
         await this.buildCategoryHierarchyService.buildCategoryHierarchy(
           categoryId,
@@ -355,7 +358,7 @@ export class ProductService {
     const slugRu = nameRu ? generateUniqueSlugForProduct(nameRu) : null;
     const slugEn = nameEn ? generateUniqueSlugForProduct(nameEn) : null;
 
-    if (images?.length) {
+    if (images && images?.length) {
       updateBody.thumbs = await generateThumbs(updateBody.images);
     }
 
