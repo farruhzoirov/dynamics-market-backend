@@ -160,11 +160,12 @@ export class AddProductDto extends BaseModelDto {
   @Type(() => AttributeDto)
   attributes: AttributeDto[];
 
-  @ApiProperty({ type: [FileMetadataDto] })
+  @ApiProperty({ type: [FileMetadataDto], required: false })
+  @IsOptional()
   @IsArray()
   @ValidateNested({ each: true })
   @Type(() => FileMetadataDto)
-  images: FileMetadataDto[];
+  images?: FileMetadataDto[] | null;
 
   @ApiProperty({ enum: InStockStatus })
   @IsOptional()
@@ -249,12 +250,12 @@ export class UpdateProductDto extends UpdateBaseModelDto {
   @Type(() => AttributeDto)
   attributes: AttributeDto[];
 
-  @ApiProperty({ type: [FileMetadataDto] })
+  @ApiProperty({ type: [FileMetadataDto], required: false })
   @IsOptional()
   @IsArray()
   @ValidateNested({ each: true })
   @Type(() => FileMetadataDto)
-  images: FileMetadataDto[];
+  images?: FileMetadataDto[] | null;
 
   @ApiProperty()
   @IsOptional()
