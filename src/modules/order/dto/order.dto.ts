@@ -7,7 +7,7 @@ import {
   IsEmail,
 } from 'class-validator';
 import { CustomerType } from '../../../shared/enums/customer-type.enum';
-import { OrderStatus } from '../../../shared/enums/order-status.enum';
+import { DefaultOrderStatuses } from '../../../shared/enums/order-status.enum';
 import { ApiProperty } from '@nestjs/swagger';
 import { IsObjectId } from 'src/common/decorators/object-id.decarator';
 import {
@@ -104,10 +104,13 @@ export class UpdateOrderDto {
   @IsOptional()
   phone: string;
 
-  @ApiProperty({ enum: OrderStatus, example: OrderStatus.new })
-  @IsEnum(OrderStatus)
+  @ApiProperty({
+    enum: DefaultOrderStatuses,
+    example: DefaultOrderStatuses.new,
+  })
+  @IsEnum(DefaultOrderStatuses)
   @IsOptional()
-  status: OrderStatus;
+  status: DefaultOrderStatuses;
 }
 
 export class DeleteOrderDto extends DeleteBaseModelDto {}
