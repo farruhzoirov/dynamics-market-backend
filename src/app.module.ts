@@ -19,6 +19,7 @@ import { SearchModule } from './modules/elasticsearch/elasticsearch.module';
 import { FaqModule } from './modules/faq/faq.module';
 import { NewsModule } from './modules/news/news.module';
 import { TelegramModule } from './shared/module/telegram/telegram.module';
+import { OrderStatusModule } from './modules/order-status/order-status.module';
 import googleConfig from './config/google.config';
 import jwtConfig from './config/jwt.config';
 import redisConfig from './config/redis.config';
@@ -65,6 +66,7 @@ import telegramConfig from './config/telegram.config';
     FaqModule,
     NewsModule,
     TelegramModule,
+    OrderStatusModule,
   ],
   providers: [
     {

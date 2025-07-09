@@ -2,7 +2,6 @@ import {
   Body,
   Controller,
   Post,
-  Headers,
   UsePipes,
   ValidationPipe,
   HttpCode,
@@ -22,15 +21,18 @@ import {
   DeletedSuccessResponse,
   UpdatedSuccessResponse,
 } from '../../shared/success/success-responses';
-import { AcceptLanguagePipe } from '../../common/pipes/language.pipe';
-import { AcceptAppTypePipe } from 'src/common/pipes/app-type.pipe';
-import { AppType } from 'src/shared/enums/app-type.enum';
+import { Roles } from '../../common/decorators/roles.decarator';
+import { UserRole } from '../../shared/enums/roles.enum';
+import { BaseController } from '../../common/base/base.controller';
+import { Request } from 'express';
 
 @ApiBearerAuth()
 @Controller('brand')
 @UsePipes(new ValidationPipe({ whitelist: true }))
-export class BrandController {
-  constructor(private readonly brandService: BrandService) {}
+export class BrandController extends BaseController {
+  constructor(private readonly brandService: BrandService) {
+    super();
+  }
 
   @ApiHeaders([
     {
@@ -49,33 +51,33 @@ export class BrandController {
   @HttpCode(HttpStatus.OK)
   @Post('list')
   async getBrandsList(@Body() body: GetBrandListsDto, @Req() req: Request) {
-    let lang = req.headers['accept-language'] as string;
-    let appType = req.headers['app-type'] as string;
-    lang = new AcceptLanguagePipe().transform(lang);
-    appType = new AcceptAppTypePipe().transform(appType);
-    let data;
-    if (appType === AppType.ADMIN) {
-      data = await this.brandService.getBrandsList(body);
-      return data;
-    }
-    if (appType === AppType.USER) {
-      data = await this.brandService.getBrandsListForFront(lang);
-      return data;
-    }
+    const { lang, appType } = this.extractHeadersInfo(req);
+    return await this.handleListRequest(
+      body,
+      lang,
+      appType,
+      (body) => this.brandService.getBrandsList(body),
+      (lang) => this.brandService.getBrandsListForFront(lang),
+    );
   }
 
+  @Roles(UserRole.admin, UserRole.superAdmin)
   @Post('add')
   async addBrand(@Body() body: AddBrandDto) {
     await this.brandService.addBrand(body);
     return new AddedSuccessResponse();
   }
 
+  @Roles(UserRole.admin, UserRole.superAdmin)
+  @HttpCode(HttpStatus.OK)
   @Post('update')
   async updateBrand(@Body() body: UpdateBrandDto) {
     await this.brandService.updateBrand(body);
     return new UpdatedSuccessResponse();
   }
 
+  @Roles(UserRole.admin, UserRole.superAdmin)
+  @HttpCode(HttpStatus.OK)
   @Post('delete')
   async deleteBrand(@Body() body: DeleteBrandDto) {
     await this.brandService.deleteBrand(body._id);

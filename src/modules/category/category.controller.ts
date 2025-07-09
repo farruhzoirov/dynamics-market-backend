@@ -27,12 +27,16 @@ import { Request, Response } from 'express';
 import { AcceptLanguagePipe } from 'src/common/pipes/language.pipe';
 import { AcceptAppTypePipe } from 'src/common/pipes/app-type.pipe';
 import { AppType } from 'src/shared/enums/app-type.enum';
+import { BaseController } from '../../common/base/base.controller';
 
 @Controller('category')
 @ApiBearerAuth()
 @UsePipes(new ValidationPipe({ whitelist: true }))
-export class CategoryController {
-  constructor(private readonly categoryService: CategoryService) {}
+export class CategoryController extends BaseController {
+  constructor(private readonly categoryService: CategoryService) {
+    super();
+  }
+
   // @Post('regenerate-slug')
   // async regenerateCategorySlug() {
   //   const count = await this.categoryService.regenerateCategorySlugs();
@@ -61,19 +65,14 @@ export class CategoryController {
     @Body() body: GetCategoryDto,
     @Req() req: Request,
   ) {
-    let lang = req.headers['accept-language'] as string;
-    let appType = req.headers['app-type'] as string;
-    lang = new AcceptLanguagePipe().transform(lang);
-    appType = new AcceptAppTypePipe().transform(appType);
-    let data;
-    if (appType === AppType.ADMIN) {
-      data = await this.categoryService.getCategoriesList(body);
-      return data;
-    }
-    if (appType === AppType.USER) {
-      data = await this.categoryService.getCategoriesForFront(lang);
-      return data;
-    }
+    const { lang, appType } = this.extractHeadersInfo(req);
+    return await this.handleListRequest(
+      body,
+      lang,
+      appType,
+      (body) => this.categoryService.getCategoriesList(body),
+      (lang) => this.categoryService.getCategoriesForFront(lang),
+    );
   }
 
   @Post('add')

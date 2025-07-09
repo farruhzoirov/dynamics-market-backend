@@ -1,7 +1,6 @@
 import {
   Body,
   Controller,
-  Get,
   HttpCode,
   HttpStatus,
   Post,
@@ -28,12 +27,16 @@ import {
 import { AcceptLanguagePipe } from 'src/common/pipes/language.pipe';
 import { AcceptAppTypePipe } from 'src/common/pipes/app-type.pipe';
 import { AppType } from 'src/shared/enums/app-type.enum';
+import { BaseController } from '../../common/base/base.controller';
+import { Request } from 'express';
 
 @Controller('order')
 @ApiBearerAuth()
 @UsePipes(new ValidationPipe({ whitelist: true }))
-export class OrderController {
-  constructor(private orderService: OrderService) {}
+export class OrderController extends BaseController {
+  constructor(private orderService: OrderService) {
+    super();
+  }
   @ApiHeaders([
     {
       name: 'Accept-Language',
@@ -60,20 +63,15 @@ export class OrderController {
     @User() user: IJwtPayload,
     @Req() req: Request,
   ) {
-    let lang = req.headers['accept-language'] as string;
-    let appType = req.headers['app-type'] as string;
-    lang = new AcceptLanguagePipe().transform(lang);
-    appType = new AcceptAppTypePipe().transform(appType);
-    let data;
-    if (appType === AppType.ADMIN) {
-      data = await this.orderService.getOrdersList(body);
-      return data;
-    }
-    if (appType === AppType.USER) {
-      data = await this.orderService.getOrdersByUserId(body, user, lang);
-      return data;
-    }
-    return data;
+    const { lang, appType } = this.extractHeadersInfo(req);
+
+    return await this.handleListRequest(
+      body,
+      lang,
+      appType,
+      (body) => this.orderService.getOrdersList(body),
+      (lang) => this.orderService.getOrdersByUserId(body, user, lang),
+    );
   }
 
   @HttpCode(HttpStatus.OK)
