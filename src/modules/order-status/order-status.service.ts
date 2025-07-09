@@ -21,7 +21,9 @@ export class OrderStatusService {
   ) {}
 
   async getOrderStatusList() {
-    const orderStatusList = await this.orderStatusModel.find();
+    const orderStatusList = await this.orderStatusModel
+      .find()
+      .sort({ index: 1 });
     return orderStatusList;
   }
 
@@ -66,6 +68,13 @@ export class OrderStatusService {
       throw new NotFoundException('Order status not found');
     }
 
+    if (
+      body.name &&
+      Object.values(DeleteOrderStatusDto).includes(findOrderStatus.name)
+    ) {
+      throw new BadRequestException("Can't update it");
+    }
+
     if (isExistOrderStatusName) {
       throw new BadRequestException(
         'Order status with this name already exists',
@@ -81,6 +90,10 @@ export class OrderStatusService {
 
     if (!findOrderStatus) {
       throw new NotFoundException('Order status not found');
+    }
+
+    if (Object.values(DeleteOrderStatusDto).includes(findOrderStatus.name)) {
+      throw new BadRequestException("Can't delete it");
     }
 
     await this.orderStatusModel.findByIdAndDelete(body._id);
