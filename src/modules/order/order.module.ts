@@ -13,6 +13,7 @@ import {
   OrderStatusSchema,
 } from '../order-status/schema/order-status.model';
 import { OrderStatusService } from '../order-status/order-status.service';
+import { OrderStatusModule } from '../order-status/order-status.module';
 
 @Module({
   imports: [
@@ -30,8 +31,9 @@ import { OrderStatusService } from '../order-status/order-status.service';
         schema: CounterSchema,
       },
     ]),
+    OrderStatusModule,
   ],
   controllers: [OrderController],
-  providers: [OrderService, TelegramNotificationService, OrderStatusService],
+  providers: [OrderService, TelegramNotificationService],
 })
 export class OrderModule {}

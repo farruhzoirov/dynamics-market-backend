@@ -14,5 +14,6 @@ import { OrderStatus, OrderStatusSchema } from './schema/order-status.model';
   ],
   controllers: [OrderStatusController],
   providers: [OrderStatusService],
+  exports: [OrderStatusService],
 })
 export class OrderStatusModule {}
