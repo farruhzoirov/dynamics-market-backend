@@ -51,7 +51,7 @@ export class OrderStatusService {
         index: count,
       });
     } catch (err) {
-      if (err.code === 'E11000') {
+      if (err.code === 11000) {
         throw new BadRequestException(
           'Order status already exists. Duplicate name.',
         );
@@ -86,7 +86,7 @@ export class OrderStatusService {
       delete body._id;
       await this.orderStatusModel.findByIdAndUpdate(id, { $set: body });
     } catch (err) {
-      if (err.code === 'E11000') {
+      if (err.code === 11000) {
         throw new BadRequestException(
           'Order status already exists. Duplicate name.',
         );
