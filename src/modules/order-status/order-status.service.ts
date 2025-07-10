@@ -12,6 +12,7 @@ import {
   UpdateOrderStatusDto,
   UpdateOrderStatusIndexDto,
 } from './dto/order-status.dto';
+import { DefaultOrderStatuses } from '../../shared/enums/order-status.enum';
 
 @Injectable()
 export class OrderStatusService {
@@ -91,8 +92,12 @@ export class OrderStatusService {
     if (!findOrderStatus) {
       throw new NotFoundException('Order status not found');
     }
-
-    if (Object.values(DeleteOrderStatusDto).includes(findOrderStatus.name)) {
+    const statusName = findOrderStatus.name.toLowerCase();
+    if (
+      Object.values(DefaultOrderStatuses).includes(
+        statusName as DefaultOrderStatuses,
+      )
+    ) {
       throw new BadRequestException("Can't delete it");
     }
 
