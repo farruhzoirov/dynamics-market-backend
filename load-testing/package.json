@@ -1,0 +1,44 @@
+{
+  "name": "dynamics-market-load-testing",
+  "version": "1.0.0",
+  "description": "Comprehensive load testing suite for Dynamics Market API",
+  "scripts": {
+    "test:quick": "artillery quick --count 10 --num 100 http://localhost:5000/product/search",
+    "test:critical-path": "artillery run critical-path-test.yml",
+    "test:product-endpoints": "artillery run product-load-test.yml",
+    "test:full-suite": "artillery run full-api-test.yml",
+    "test:stress": "artillery run stress-test.yml",
+    "test:spike": "artillery run spike-test.yml",
+    "test:k6-basic": "k6 run k6-basic-test.js",
+    "test:k6-scenarios": "k6 run k6-scenarios.js",
+    "test:custom": "node custom-load-tests/benchmark-suite.js",
+    "test:all": "npm run test:critical-path && npm run test:product-endpoints && npm run test:k6-scenarios",
+    "analyze": "node analyze-results.js",
+    "setup-test-data": "node setup/create-test-data.js",
+    "monitor": "node monitoring/performance-monitor.js",
+    "report": "node reporting/generate-report.js"
+  },
+  "dependencies": {
+    "artillery": "^2.0.0",
+    "axios": "^1.6.0",
+    "faker": "^6.6.6",
+    "lodash": "^4.17.21",
+    "moment": "^2.29.4",
+    "uuid": "^9.0.0",
+    "cli-table3": "^0.6.3",
+    "chalk": "^4.1.2",
+    "commander": "^9.4.1",
+    "dotenv": "^16.3.1"
+  },
+  "devDependencies": {
+    "@types/node": "^20.0.0",
+    "typescript": "^5.0.0"
+  },
+  "keywords": [
+    "load-testing",
+    "performance",
+    "api-testing",
+    "benchmarking",
+    "nestjs"
+  ]
+}

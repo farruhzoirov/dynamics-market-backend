@@ -1,0 +1,198 @@
+config:
+  target: 'http://localhost:5000'
+  phases:
+    # Warm-up phase
+    - duration: 30
+      arrivalRate: 5
+      name: "Warm-up"
+    
+    # Normal load
+    - duration: 120
+      arrivalRate: 20
+      name: "Normal Load"
+    
+    # Peak load
+    - duration: 60
+      arrivalRate: 50
+      name: "Peak Load"
+    
+    # Stress test
+    - duration: 30
+      arrivalRate: 100
+      name: "Stress Test"
+
+  defaults:
+    headers:
+      'Content-Type': 'application/json'
+      'Accept-Language': 'uz'
+      'App-Type': 'user'
+
+  variables:
+    searchTerms:
+      - "phone"
+      - "laptop"
+      - "samsung"
+      - "iphone"
+      - "macbook"
+      - "headphones"
+      - "watch"
+      - "tablet"
+
+  processor: "./processors/critical-path-processor.js"
+
+scenarios:
+  # Critical User Journey - Anonymous User
+  - name: "Anonymous User Journey"
+    weight: 40
+    flow:
+      # Homepage load
+      - post:
+          url: "/banner/list"
+          json:
+            page: 1
+            limit: 5
+      
+      - post:
+          url: "/category/list"
+          json:
+            page: 1
+            limit: 20
+      
+      # Product search
+      - post:
+          url: "/product/search"
+          json:
+            search: "{{ searchTerms }}"
+            page: 1
+            limit: 12
+          capture:
+            - json: "$.data[0]._id"
+              as: "productId"
+      
+      # Product details
+      - post:
+          url: "/product/get-product"
+          json:
+            _id: "{{ productId }}"
+        
+      # Browse products
+      - post:
+          url: "/product/list"
+          json:
+            page: 1
+            limit: 12
+
+  # Critical User Journey - Authenticated User
+  - name: "Authenticated User Journey"
+    weight: 30
+    flow:
+      # Simulate login (we'll use a test token)
+      - function: "setAuthToken"
+      
+      # Search products
+      - post:
+          url: "/product/search"
+          json:
+            search: "{{ searchTerms }}"
+            page: 1
+            limit: 12
+          capture:
+            - json: "$.data[0]._id"
+              as: "productId"
+      
+      # Get product details
+      - post:
+          url: "/product/get-product"
+          json:
+            _id: "{{ productId }}"
+      
+      # Add to cart
+      - post:
+          url: "/cart/add"
+          headers:
+            Authorization: "Bearer {{ authToken }}"
+          json:
+            productId: "{{ productId }}"
+            quantity: 1
+      
+      # View cart
+      - post:
+          url: "/cart/list"
+          headers:
+            Authorization: "Bearer {{ authToken }}"
+          json:
+            page: 1
+            limit: 10
+
+  # Checkout Flow (Most Critical)
+  - name: "Checkout Flow"
+    weight: 20
+    flow:
+      - function: "setAuthToken"
+      
+      # Get user info
+      - post:
+          url: "/user/get-user"
+          headers:
+            Authorization: "Bearer {{ authToken }}"
+          json: {}
+      
+      # View cart before checkout
+      - post:
+          url: "/cart/list"
+          headers:
+            Authorization: "Bearer {{ authToken }}"
+          json:
+            page: 1
+            limit: 10
+      
+      # Create order (Most critical endpoint)
+      - post:
+          url: "/order/create"
+          headers:
+            Authorization: "Bearer {{ authToken }}"
+          json:
+            firstName: "Test"
+            lastName: "User"
+            phone: "+998901234567"
+            address: "Test Address"
+            paymentMethod: "cash"
+          capture:
+            - json: "$.orderCode"
+              as: "orderCode"
+
+  # Content Browsing
+  - name: "Content Browsing"
+    weight: 10
+    flow:
+      # Browse brands
+      - post:
+          url: "/brand/list"
+          json:
+            page: 1
+            limit: 20
+      
+      # Browse news
+      - post:
+          url: "/news/list"
+          json:
+            page: 1
+            limit: 10
+      
+      # View FAQ
+      - post:
+          url: "/faq/list"
+          json:
+            page: 1
+            limit: 10
+
+# Performance thresholds
+expect:
+  - statusCode: 200
+  - contentType: json
+  - hasProperty: success
+  
+# Response time expectations (in milliseconds)
+thresholds:
+  http_req_duration: ['p(95)<2000'] # 95% of requests should be under 2s
+  http_req_failed: ['rate<0.05']    # Error rate should be below 5%
