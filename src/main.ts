@@ -9,11 +9,38 @@ import { ErrorCodes } from './common/errors/error-codes';
 
 import * as process from 'node:process';
 import * as dotenv from 'dotenv';
+import * as compression from 'compression';
+import * as express from 'express';
 
 dotenv.config();
 
 async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule);
+  
+  // Performance optimizations
+  app.use(compression({
+    filter: (req, res) => {
+      if (req.headers['x-no-compression']) {
+        return false;
+      }
+      return compression.filter(req, res);
+    },
+    threshold: 1024, // Only compress if response is larger than 1KB
+    level: 6, // Compression level (1-9, 6 is optimal balance)
+  }));
+  
+  // Request size limits for security and performance
+  app.use(express.json({ limit: '10mb' }));
+  app.use(express.urlencoded({ extended: true, limit: '10mb' }));
+  
+  // Security headers
+  app.use((req, res, next) => {
+    res.setHeader('X-Content-Type-Options', 'nosniff');
+    res.setHeader('X-Frame-Options', 'DENY');
+    res.setHeader('X-XSS-Protection', '1; mode=block');
+    next();
+  });
+  
   app.enableCors({
     origin: '*',
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',

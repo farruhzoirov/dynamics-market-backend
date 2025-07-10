@@ -1,8 +1,11 @@
 import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
-import { APP_GUARD } from '@nestjs/core';
+import { APP_GUARD, APP_INTERCEPTOR } from '@nestjs/core';
 import { MongooseModule } from '@nestjs/mongoose';
 import { ConfigModule, ConfigService } from '@nestjs/config';
+import { CacheModule } from '@nestjs/cache-manager';
 import { AuthMiddleware } from './shared/middleware/auth.middleware';
+import { PerformanceMiddleware } from './common/middleware/performance.middleware';
+import { CacheInterceptor } from './common/interceptors/cache.interceptor';
 import { AuthModule } from './modules/auth/auth.module';
 import { UserModule } from './modules/user/user.module';
 import { CategoryModule } from './modules/category/category.module';
@@ -13,6 +16,7 @@ import { BannerModule } from './modules/banner/banner.module';
 import { ReviewModule } from './modules/review/review.module';
 import { RolesGuard } from './common/guards/roles.guard';
 import databaseConfig, { CONFIG_DATABASE } from './config/database.config';
+import cacheConfig, { CACHE_CONFIG } from './config/cache.config';
 import { CartModule } from './modules/cart/cart.module';
 import { OrderModule } from './modules/order/order.module';
 import { SearchModule } from './modules/elasticsearch/elasticsearch.module';
@@ -31,6 +35,7 @@ import telegramConfig from './config/telegram.config';
     ConfigModule.forRoot({
       load: [
         databaseConfig,
+        cacheConfig,
         googleConfig,
         jwtConfig,
         redisConfig,
@@ -40,14 +45,33 @@ import telegramConfig from './config/telegram.config';
       envFilePath: '.env',
       isGlobal: true,
     }),
+    CacheModule.registerAsync({
+      imports: [ConfigModule],
+      useFactory: async (configService: ConfigService) => {
+        return configService.get(CACHE_CONFIG);
+      },
+      inject: [ConfigService],
+      isGlobal: true,
+    }),
     MongooseModule.forRootAsync({
       imports: [ConfigModule],
       useFactory: async (configService: ConfigService) => {
         return {
           uri: configService.get(CONFIG_DATABASE).users.uri,
-          maxPoolSize: 10,
-          serverSelectionTimeoutMS: 5000,
-          socketTimeoutMS: 45000,
+          maxPoolSize: 50, // Increased for better concurrency
+          minPoolSize: 5,
+          serverSelectionTimeoutMS: 10000,
+          socketTimeoutMS: 30000,
+          maxIdleTimeMS: 30000,
+          // Enable connection compression
+          compressors: ['snappy', 'zlib'],
+          // Add read preference for better performance
+          readPreference: 'secondaryPreferred',
+          // Connection pool monitoring
+          monitorCommands: true,
+          // Buffer max entries to prevent memory issues
+          bufferMaxEntries: 0,
+          bufferCommands: false,
         };
       },
       inject: [ConfigService],
@@ -73,10 +97,18 @@ import telegramConfig from './config/telegram.config';
       provide: APP_GUARD,
       useClass: RolesGuard,
     },
+    {
+      provide: APP_INTERCEPTOR,
+      useClass: CacheInterceptor,
+    },
   ],
 })
 export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {
+    consumer
+      .apply(PerformanceMiddleware)
+      .forRoutes('*');
+      
     consumer
       .apply(AuthMiddleware)
       .exclude(
