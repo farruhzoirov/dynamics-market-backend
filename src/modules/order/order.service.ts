@@ -57,14 +57,21 @@ export class OrderService {
     const skip = body?.page ? (body?.page - 1) * limit : 0;
     const userId = user?._id;
     const status = body?.status || null;
+    const match: Record<string, string | boolean | mongoose.Types.ObjectId> = {
+      userId: userId,
+      isDeleted: false,
+    };
+    if (status) {
+      match.status = new mongoose.Types.ObjectId(status);
+    }
     const pipeline = await buildUserOrdersPipeline(
-      userId,
+      match,
       lang,
       sort,
       skip,
       limit,
-      status,
     );
+
     const [findOrders, total] = await Promise.all([
       await this.orderModel.aggregate(pipeline),
       await this.orderModel.countDocuments({

@@ -1,3 +1,4 @@
+import mongoose from 'mongoose';
 export interface IUniversalQuery {
   page?: number;
   limit?: number;
@@ -7,5 +8,5 @@ export interface IUniversalQuery {
   categoryId?: string;
   brandId?: string;
   createdDate?: string;
-  status?: string;
+  status?: string | mongoose.Types.ObjectId;
 }

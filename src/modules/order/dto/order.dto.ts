@@ -20,7 +20,7 @@ export class GetOrdersDto extends UniversalQueryDto {
   @IsObjectId()
   @IsString()
   @IsOptional()
-  status: string;
+  status: string | mongoose.Types.ObjectId;
 }
 
 export class GetOrderDto {

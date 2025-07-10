@@ -1,18 +1,13 @@
 export const buildUserOrdersPipeline = async (
-  userId: string,
+  match: any,
   lang: string,
   sort: Record<string, any>,
   skip: number,
   limit: number,
-  status: string | null = null,
 ) => {
   return [
     {
-      $match: {
-        userId: userId,
-        isDeleted: false,
-        status: status ? status : {},
-      },
+      $match: match,
     },
     {
       $lookup: {
