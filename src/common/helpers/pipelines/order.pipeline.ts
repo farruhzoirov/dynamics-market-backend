@@ -44,11 +44,7 @@ export const buildUserOrdersPipeline = async (
             },
           },
         },
-        status: {
-          _id: '$statusInfo._id',
-          name: '$statusInfo.name',
-          index: '$statusInfo.index',
-        },
+        status: '$statusInfo.name',
         itemsCount: {
           $size: { $ifNull: ['$items', []] },
         },
@@ -145,11 +141,7 @@ export const buildSingleOrderPipeline = async (
         createdAt: { $first: '$createdAt' },
         items: { $push: '$items' },
         status: {
-          $first: {
-            _id: '$statusInfo._id',
-            name: '$statusInfo.name',
-            index: '$statusInfo.index',
-          },
+          $first: '$statusInfo.name',
         },
       },
     },
