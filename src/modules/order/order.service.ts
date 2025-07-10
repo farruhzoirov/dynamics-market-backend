@@ -9,7 +9,7 @@ import {
 import { IJwtPayload } from 'src/shared/interfaces/jwt-payload';
 import { InjectModel } from '@nestjs/mongoose';
 import { Order, OrderDocument } from './schema/order.model';
-import { Model } from 'mongoose';
+import mongoose, { Model, Schema, Types } from 'mongoose';
 import { Cart, CartDocument } from '../cart/schemas/cart.schema';
 import { ProductItem } from 'src/shared/interfaces/product-items';
 import { Counter, CounterDocument } from './schema/counter.model';
@@ -22,11 +22,17 @@ import {
 import { TelegramNotificationService } from '../../shared/module/telegram/telegram.service';
 import { OrderStatusService } from '../order-status/order-status.service';
 import { DefaultOrderStatuses } from '../../shared/enums/order-status.enum';
+import {
+  OrderStatus,
+  OrderStatusDocument,
+} from '../order-status/schema/order-status.model';
 
 @Injectable()
 export class OrderService {
   constructor(
     @InjectModel(Order.name) private orderModel: Model<OrderDocument>,
+    @InjectModel(OrderStatus.name)
+    private orderStatusModel: Model<OrderStatusDocument>,
     @InjectModel(Cart.name) private cartModel: Model<CartDocument>,
     @InjectModel(Counter.name) private counterModel: Model<CounterDocument>,
     private readonly telegramNotificationService: TelegramNotificationService,
@@ -141,13 +147,24 @@ export class OrderService {
   }
 
   async update(body: UpdateOrderDto) {
+    const id = body._id;
     const findOrder = await this.orderModel.findById(body._id);
 
     if (!findOrder) {
       throw new BadRequestException('Order not found');
     }
 
-    await this.orderModel.findByIdAndUpdate(body._id, {
+    if (body?.status) {
+      const isOrderStatusExists = await this.orderStatusModel.exists({
+        _id: body.status,
+      });
+      if (!isOrderStatusExists) {
+        throw new BadRequestException('Order status not found');
+      }
+    }
+    body.status = new mongoose.Types.ObjectId(body.status);
+    delete body._id;
+    await this.orderModel.findByIdAndUpdate(id, {
       $set: body,
     });
   }

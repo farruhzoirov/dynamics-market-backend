@@ -23,6 +23,10 @@ import { OrderStatusModule } from '../order-status/order-status.module';
         schema: OrderSchema,
       },
       {
+        name: OrderStatus.name,
+        schema: OrderStatusSchema,
+      },
+      {
         name: Cart.name,
         schema: CartSchema,
       },
