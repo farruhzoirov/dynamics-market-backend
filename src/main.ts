@@ -7,19 +7,30 @@ import { ValidationError } from 'class-validator';
 import { AllExceptionsTo200Interceptor } from './common/interceptors/universal-response';
 import { ErrorCodes } from './common/errors/error-codes';
 
+import * as basicAuth from 'express-basic-auth';
 import * as process from 'node:process';
 import * as dotenv from 'dotenv';
+import helmet from 'helmet';
 
 dotenv.config();
 
 async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule);
+  app.use(helmet());
   app.enableCors({
     origin: '*',
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
     allowedHeaders:
       'Content-Type, Authorization, Accept-Language, App-Type, Accept',
   });
+
+  app.use(
+    ['/api-docs'],
+    basicAuth({
+      challenge: true,
+      users: { admin: process.env.SWAGGER_PASSWORD },
+    }),
+  );
 
   // Swagger based
   const options = new DocumentBuilder()
