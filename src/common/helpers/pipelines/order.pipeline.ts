@@ -14,7 +14,7 @@ export const buildUserOrdersPipeline = async (
     },
     {
       $lookup: {
-        from: 'orderStatus',
+        from: 'orderstatuses',
         localField: 'status',
         foreignField: '_id',
         as: 'statusInfo',
@@ -119,7 +119,7 @@ export const buildSingleOrderPipeline = async (
     },
     {
       $lookup: {
-        from: 'orderStatus',
+        from: 'orderstatuses',
         localField: 'status',
         foreignField: '_id',
         as: 'statusInfo',

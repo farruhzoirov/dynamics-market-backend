@@ -130,11 +130,11 @@ export class OrderService {
         items,
       }),
       await this.cartModel.deleteMany({ userId }),
-      await this.telegramNotificationService.sendOrderNotification(
-        body,
-        items,
-        orderCode,
-      ),
+      // await this.telegramNotificationService.sendOrderNotification(
+      //   body,
+      //   items,
+      //   orderCode,
+      // ),
       // Amocrm based logic might be placed in here. For example, createLead method
     ]);
     return createdOrder.orderCode;
