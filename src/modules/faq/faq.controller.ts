@@ -23,6 +23,8 @@ import {
   UpdateFaqsOrderDto,
 } from './dto/faq.dto';
 import { AcceptAppTypePipe } from 'src/common/pipes/app-type.pipe';
+import { Roles } from '../../common/decorators/roles.decarator';
+import { UserRole } from '../../shared/enums/roles.enum';
 
 @ApiBearerAuth()
 @Controller('faq')
@@ -43,12 +45,6 @@ export class FaqController {
     return faqList;
   }
 
-  @Post('add')
-  async addToFaq(@Body() body: AddFaqDto) {
-    await this.faqService.create(body);
-    return new AddedSuccessResponse();
-  }
-
   @HttpCode(HttpStatus.OK)
   @Post('get-faq')
   async getFaqById(
@@ -64,7 +60,15 @@ export class FaqController {
     return getFaqById;
   }
 
+  @Post('add')
+  @Roles(UserRole.admin, UserRole.superAdmin)
+  async addToFaq(@Body() body: AddFaqDto) {
+    await this.faqService.create(body);
+    return new AddedSuccessResponse();
+  }
+
   @HttpCode(HttpStatus.OK)
+  @Roles(UserRole.admin, UserRole.superAdmin)
   @Post('update')
   async updateFaq(@Body() body: UpdateFaqDto) {
     await this.faqService.update(body);
@@ -72,6 +76,7 @@ export class FaqController {
   }
 
   @HttpCode(HttpStatus.OK)
+  @Roles(UserRole.admin, UserRole.superAdmin)
   @Post('update-order')
   async updateFaqsOrder(@Body() body: UpdateFaqsOrderDto) {
     await this.faqService.updateFaqsOrder(body);
@@ -79,6 +84,7 @@ export class FaqController {
   }
 
   @HttpCode(HttpStatus.OK)
+  @Roles(UserRole.admin, UserRole.superAdmin)
   @Post('delete')
   async deleteFaq(@Body() body: DeleteFaqDto) {
     await this.faqService.delete(body);

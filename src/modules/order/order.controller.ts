@@ -29,6 +29,8 @@ import { AcceptAppTypePipe } from 'src/common/pipes/app-type.pipe';
 import { AppType } from 'src/shared/enums/app-type.enum';
 import { BaseController } from '../../common/base/base.controller';
 import { Request } from 'express';
+import { Roles } from '../../common/decorators/roles.decarator';
+import { UserRole } from '../../shared/enums/roles.enum';
 
 @Controller('order')
 @ApiBearerAuth()
@@ -99,6 +101,7 @@ export class OrderController extends BaseController {
 
   @HttpCode(HttpStatus.OK)
   @Post('update')
+  @Roles(UserRole.admin, UserRole.superAdmin)
   async updateOrder(@Body() body: UpdateOrderDto) {
     await this.orderService.update(body);
     return new UpdatedSuccessResponse();
@@ -106,6 +109,7 @@ export class OrderController extends BaseController {
 
   @HttpCode(HttpStatus.OK)
   @Post('delete')
+  @Roles(UserRole.admin, UserRole.superAdmin)
   async deleteOrder(@Body() body: DeleteOrderDto) {
     await this.orderService.delete(body);
     return new DeletedSuccessResponse();

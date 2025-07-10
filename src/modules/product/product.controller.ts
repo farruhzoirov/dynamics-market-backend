@@ -32,6 +32,8 @@ import { AcceptAppTypePipe } from 'src/common/pipes/app-type.pipe';
 import { AppType } from 'src/shared/enums/app-type.enum';
 import { plainToInstance } from 'class-transformer';
 import { validateOrReject } from 'class-validator';
+import { Roles } from '../../common/decorators/roles.decarator';
+import { UserRole } from '../../shared/enums/roles.enum';
 
 @Controller('product')
 @UsePipes(new ValidationPipe({ whitelist: true }))
@@ -114,6 +116,7 @@ export class ProductController {
 
   @ApiBearerAuth()
   @Post('add')
+  @Roles(UserRole.admin, UserRole.superAdmin)
   async addProduct(@Body() body: AddProductDto) {
     await this.productService.addProduct(body);
     return new AddedSuccessResponse();
@@ -122,6 +125,7 @@ export class ProductController {
   @ApiBearerAuth()
   @HttpCode(HttpStatus.OK)
   @Post('update')
+  @Roles(UserRole.admin, UserRole.superAdmin)
   async updateProduct(@Body() updateBody: UpdateProductDto) {
     const response = await this.productService.updateProduct(updateBody);
     return new UpdatedSuccessResponse(response);
@@ -130,6 +134,7 @@ export class ProductController {
   @ApiBearerAuth()
   @HttpCode(HttpStatus.OK)
   @Post('delete')
+  @Roles(UserRole.admin, UserRole.superAdmin)
   async deleteProduct(@Body() body: DeleteProductDto) {
     await this.productService.deleteProduct(body);
     return new DeletedSuccessResponse();
