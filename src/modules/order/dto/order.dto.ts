@@ -105,7 +105,10 @@ export class UpdateOrderDto {
   @IsOptional()
   phone: string;
 
-  @ApiProperty({ description: 'Order status ID' })
+  @ApiProperty({
+    example: '62f5a58ccd806a960c44',
+    description: 'Order status ID',
+  })
   @IsObjectId()
   @IsString()
   @IsOptional()
