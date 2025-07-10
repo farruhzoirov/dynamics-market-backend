@@ -9,10 +9,12 @@ import { Model } from 'mongoose';
 import {
   AddOrderStatusDto,
   DeleteOrderStatusDto,
+  GetOrderStatusListDto,
   UpdateOrderStatusDto,
   UpdateOrderStatusIndexDto,
 } from './dto/order-status.dto';
 import { DefaultCreateOrderStatusNames } from '../../shared/enums/order-status.enum';
+import { universalSearchQuery } from '../../common/helpers/universal-search-query';
 
 @Injectable()
 export class OrderStatusService {
@@ -21,11 +23,23 @@ export class OrderStatusService {
     private readonly orderStatusModel: Model<OrderStatusDocument>,
   ) {}
 
-  async getOrderStatusList() {
+  async getOrderStatusList(body: GetOrderStatusListDto) {
+    const limit = body.limit ? body.limit : 12;
+    const skip = body.page ? (body.page - 1) * limit : 0;
+    let search = {};
+    if (body.search) {
+      search = await universalSearchQuery(body?.search, [
+        'nameUz',
+        'nameRu',
+        'nameEn',
+      ]);
+    }
     const orderStatusList = await this.orderStatusModel
-      .find()
+      .find(search)
       .select('-static -__v')
-      .sort({ index: 1 });
+      .skip(skip)
+      .sort({ index: 1 })
+      .limit(limit);
     return orderStatusList;
   }
 

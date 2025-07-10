@@ -3,6 +3,7 @@ import { OrderStatusService } from './order-status.service';
 import {
   AddOrderStatusDto,
   DeleteOrderStatusDto,
+  GetOrderStatusListDto,
   UpdateOrderStatusDto,
   UpdateOrderStatusIndexDto,
 } from './dto/order-status.dto';
@@ -21,8 +22,8 @@ export class OrderStatusController {
   @HttpCode(HttpStatus.OK)
   @Post('list')
   @Roles(UserRole.superAdmin, UserRole.admin)
-  async getOrderStatusList() {
-    return this.orderStatusService.getOrderStatusList();
+  async getOrderStatusList(@Body() body: GetOrderStatusListDto) {
+    return this.orderStatusService.getOrderStatusList(body);
   }
 
   @Post('add')

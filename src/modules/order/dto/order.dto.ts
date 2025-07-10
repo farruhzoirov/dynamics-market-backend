@@ -15,7 +15,13 @@ import {
 } from 'src/shared/dto/base-model.dto';
 import mongoose from 'mongoose';
 
-export class GetOrdersDto extends UniversalQueryDto {}
+export class GetOrdersDto extends UniversalQueryDto {
+  @ApiProperty()
+  @IsObjectId()
+  @IsString()
+  @IsOptional()
+  status: string;
+}
 
 export class GetOrderDto {
   @ApiProperty()
