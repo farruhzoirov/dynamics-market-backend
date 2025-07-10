@@ -36,7 +36,7 @@ export class OrderStatusService {
     }
     const orderStatusList = await this.orderStatusModel
       .find(search)
-      .select('-static -__v')
+      .select('-__v')
       .skip(skip)
       .sort({ index: 1 })
       .limit(limit);
