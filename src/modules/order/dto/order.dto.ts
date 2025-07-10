@@ -7,7 +7,6 @@ import {
   IsEmail,
 } from 'class-validator';
 import { CustomerType } from '../../../shared/enums/customer-type.enum';
-import { DefaultOrderStatuses } from '../../../shared/enums/order-status.enum';
 import { ApiProperty } from '@nestjs/swagger';
 import { IsObjectId } from 'src/common/decorators/object-id.decarator';
 import {

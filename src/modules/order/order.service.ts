@@ -21,7 +21,6 @@ import {
 } from 'src/common/helpers/pipelines/order.pipeline';
 import { TelegramNotificationService } from '../../shared/module/telegram/telegram.service';
 import { OrderStatusService } from '../order-status/order-status.service';
-import { DefaultOrderStatuses } from '../../shared/enums/order-status.enum';
 import {
   OrderStatus,
   OrderStatusDocument,
@@ -124,9 +123,8 @@ export class OrderService {
       sku: item.product.sku,
       price: item.product.currentPrice ?? null,
     }));
-    const orderStatus = await this.orderStatusService.returnOrCreateOrderStatus(
-      DefaultOrderStatuses.new,
-    );
+    const orderStatus =
+      await this.orderStatusService.returnOrCreateOrderStatus();
     const [createdOrder] = await Promise.all([
       await this.orderModel.create({
         status: orderStatus._id,
@@ -136,11 +134,11 @@ export class OrderService {
         items,
       }),
       await this.cartModel.deleteMany({ userId }),
-      await this.telegramNotificationService.sendOrderNotification(
-        body,
-        items,
-        orderCode,
-      ),
+      // await this.telegramNotificationService.sendOrderNotification(
+      //   body,
+      //   items,
+      //   orderCode,
+      // ),
       // Amocrm based logic might be placed in here. For example, createLead method
     ]);
     return createdOrder.orderCode;

@@ -44,7 +44,15 @@ export const buildUserOrdersPipeline = async (
             },
           },
         },
-        status: '$statusInfo.name',
+        status: {
+          _id: '$statusInfo._id',
+          name: lang ? { $ifNull: [`$statusInfo.name${lang}`, null] } : null,
+          color: '$statusInfo.color',
+          index: '$statusInfo.index',
+          createdAt: '$statusInfo.createdAt',
+          updatedAt: '$statusInfo.updatedAt',
+        },
+
         itemsCount: {
           $size: { $ifNull: ['$items', []] },
         },
@@ -141,7 +149,14 @@ export const buildSingleOrderPipeline = async (
         createdAt: { $first: '$createdAt' },
         items: { $push: '$items' },
         status: {
-          $first: '$statusInfo.name',
+          $first: {
+            _id: `$statusInfo._id`,
+            name: lang ? { $ifNull: [`$statusInfo.name${lang}`, null] } : null,
+            color: `$statusInfo.color`,
+            index: `$statusInfo.index`,
+            createdAt: `$statusInfo.createdAt`,
+            updatedAt: `$statusInfo.updatedAt`,
+          },
         },
       },
     },

@@ -12,7 +12,7 @@ import {
   UpdateOrderStatusDto,
   UpdateOrderStatusIndexDto,
 } from './dto/order-status.dto';
-import { DefaultOrderStatuses } from '../../shared/enums/order-status.enum';
+import { DefaultCreateOrderStatusNames } from '../../shared/enums/order-status.enum';
 
 @Injectable()
 export class OrderStatusService {
@@ -24,19 +24,12 @@ export class OrderStatusService {
   async getOrderStatusList() {
     const orderStatusList = await this.orderStatusModel
       .find()
+      .select('-static -__v')
       .sort({ index: 1 });
     return orderStatusList;
   }
 
   async addOrderStatus(body: AddOrderStatusDto) {
-    const isExistOrderStatusName = await this.orderStatusModel.exists({
-      name: body.name,
-    });
-
-    if (isExistOrderStatusName) {
-      throw new BadRequestException('Order status already exist.');
-    }
-
     const count = await this.orderStatusModel.countDocuments();
     await this.orderStatusModel.create({
       ...body,
@@ -57,29 +50,14 @@ export class OrderStatusService {
 
   async updateOrderStatus(body: UpdateOrderStatusDto) {
     const id = body._id;
-    const [findOrderStatus, isExistOrderStatusName] = await Promise.all([
-      this.orderStatusModel.findById(body._id),
-      this.orderStatusModel.exists({
-        name: body?.name,
-        _id: { $ne: body._id },
-      }),
-    ]);
+    const findOrderStatus = await this.orderStatusModel.findById(body._id);
 
     if (!findOrderStatus) {
       throw new NotFoundException('Order status not found');
     }
 
-    if (
-      body.name &&
-      Object.values(DeleteOrderStatusDto).includes(findOrderStatus.name)
-    ) {
+    if (findOrderStatus.static) {
       throw new BadRequestException("Can't update it");
-    }
-
-    if (isExistOrderStatusName) {
-      throw new BadRequestException(
-        'Order status with this name already exists',
-      );
     }
 
     delete body._id;
@@ -92,22 +70,17 @@ export class OrderStatusService {
     if (!findOrderStatus) {
       throw new NotFoundException('Order status not found');
     }
-    const statusName = findOrderStatus.name.toLowerCase();
-    if (
-      Object.values(DefaultOrderStatuses).includes(
-        statusName as DefaultOrderStatuses,
-      )
-    ) {
+    if (findOrderStatus.static) {
       throw new BadRequestException("Can't delete it");
     }
 
     await this.orderStatusModel.findByIdAndDelete(body._id);
   }
 
-  async returnOrCreateOrderStatus(status: string) {
+  async returnOrCreateOrderStatus() {
     const [findOrderStatus, findAll, count] = await Promise.all([
       this.orderStatusModel.findOne({
-        name: status,
+        nameUz: DefaultCreateOrderStatusNames.nameUz,
       }),
       this.orderStatusModel.find(),
       this.orderStatusModel.countDocuments(),
@@ -119,12 +92,18 @@ export class OrderStatusService {
 
     if (!findOrderStatus && !findAll.length) {
       await new this.orderStatusModel({
-        name: status,
+        nameUz: DefaultCreateOrderStatusNames.nameUz,
+        nameRu: DefaultCreateOrderStatusNames.nameRu,
+        nameEn: DefaultCreateOrderStatusNames.nameEn,
+        static: true,
         index: 0,
       }).save();
     }
     await new this.orderStatusModel({
-      name: status,
+      nameUz: DefaultCreateOrderStatusNames.nameUz,
+      nameRu: DefaultCreateOrderStatusNames.nameRu,
+      nameEn: DefaultCreateOrderStatusNames.nameEn,
+      static: true,
       index: count,
     }).save();
   }

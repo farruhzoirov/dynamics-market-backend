@@ -8,13 +8,12 @@ import {
   ValidateNested,
 } from 'class-validator';
 import {
+  BaseModelDto,
   DeleteBaseModelDto,
   UpdateBaseModelDto,
 } from '../../../shared/dto/base-model.dto';
 import { IsObjectId } from '../../../common/decorators/object-id.decarator';
-import { Prop } from '@nestjs/mongoose';
 import { Type } from 'class-transformer';
-import { FaqOrderItemDto } from '../../faq/dto/faq.dto';
 
 export class OrderStatusItemDto {
   @ApiProperty({ example: '651bcb29d32e9e7d9f95f3dd' })
@@ -26,21 +25,17 @@ export class OrderStatusItemDto {
   index: number;
 }
 
-export class AddOrderStatusDto {
+export class AddOrderStatusDto extends BaseModelDto {
   @ApiProperty()
   @IsString()
-  name: string;
+  color: string;
 }
 
-export class UpdateOrderStatusDto {
-  @ApiProperty()
-  @IsObjectId()
-  _id: string;
-
+export class UpdateOrderStatusDto extends UpdateBaseModelDto {
   @ApiProperty()
   @IsString()
   @IsOptional()
-  name: string;
+  color: string;
 }
 
 export class UpdateOrderStatusIndexDto {
