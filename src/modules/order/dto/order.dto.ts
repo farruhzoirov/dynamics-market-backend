@@ -104,13 +104,11 @@ export class UpdateOrderDto {
   @IsOptional()
   phone: string;
 
-  @ApiProperty({
-    enum: DefaultOrderStatuses,
-    example: DefaultOrderStatuses.new,
-  })
-  @IsEnum(DefaultOrderStatuses)
+  @ApiProperty({ description: 'Order status ID' })
+  @IsObjectId()
+  @IsString()
   @IsOptional()
-  status: DefaultOrderStatuses;
+  status: string;
 }
 
 export class DeleteOrderDto extends DeleteBaseModelDto {}

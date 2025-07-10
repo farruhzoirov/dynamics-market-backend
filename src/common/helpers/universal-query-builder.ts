@@ -46,6 +46,7 @@ export const getFilteredResultsWithTotal = async (
   return await Promise.all([
     await currentModel
       .find(filter)
+      .populate('status')
       .skip(skip)
       .sort(sort)
       .limit(payload.limit)

@@ -98,4 +98,29 @@ export class OrderStatusService {
 
     await this.orderStatusModel.findByIdAndDelete(body._id);
   }
+
+  async returnOrCreateOrderStatus(status: string) {
+    const [findOrderStatus, findAll, count] = await Promise.all([
+      this.orderStatusModel.findOne({
+        name: status,
+      }),
+      this.orderStatusModel.find(),
+      this.orderStatusModel.countDocuments(),
+    ]);
+
+    if (findOrderStatus) {
+      return findOrderStatus;
+    }
+
+    if (!findOrderStatus && !findAll.length) {
+      await new this.orderStatusModel({
+        name: status,
+        index: 0,
+      }).save();
+    }
+    await new this.orderStatusModel({
+      name: status,
+      index: count,
+    }).save();
+  }
 }

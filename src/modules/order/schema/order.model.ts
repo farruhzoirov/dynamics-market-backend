@@ -1,7 +1,6 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { HydratedDocument } from 'mongoose';
+import mongoose, { HydratedDocument } from 'mongoose';
 import { CustomerType } from '../../../shared/enums/customer-type.enum';
-import { DefaultOrderStatuses } from '../../../shared/enums/order-status.enum';
 import { ProductItem } from 'src/shared/interfaces/product-items';
 
 export type OrderDocument = HydratedDocument<Order>;
@@ -53,11 +52,12 @@ export class Order {
   phone: string;
 
   @Prop({
-    type: String,
-    enum: DefaultOrderStatuses,
-    default: DefaultOrderStatuses.new,
+    type: mongoose.Types.ObjectId,
+    ref: 'OrderStatus',
+    required: true,
+    default: null,
   })
-  status: DefaultOrderStatuses;
+  status: mongoose.Types.ObjectId;
 
   @Prop({ default: false })
   isDeleted: boolean;

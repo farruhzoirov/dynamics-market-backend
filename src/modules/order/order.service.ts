@@ -20,6 +20,8 @@ import {
   buildUserOrdersPipeline,
 } from 'src/common/helpers/pipelines/order.pipeline';
 import { TelegramNotificationService } from '../../shared/module/telegram/telegram.service';
+import { OrderStatusService } from '../order-status/order-status.service';
+import { DefaultOrderStatuses } from '../../shared/enums/order-status.enum';
 
 @Injectable()
 export class OrderService {
@@ -28,6 +30,7 @@ export class OrderService {
     @InjectModel(Cart.name) private cartModel: Model<CartDocument>,
     @InjectModel(Counter.name) private counterModel: Model<CounterDocument>,
     private readonly telegramNotificationService: TelegramNotificationService,
+    private readonly orderStatusService: OrderStatusService,
   ) {}
 
   async getOrdersList(body: GetOrdersDto) {
@@ -115,9 +118,12 @@ export class OrderService {
       sku: item.product.sku,
       price: item.product.currentPrice ?? null,
     }));
-
+    const orderStatus = await this.orderStatusService.returnOrCreateOrderStatus(
+      DefaultOrderStatuses.new,
+    );
     const [createdOrder] = await Promise.all([
       await this.orderModel.create({
+        status: orderStatus._id,
         ...body,
         orderCode,
         userId,

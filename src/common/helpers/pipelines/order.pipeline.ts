@@ -13,10 +13,23 @@ export const buildUserOrdersPipeline = async (
       },
     },
     {
+      $lookup: {
+        from: 'orderStatus',
+        localField: 'status',
+        foreignField: '_id',
+        as: 'statusInfo',
+      },
+    },
+    {
+      $unwind: {
+        path: '$statusInfo',
+        preserveNullAndEmptyArrays: true,
+      },
+    },
+    {
       $project: {
         _id: 1,
         orderCode: 1,
-        status: 1,
         comment: 1,
         createdAt: 1,
         items: {
@@ -31,13 +44,18 @@ export const buildUserOrdersPipeline = async (
             },
           },
         },
+        status: {
+          _id: '$statusInfo._id',
+          name: '$statusInfo.name',
+          index: '$statusInfo.index',
+        },
         itemsCount: {
           $size: { $ifNull: ['$items', []] },
         },
       },
     },
     {
-      $sort: sort
+      $sort: sort,
     },
     {
       $skip: skip,
@@ -47,47 +65,6 @@ export const buildUserOrdersPipeline = async (
     },
   ];
 };
-
-// export const buildSingleOrderPipeline = async (
-//   match: Record<string, string | boolean>,
-//   lang: string,
-// ) => {
-//   return [
-//     {
-//       $match: match,
-//     },
-//     {
-//       $project: {
-//         _id: 1,
-//         orderCode: 1,
-//         firstName: 1,
-//         lastName: 1,
-//         email: 1,
-//         price: 1,
-//         phone: 1,
-//         customerType: 1,
-//         companyName: 1,
-//         createdAt: 1,
-//         status: 1,
-//         items: {
-//           $map: {
-//             input: { $ifNull: ['$items', []] },
-//             as: 'item',
-//             in: {
-//               productId: '$$item.productId',
-//               name: lang ? { $ifNull: [`$$item.name${lang}`, null] } : null,
-//               quantity: '$$item.quantity',
-//               price: '$$item.price',
-//             },
-//           },
-//         },
-//       },
-//     },
-//   ];
-// };
-
-
-
 
 export const buildSingleOrderPipeline = async (
   match: Record<string, string | boolean>,
@@ -116,7 +93,7 @@ export const buildSingleOrderPipeline = async (
           {
             $project: {
               thumbs: 1,
-              [`slug${lang}`]: 1
+              [`slug${lang}`]: 1,
             },
           },
         ],
@@ -135,11 +112,23 @@ export const buildSingleOrderPipeline = async (
         'items.thumbs': '$productDetails.thumbs',
         'items.productId': 'items.productId',
         'items.slug': `$productDetails.slug${lang}`,
-        'items.name': lang
-          ? { $ifNull: [`$items.name${lang}`, null] }
-          : null,
-        'quantity': '$items.quantity',
+        'items.name': lang ? { $ifNull: [`$items.name${lang}`, null] } : null,
+        quantity: '$items.quantity',
         price: '$items.price',
+      },
+    },
+    {
+      $lookup: {
+        from: 'orderStatus',
+        localField: 'status',
+        foreignField: '_id',
+        as: 'statusInfo',
+      },
+    },
+    {
+      $unwind: {
+        path: '$statusInfo',
+        preserveNullAndEmptyArrays: true,
       },
     },
     {
@@ -154,15 +143,18 @@ export const buildSingleOrderPipeline = async (
         customerType: { $first: '$customerType' },
         companyName: { $first: '$companyName' },
         createdAt: { $first: '$createdAt' },
-        status: { $first: '$status' },
         items: { $push: '$items' },
+        status: {
+          $first: {
+            _id: '$statusInfo._id',
+            name: '$statusInfo.name',
+            index: '$statusInfo.index',
+          },
+        },
       },
     },
   ];
 };
-
-
-
 
 export const buildCartItemsPipeline = async (userId: string) => {
   return [

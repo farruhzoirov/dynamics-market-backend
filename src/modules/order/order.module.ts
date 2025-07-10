@@ -8,6 +8,11 @@ import { Counter, CounterSchema } from './schema/counter.model';
 import { OrderWithAmoCrmService } from 'src/shared/module/amocrm/services/order.service';
 import { ConnectAmocrmService } from 'src/shared/module/amocrm/connect-amocrm.service';
 import { TelegramNotificationService } from '../../shared/module/telegram/telegram.service';
+import {
+  OrderStatus,
+  OrderStatusSchema,
+} from '../order-status/schema/order-status.model';
+import { OrderStatusService } from '../order-status/order-status.service';
 
 @Module({
   imports: [
@@ -27,6 +32,6 @@ import { TelegramNotificationService } from '../../shared/module/telegram/telegr
     ]),
   ],
   controllers: [OrderController],
-  providers: [OrderService, TelegramNotificationService],
+  providers: [OrderService, TelegramNotificationService, OrderStatusService],
 })
 export class OrderModule {}
