@@ -42,7 +42,7 @@ export class OrderService {
     const [data, total] = await getFilteredResultsWithTotal(
       body,
       this.orderModel,
-      ['orderCode', 'firstName', 'lastName', 'status'],
+      ['orderCode', 'firstName', 'lastName'],
     );
 
     return {
@@ -53,15 +53,17 @@ export class OrderService {
 
   async getOrdersByUserId(body: GetOrdersDto, user: IJwtPayload, lang: string) {
     const sort: Record<string, any> = { createdAt: -1 };
-    const limit = body.limit ? body.limit : 12;
-    const skip = body.page ? (body.page - 1) * limit : 0;
-    const userId = user._id;
+    const limit = body?.limit ? body?.limit : 12;
+    const skip = body?.page ? (body?.page - 1) * limit : 0;
+    const userId = user?._id;
+    const status = body?.status || null;
     const pipeline = await buildUserOrdersPipeline(
       userId,
       lang,
       sort,
       skip,
       limit,
+      status,
     );
     const [findOrders, total] = await Promise.all([
       await this.orderModel.aggregate(pipeline),

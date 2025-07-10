@@ -7,4 +7,5 @@ export interface IUniversalQuery {
   categoryId?: string;
   brandId?: string;
   createdDate?: string;
+  status?: string;
 }

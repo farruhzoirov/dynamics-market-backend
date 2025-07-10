@@ -39,10 +39,15 @@ export const getFilteredResultsWithTotal = async (
     filter.brandId = body.brandId;
   }
 
+  if (body.status) {
+    filter.status = body.status;
+  }
+
   if (body.createdDate) {
     filter.createdAt = createDateRangeFilter(body.createdDate);
   }
 
+  console.log(filter);
   return await Promise.all([
     await currentModel
       .find(filter)

@@ -16,12 +16,7 @@ import {
 import { IsObjectId } from '../../../common/decorators/object-id.decarator';
 import { Type } from 'class-transformer';
 
-export class GetOrderStatusListDto extends UniversalQueryDto {
-  @ApiProperty({ example: '642423k2jwnejfnjsdw34' })
-  @IsObjectId()
-  @IsOptional()
-  status: string;
-}
+export class GetOrderStatusListDto extends UniversalQueryDto {}
 
 export class OrderStatusItemDto {
   @ApiProperty({ example: '651bcb29d32e9e7d9f95f3dd' })

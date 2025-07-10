@@ -44,11 +44,19 @@ export class OrderStatusService {
   }
 
   async addOrderStatus(body: AddOrderStatusDto) {
-    const count = await this.orderStatusModel.countDocuments();
-    await this.orderStatusModel.create({
-      ...body,
-      index: count,
-    });
+    try {
+      const count = await this.orderStatusModel.countDocuments();
+      await this.orderStatusModel.create({
+        ...body,
+        index: count,
+      });
+    } catch (err) {
+      if (err.code === 'E11000') {
+        throw new BadRequestException(
+          'Order status already exists. Duplicate name.',
+        );
+      }
+    }
   }
 
   async updateOrderStatusIndex(body: UpdateOrderStatusIndexDto) {
@@ -63,19 +71,27 @@ export class OrderStatusService {
   }
 
   async updateOrderStatus(body: UpdateOrderStatusDto) {
-    const id = body._id;
-    const findOrderStatus = await this.orderStatusModel.findById(body._id);
+    try {
+      const id = body._id;
+      const findOrderStatus = await this.orderStatusModel.findById(body._id);
 
-    if (!findOrderStatus) {
-      throw new NotFoundException('Order status not found');
+      if (!findOrderStatus) {
+        throw new NotFoundException('Order status not found');
+      }
+
+      if (findOrderStatus.static) {
+        throw new BadRequestException("Can't update it");
+      }
+
+      delete body._id;
+      await this.orderStatusModel.findByIdAndUpdate(id, { $set: body });
+    } catch (err) {
+      if (err.code === 'E11000') {
+        throw new BadRequestException(
+          'Order status already exists. Duplicate name.',
+        );
+      }
     }
-
-    if (findOrderStatus.static) {
-      throw new BadRequestException("Can't update it");
-    }
-
-    delete body._id;
-    await this.orderStatusModel.findByIdAndUpdate(id, { $set: body });
   }
 
   async deleteOrderStatus(body: DeleteOrderStatusDto) {
