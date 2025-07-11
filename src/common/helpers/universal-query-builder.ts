@@ -47,7 +47,6 @@ export const getFilteredResultsWithTotal = async (
     filter.createdAt = createDateRangeFilter(body.createdDate);
   }
 
-  console.log(filter);
   return await Promise.all([
     await currentModel
       .find(filter)
