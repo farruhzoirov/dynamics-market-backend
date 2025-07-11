@@ -16,23 +16,23 @@ dotenv.config();
 
 async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule);
-  app.use(
-    helmet({
-      contentSecurityPolicy: {
-        useDefaults: true,
-        directives: {
-          defaultSrc: ["'self'"],
-          imgSrc: [
-            "'self'",
-            'data:',
-            'blob:',
-            'https://backend.dynamics-market.uz',
-          ],
-          mediaSrc: ["'self'", 'https://backend.dynamics-market.uz'],
-        },
-      },
-    }),
-  );
+  // app.use(
+  //   helmet({
+  //     contentSecurityPolicy: {
+  //       useDefaults: true,
+  //       directives: {
+  //         defaultSrc: ["'self'"],
+  //         imgSrc: [
+  //           "'self'",
+  //           'data:',
+  //           'blob:',
+  //           'https://backend.dynamics-market.uz',
+  //         ],
+  //         mediaSrc: ["'self'", 'https://backend.dynamics-market.uz'],
+  //       },
+  //     },
+  //   }),
+  // );
   app.enableCors({
     origin: '*',
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
