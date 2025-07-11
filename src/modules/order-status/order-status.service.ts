@@ -15,12 +15,15 @@ import {
 } from './dto/order-status.dto';
 import { DefaultCreateOrderStatusNames } from '../../shared/enums/order-status.enum';
 import { universalSearchQuery } from '../../common/helpers/universal-search-query';
+import { Order, OrderDocument } from '../order/schema/order.model';
 
 @Injectable()
 export class OrderStatusService {
   constructor(
     @InjectModel(OrderStatus.name)
     private readonly orderStatusModel: Model<OrderStatusDocument>,
+    @InjectModel(Order.name)
+    private readonly orderModel: Model<OrderDocument>,
   ) {}
 
   async getOrderStatusList(body: GetOrderStatusListDto) {
@@ -102,6 +105,16 @@ export class OrderStatusService {
     }
     if (findOrderStatus.static) {
       throw new BadRequestException("Can't delete it");
+    }
+
+    const findOrderWithOrderStatus = await this.orderModel.findOne({
+      status: findOrderStatus._id,
+    });
+
+    if (findOrderWithOrderStatus) {
+      throw new BadRequestException(
+        "Can't delete it. Order with this status exists",
+      );
     }
 
     await this.orderStatusModel.findByIdAndDelete(body._id);

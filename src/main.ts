@@ -48,7 +48,7 @@ async function bootstrap() {
     }),
   );
 
-  // Swagger based
+  // Swagger-based
   const options = new DocumentBuilder()
     .setTitle('DYNAMICS MARKETS APIS')
     .setDescription('These apis for dynamics market')
