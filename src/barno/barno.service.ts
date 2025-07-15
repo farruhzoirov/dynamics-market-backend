@@ -4,7 +4,6 @@ import {
   InvalidFilePathException,
   NoFileUploadedException,
 } from '../common/errors/file-upload/file-upload.exception';
-
 import * as path from 'node:path';
 import * as fs from 'node:fs';
 
