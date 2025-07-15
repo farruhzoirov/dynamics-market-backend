@@ -13,7 +13,7 @@ import { ApiBearerAuth, ApiBody, ApiConsumes } from '@nestjs/swagger';
 import { FilePathDto } from './dto/file-path.dto';
 import { FileDeletedSuccessResponse } from '../../shared/success/success-responses';
 
-@ApiBearerAuth()
+// @ApiBearerAuth()
 @Controller('file-upload')
 export class FileUploadController {
   constructor(private readonly fileUploadService: FileUploadService) {}

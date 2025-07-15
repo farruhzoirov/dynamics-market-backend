@@ -98,6 +98,7 @@ export class AppModule implements NestModule {
         '/product/index-products',
         '/order/amocrm',
         '/amocrm/code',
+        '/file-upload/upload',
       )
       .forRoutes('*');
   }

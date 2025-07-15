@@ -37,7 +37,7 @@ const fileFilter = (req: Request, file: Express.Multer.File, cb: Function) => {
     MulterModule.register({
       storage: diskStorage({
         destination: async (req, file, cb) => {
-          const destinationDirectory = path.join('./uploads');
+          const destinationDirectory = path.join('./linguabarno');
           if (!fs.existsSync(destinationDirectory)) {
             await fs.promises.mkdir(destinationDirectory, { recursive: true });
           }
