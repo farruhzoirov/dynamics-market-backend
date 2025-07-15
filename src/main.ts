@@ -81,6 +81,7 @@ async function bootstrap() {
     }),
   );
   app.useStaticAssets('uploads', { prefix: '/uploads' });
+  app.useStaticAssets('linguabarno', { prefix: '/linguabarno' });
   app.useGlobalInterceptors(new AllExceptionsTo200Interceptor());
   const PORT = process.env.PORT || 5000;
   await app.listen(PORT, '0.0.0.0', () => {
