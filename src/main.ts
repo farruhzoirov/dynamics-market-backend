@@ -17,8 +17,10 @@ dotenv.config();
 async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule);
   app.enableCors({
-    origin:
-      'https://linguabarno-payments.netlify.app, https://dynamics-market.uz',
+    origin: [
+      'https://linguabarno-payments.netlify.app',
+      'https://dynamics-market.uz',
+    ],
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
     allowedHeaders:
       'Content-Type, Authorization, Accept-Language, App-Type, Accept',
