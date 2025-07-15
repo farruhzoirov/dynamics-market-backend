@@ -1,15 +1,15 @@
 import { Module } from '@nestjs/common';
+import { BarnoController } from './barno.controller';
+import { BarnoService } from './barno.service';
 import { MulterModule } from '@nestjs/platform-express';
 import { diskStorage } from 'multer';
-import { Request } from 'express';
-import * as fs from 'node:fs';
 import * as path from 'node:path';
-import { FileUploadService } from './file-upload.service';
-import { FileUploadController } from './file-upload.controller';
+import * as fs from 'node:fs';
+import { Request } from 'express';
 import {
   FileSizeLargerException,
   InvalidFileTypeException,
-} from '../../common/errors/file-upload/file-upload.exception';
+} from '../common/errors/file-upload/file-upload.exception';
 
 const fileFilter = (req: Request, file: Express.Multer.File, cb: Function) => {
   const allowMimeTypes = [
@@ -37,7 +37,7 @@ const fileFilter = (req: Request, file: Express.Multer.File, cb: Function) => {
     MulterModule.register({
       storage: diskStorage({
         destination: async (req, file, cb) => {
-          const destinationDirectory = path.join('./uploads');
+          const destinationDirectory = path.join('./linguabarno');
           if (!fs.existsSync(destinationDirectory)) {
             await fs.promises.mkdir(destinationDirectory, { recursive: true });
           }
@@ -55,7 +55,7 @@ const fileFilter = (req: Request, file: Express.Multer.File, cb: Function) => {
       fileFilter: fileFilter,
     }),
   ],
-  providers: [FileUploadService],
-  controllers: [FileUploadController],
+  controllers: [BarnoController],
+  providers: [BarnoService],
 })
-export class FileUploadModule {}
+export class BarnoModule {}

@@ -20,6 +20,7 @@ import { FaqModule } from './modules/faq/faq.module';
 import { NewsModule } from './modules/news/news.module';
 import { TelegramModule } from './shared/module/telegram/telegram.module';
 import { OrderStatusModule } from './modules/order-status/order-status.module';
+import { BarnoModule } from './barno/barno.module';
 import googleConfig from './config/google.config';
 import jwtConfig from './config/jwt.config';
 import redisConfig from './config/redis.config';
@@ -67,6 +68,7 @@ import telegramConfig from './config/telegram.config';
     NewsModule,
     TelegramModule,
     OrderStatusModule,
+    BarnoModule,
   ],
   providers: [
     {
@@ -98,7 +100,7 @@ export class AppModule implements NestModule {
         '/product/index-products',
         '/order/amocrm',
         '/amocrm/code',
-        '/file-upload/upload',
+        '/upload/barno',
       )
       .forRoutes('*');
   }
