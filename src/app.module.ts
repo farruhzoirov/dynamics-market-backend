@@ -31,9 +31,18 @@ import jwtConfig from './config/jwt.config';
 import redisConfig from './config/redis.config';
 import amocrmConfig from './config/amocrm.config';
 import telegramConfig from './config/telegram.config';
+import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
 
 @Module({
   imports: [
+    ThrottlerModule.forRoot({
+      throttlers: [
+        {
+          ttl: 1000,
+          limit: 1,
+        },
+      ],
+    }),
     ConfigModule.forRoot({
       load: [
         databaseConfig,
@@ -79,6 +88,10 @@ import telegramConfig from './config/telegram.config';
     {
       provide: APP_GUARD,
       useClass: RolesGuard,
+    },
+    {
+      provide: APP_GUARD,
+      useClass: ThrottlerGuard,
     },
   ],
 })

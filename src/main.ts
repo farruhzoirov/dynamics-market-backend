@@ -16,25 +16,9 @@ dotenv.config();
 
 async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule);
-  // app.use(
-  //   helmet({
-  //     contentSecurityPolicy: {
-  //       useDefaults: true,
-  //       directives: {
-  //         defaultSrc: ["'self'"],
-  //         imgSrc: [
-  //           "'self'",
-  //           'data:',
-  //           'blob:',
-  //           'https://backend.dynamics-market.uz',
-  //         ],
-  //         mediaSrc: ["'self'", 'https://backend.dynamics-market.uz'],
-  //       },
-  //     },
-  //   }),
-  // );
   app.enableCors({
-    origin: '*',
+    origin:
+      'https://linguabarno-payments.netlify.app, https://dynamics-market.uz',
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
     allowedHeaders:
       'Content-Type, Authorization, Accept-Language, App-Type, Accept',
