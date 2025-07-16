@@ -20,6 +20,7 @@ async function bootstrap() {
     origin: [
       'https://linguabarno-payments.netlify.app',
       'https://dynamics-market.uz',
+      'https://admin.dynamics-market.uz',
     ],
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
     allowedHeaders:
