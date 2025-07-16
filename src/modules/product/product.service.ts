@@ -337,9 +337,10 @@ export class ProductService {
         hierarchy,
         hierarchyPath,
       };
-      const newProduct = await this.productModel.create(createBody);
-      await this.elasticSearchService.indexProduct(newProduct);
-      await this.elasticSearchService.bulkIndex([newProduct]);
+      await this.productModel.create(createBody);
+      // const newProduct = await this.productModel.create(createBody);
+      // await this.elasticSearchService.indexProduct(newProduct);
+      // await this.elasticSearchService.bulkIndex([newProduct]);
     } catch (err) {
       console.log(`adding product ====>  ${err}`);
       throw new AddingModelException(err.message);
@@ -385,8 +386,8 @@ export class ProductService {
       },
       { new: true },
     );
-    await this.elasticSearchService.updateIndexedProduct(updatedProduct);
-    await this.elasticSearchService.bulkIndex([updatedProduct]);
+    // await this.elasticSearchService.updateIndexedProduct(updatedProduct);
+    // await this.elasticSearchService.bulkIndex([updatedProduct]);
     return updatedProduct.thumbs;
   }
 
@@ -396,7 +397,7 @@ export class ProductService {
       throw new ModelDataNotFoundByIdException('Product not found');
     }
     await this.productModel.updateOne({ _id: body._id }, { isDeleted: true });
-    await this.elasticSearchService.deleteIndexedProduct(body._id.toString());
+    // await this.elasticSearchService.deleteIndexedProduct(body._id.toString());
   }
 
   async updateProductViewsInBackground(productId: string, ip: string) {
