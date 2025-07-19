@@ -1,32 +1,41 @@
-export const createDateRangeFilter = (dateString: string) => {
-  if (!dateString) return null;
+export const createDateRangeFilter = (fromDate?: string, toDate?: string) => {
+  if (!fromDate && !toDate) return null;
 
-  const [day, month, year] = dateString.split('.');
+  const filter: Record<string, Date> = {};
 
-  if (!day || !month || !year) return null;
+  if (fromDate) {
+    const [day, month, year] = fromDate.split('.');
 
-  const startDate = new Date(
-    parseInt(year),
-    parseInt(month) - 1,
-    parseInt(day),
-    0,
-    0,
-    0,
-    0,
-  );
+    if (day && month && year) {
+      const startDate = new Date(
+        parseInt(year),
+        parseInt(month) - 1,
+        parseInt(day),
+        0,
+        0,
+        0,
+        0,
+      );
+      filter.$gte = startDate;
+    }
+  }
 
-  const endDate = new Date(
-    parseInt(year),
-    parseInt(month) - 1,
-    parseInt(day),
-    23,
-    59,
-    59,
-    999,
-  );
+  if (toDate) {
+    const [day, month, year] = toDate.split('.');
 
-  return {
-    $gte: startDate,
-    $lte: endDate,
-  };
+    if (day && month && year) {
+      const endDate = new Date(
+        parseInt(year),
+        parseInt(month) - 1,
+        parseInt(day),
+        23,
+        59,
+        59,
+        999,
+      );
+      filter.$lte = endDate;
+    }
+  }
+
+  return Object.keys(filter).length > 0 ? filter : null;
 };

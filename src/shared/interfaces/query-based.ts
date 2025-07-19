@@ -8,5 +8,7 @@ export interface IUniversalQuery {
   categoryId?: string;
   brandId?: string;
   createdDate?: string;
+  fromDate?: string;
+  toDate?: string;
   status?: string | mongoose.Types.ObjectId;
 }

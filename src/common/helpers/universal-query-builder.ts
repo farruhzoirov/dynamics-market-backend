@@ -43,8 +43,8 @@ export const getFilteredResultsWithTotal = async (
     filter.status = body.status;
   }
 
-  if (body.createdDate) {
-    filter.createdAt = createDateRangeFilter(body.createdDate);
+  if (body.fromDate && body.toDate) {
+    filter.createdAt = createDateRangeFilter(body.fromDate, body.toDate);
   }
 
   return await Promise.all([

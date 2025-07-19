@@ -42,7 +42,15 @@ export class OrderService {
     const [data, total] = await getFilteredResultsWithTotal(
       body,
       this.orderModel,
-      ['orderCode', 'firstName', 'lastName'],
+      [
+        'orderCode',
+        'firstName',
+        'lastName',
+        'email',
+        'phone',
+        'companyName',
+        'customerType',
+      ],
     );
 
     return {

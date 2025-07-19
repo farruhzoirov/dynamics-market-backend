@@ -21,6 +21,16 @@ export class GetOrdersDto extends UniversalQueryDto {
   @IsString()
   @IsOptional()
   status: string | mongoose.Types.ObjectId;
+
+  @ApiProperty()
+  @IsString()
+  @IsOptional()
+  fromDate: string;
+
+  @ApiProperty()
+  @IsString()
+  @IsOptional()
+  toDate: string;
 }
 
 export class GetOrderDto {
