@@ -1,6 +1,6 @@
 import { IUniversalQuery } from 'src/shared/interfaces/query-based';
 import { universalSearchQuery } from './universal-search-query';
-import { Model } from 'mongoose';
+import mongoose, { Model } from 'mongoose';
 import { createDateRangeFilter } from './date-filter.helper';
 
 export const getFilteredResultsWithTotal = async (
@@ -40,7 +40,7 @@ export const getFilteredResultsWithTotal = async (
   }
 
   if (body.status) {
-    filter.status = body.status;
+    filter.status = new mongoose.Types.ObjectId(body.status);
   }
 
   if (body.fromDate && body.toDate) {
