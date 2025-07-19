@@ -148,6 +148,15 @@ ProductSchema.index({ slugRu: 1 });
 ProductSchema.index({ slugEn: 1 });
 ProductSchema.index({ nameUz: 1, nameRu: 1, nameEn: 1 });
 ProductSchema.index({ hierarchyPath: 1 });
+ProductSchema.virtual('brand', {
+  ref: 'Brand',
+  localField: 'brandId',
+  foreignField: '_id',
+  justOne: true,
+});
+
+ProductSchema.set('toObject', { virtuals: true });
+ProductSchema.set('toJSON', { virtuals: true });
 
 export const ProductViewSchema = SchemaFactory.createForClass(ProductViews);
 ProductViewSchema.index({ productId: 1 });

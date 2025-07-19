@@ -17,6 +17,7 @@ export const getFilteredResultsWithTotal = async (
   };
   const skip = (payload.page - 1) * payload.limit;
   let filter: Record<string, any> = {};
+  let populate: string;
   const sort: Record<string, any> = {
     createdAt: -1,
   };
@@ -43,14 +44,22 @@ export const getFilteredResultsWithTotal = async (
     filter.status = new mongoose.Types.ObjectId(body.status);
   }
 
-  if (body.fromDate && body.toDate) {
+  if (body.fromDate || body.toDate) {
     filter.createdAt = createDateRangeFilter(body.fromDate, body.toDate);
+  }
+
+  if (currentModel.collection.collectionName === 'products') {
+    populate = 'brand';
+  }
+  console.log(currentModel.collection.collectionName);
+  if (currentModel.collection.collectionName === 'orders') {
+    populate = 'status';
   }
 
   return await Promise.all([
     await currentModel
       .find(filter)
-      .populate('status')
+      .populate(populate)
       .skip(skip)
       .sort(sort)
       .limit(payload.limit)

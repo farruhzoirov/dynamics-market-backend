@@ -1,6 +1,4 @@
 export const createDateRangeFilter = (fromDate?: string, toDate?: string) => {
-  if (!fromDate && !toDate) return null;
-
   const filter: Record<string, Date> = {};
 
   if (fromDate) {
