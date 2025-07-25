@@ -283,12 +283,17 @@ export class ProductService {
       this.productModel.countDocuments(match),
     ]);
 
+    const start = total === 0 ? 0 : skip + 1;
+    const end = Math.min(skip + limit, total);
+
     pages = Math.ceil(total / limit);
     return {
       data,
       total,
       pages,
       hierarchy,
+      start,
+      end,
     };
   }
 

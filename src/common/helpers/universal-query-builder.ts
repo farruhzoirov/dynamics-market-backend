@@ -51,7 +51,6 @@ export const getFilteredResultsWithTotal = async (
   if (currentModel.collection.collectionName === 'products') {
     populate = 'brand';
   }
-  console.log(currentModel.collection.collectionName);
   if (currentModel.collection.collectionName === 'orders') {
     populate = 'status';
   }
