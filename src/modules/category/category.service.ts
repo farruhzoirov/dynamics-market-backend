@@ -99,9 +99,12 @@ export class CategoryService {
     }
 
     const { nameUz, nameRu, nameEn } = updateBody;
-    const slugUz = nameUz ? generateUniqueSlug(nameUz) : null;
-    const slugRu = nameRu ? generateUniqueSlug(nameRu) : null;
-    const slugEn = nameEn ? generateUniqueSlug(nameEn) : null;
+    const slugUz =
+      findCategory.nameUz !== nameUz ? generateUniqueSlug(nameUz) : null;
+    const slugRu =
+      findCategory.nameRu !== nameRu ? generateUniqueSlug(nameRu) : null;
+    const slugEn =
+      findCategory.nameEn !== nameEn ? generateUniqueSlug(nameEn) : null;
 
     const forUpdateBody = {
       ...updateBody,

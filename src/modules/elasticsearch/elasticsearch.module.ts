@@ -9,8 +9,8 @@ import { ElasticsearchController } from './elasticsearch.controller';
       useFactory: async () => ({
         node: 'http://127.0.0.1:9200',
         maxRetries: 10,
-        requestTimeout: 5000,
-        pingTimeout: 5000,
+        requestTimeout: 15000,
+        pingTimeout: 15000,
         sniffOnStart: true,
       }),
     }),

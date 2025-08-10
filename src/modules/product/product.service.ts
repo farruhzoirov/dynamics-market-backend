@@ -343,9 +343,9 @@ export class ProductService {
         hierarchyPath,
       };
       await this.productModel.create(createBody);
-      // const newProduct = await this.productModel.create(createBody);
-      // await this.elasticSearchService.indexProduct(newProduct);
-      // await this.elasticSearchService.bulkIndex([newProduct]);
+      const newProduct = await this.productModel.create(createBody);
+      await this.elasticSearchService.indexProduct(newProduct);
+      await this.elasticSearchService.bulkIndex([newProduct]);
     } catch (err) {
       console.log(`adding product ====>  ${err}`);
       throw new AddingModelException(err.message);
@@ -360,9 +360,18 @@ export class ProductService {
       throw new ModelDataNotFoundByIdException('Product not found');
     }
     const { nameUz, nameRu, nameEn, images } = updateBody;
-    const slugUz = nameUz ? generateUniqueSlugForProduct(nameUz) : null;
-    const slugRu = nameRu ? generateUniqueSlugForProduct(nameRu) : null;
-    const slugEn = nameEn ? generateUniqueSlugForProduct(nameEn) : null;
+    const slugUz =
+      findProduct.nameUz !== nameUz
+        ? generateUniqueSlugForProduct(nameUz)
+        : null;
+    const slugRu =
+      findProduct.nameRu !== nameRu
+        ? generateUniqueSlugForProduct(nameRu)
+        : null;
+    const slugEn =
+      findProduct.nameEn !== nameEn
+        ? generateUniqueSlugForProduct(nameEn)
+        : null;
 
     if (images && images?.length) {
       updateBody.thumbs = await generateThumbs(updateBody.images);
@@ -391,8 +400,8 @@ export class ProductService {
       },
       { new: true },
     );
-    // await this.elasticSearchService.updateIndexedProduct(updatedProduct);
-    // await this.elasticSearchService.bulkIndex([updatedProduct]);
+    await this.elasticSearchService.updateIndexedProduct(updatedProduct);
+    await this.elasticSearchService.bulkIndex([updatedProduct]);
     return updatedProduct.thumbs;
   }
 
@@ -402,7 +411,7 @@ export class ProductService {
       throw new ModelDataNotFoundByIdException('Product not found');
     }
     await this.productModel.updateOne({ _id: body._id }, { isDeleted: true });
-    // await this.elasticSearchService.deleteIndexedProduct(body._id.toString());
+    await this.elasticSearchService.deleteIndexedProduct(body._id.toString());
   }
 
   async updateProductViewsInBackground(productId: string, ip: string) {

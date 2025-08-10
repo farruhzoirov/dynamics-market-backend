@@ -73,7 +73,8 @@ export class BrandService {
     }
 
     const { nameEn } = updateBody;
-    const slug = nameEn ? generateUniqueSlug(nameEn) : null;
+    const slug =
+      findBrand.nameEn !== nameEn ? generateUniqueSlug(nameEn) : null;
 
     const forUpdateBody = {
       ...updateBody,
