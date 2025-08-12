@@ -342,7 +342,6 @@ export class ProductService {
         hierarchy,
         hierarchyPath,
       };
-      await this.productModel.create(createBody);
       const newProduct = await this.productModel.create(createBody);
       await this.elasticSearchService.indexProduct(newProduct);
       await this.elasticSearchService.bulkIndex([newProduct]);
