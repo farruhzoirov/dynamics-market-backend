@@ -55,6 +55,42 @@ export class ProductService {
     private readonly elasticSearchService: SearchService,
   ) {}
 
+  async uploadProductImages(body: any) {
+    if (body.images) {
+      body.thumbs = await generateThumbs(body.images);
+    }
+
+    if (body.imageName.length === 3) {
+      body.imageName = `00${body.imageName}`;
+    }
+
+    const findProduct = await this.productModel.findOne({
+      sku: body.imageName,
+    });
+
+    if (!findProduct) {
+      return {
+        status: 404,
+        message: `Product not found with ${body.imageName}`,
+      };
+    }
+
+    await this.productModel.findOneAndUpdate(
+      { sku: body.imageName },
+      {
+        $set: {
+          images: body.images,
+          thumbs: body.thumbs,
+        },
+      },
+    );
+
+    return {
+      status: 200,
+      message: 'Updated succesfully',
+    };
+  }
+
   async searchProducts(body: SearchProductsDto, lang: string) {
     let sort: Record<string, 1 | -1> = { createdAt: -1, views: -1 };
     const search = true;
@@ -360,15 +396,17 @@ export class ProductService {
     }
     const { nameUz, nameRu, nameEn, images } = updateBody;
     const slugUz =
-      findProduct.nameUz !== nameUz
+      nameUz && findProduct.nameUz !== nameUz
         ? generateUniqueSlugForProduct(nameUz)
         : null;
+
     const slugRu =
-      findProduct.nameRu !== nameRu
+      nameRu && findProduct.nameRu !== nameRu
         ? generateUniqueSlugForProduct(nameRu)
         : null;
+
     const slugEn =
-      findProduct.nameEn !== nameEn
+      nameEn && findProduct.nameEn !== nameEn
         ? generateUniqueSlugForProduct(nameEn)
         : null;
 

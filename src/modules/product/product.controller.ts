@@ -40,6 +40,11 @@ import { UserRole } from '../../shared/enums/roles.enum';
 export class ProductController {
   constructor(private readonly productService: ProductService) {}
 
+  @Post('products-image')
+  async uploadProductImages(@Body() body: any) {
+    return this.productService.uploadProductImages(body);
+  }
+
   @HttpCode(HttpStatus.OK)
   @Get('index-products')
   async indexProducts() {

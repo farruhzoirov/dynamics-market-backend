@@ -17,9 +17,8 @@ import {
 import { Product, ProductDocument } from '../product/schemas/product.model';
 import { IHierarchyPayload } from 'src/shared/interfaces/hierarchy-payload';
 import { buildCategoryHierarchyPipeline } from 'src/common/helpers/pipelines/category-hierarchy-pipeline';
-import { RedisService } from 'src/shared/module/redis/redis.service';
 import { BuildCategoryHierarchyService } from 'src/shared/services/build-hierarchy.service';
-import { find } from 'rxjs';
+
 @Injectable()
 export class CategoryService {
   constructor(
