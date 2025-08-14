@@ -64,6 +64,7 @@
     "sharp": "^0.34.1",
     "slugify": "^1.6.6",
     "swagger-ui-express": "^5.0.1",
+    "tinify": "^1.8.1",
     "uuid": "^11.0.5"
   },
   "devDependencies": {
