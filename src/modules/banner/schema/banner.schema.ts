@@ -74,18 +74,14 @@ export class Banner {
   @Prop({
     type: [
       {
-        slugUz: String,
-        slugRu: String,
-        slugEn: String,
+        slug: String,
       },
     ],
     default: [],
   })
   brandSlugs: [
     {
-      slugUz: string;
-      slugRu: string;
-      slugEn: string;
+      slug: string;
     },
   ];
 
@@ -101,4 +97,4 @@ export class Banner {
 
 export const BannerSchema = SchemaFactory.createForClass(Banner);
 BannerSchema.index({ titleUz: 1, titleRu: 1, titleEn: 1 });
-BannerSchema.index({isDeleted: 1})
+BannerSchema.index({ isDeleted: 1 });

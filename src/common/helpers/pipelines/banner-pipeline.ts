@@ -44,7 +44,7 @@ export async function buildBannerPipeline(lang: string) {
           $map: {
             input: { $ifNull: ['$brandSlugs', []] },
             as: 'brand',
-            in: lang ? { $ifNull: [`$$brand.slug${lang}`, null] } : null,
+            in: { $ifNull: [`$$brand.slug`, null] },
           },
         },
       },
