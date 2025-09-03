@@ -25,7 +25,7 @@ import { FaqModule } from './modules/faq/faq.module';
 import { NewsModule } from './modules/news/news.module';
 import { TelegramModule } from './shared/module/telegram/telegram.module';
 import { OrderStatusModule } from './modules/order-status/order-status.module';
-import { BarnoModule } from './barno/barno.module';
+import { ContactModule } from './modules/contact/contact.module';
 import googleConfig from './config/google.config';
 import jwtConfig from './config/jwt.config';
 import redisConfig from './config/redis.config';
@@ -73,7 +73,7 @@ import telegramConfig from './config/telegram.config';
     NewsModule,
     TelegramModule,
     OrderStatusModule,
-    BarnoModule,
+    ContactModule,
   ],
   providers: [
     {
@@ -106,8 +106,9 @@ export class AppModule implements NestModule {
         '/order/amocrm',
         '/amocrm/code',
         // '/upload/barno',
-        // 'file-upload/upload',
+        'file-upload/upload',
         // 'product/products-image',
+        '/contact',
       )
       .forRoutes({ path: '*', method: RequestMethod.POST });
   }

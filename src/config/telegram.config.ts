@@ -9,5 +9,6 @@ export const TELEGRAM = 'TELEGRAM';
 export default registerAs(TELEGRAM, () => ({
   TELEGRAM_BOT_TOKEN: process.env.TELEGRAM_BOT_TOKEN,
   ADMIN_CHAT_ID: process.env.ADMIN_CHAT_ID,
+  ADMIN_USER_ID: process.env.ADMIN_USER_ID,
   TOPIC_ID: process.env.TOPIC_ID,
 }));
