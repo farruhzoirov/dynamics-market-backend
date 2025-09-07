@@ -281,7 +281,19 @@ export class ProductService {
     const match: any = { isDeleted: false, status: 1 };
     if (category) {
       const findCategory = await this.categoryModel
-        .findOne({ [`slug${lang}`]: category })
+        .findOne({
+          $or: [
+            {
+              slugUz: category,
+            },
+            {
+              slugRu: category,
+            },
+            {
+              slugEn: category,
+            },
+          ],
+        })
         .lean();
 
       if (!findCategory) {
