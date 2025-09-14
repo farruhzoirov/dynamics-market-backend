@@ -2,9 +2,9 @@ import { readdir } from 'node:fs/promises';
 import * as fs from 'node:fs';
 import path from 'node:path';
 import tinify from 'tinify';
-tinify.key = 'TINIFY_KEY';
-const inputDir = './654-781';
-const outputDir = './654-781-compressed';
+tinify.key = '';
+const inputDir = './782-830';
+const outputDir = './782-830-compressed';
 
 if (!fs.existsSync(outputDir)) {
   fs.mkdirSync(outputDir, { recursive: true });
