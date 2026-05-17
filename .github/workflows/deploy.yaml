@@ -26,24 +26,24 @@ jobs:
             git reset --hard HEAD
             git pull origin main
 
-            cat > .env <<EOL
-PORT=${{ secrets.PORT }}
-MONGODB_URI=${{ secrets.MONGODB_URI }}
-REDIS_HOST=${{ secrets.REDIS_HOST }}
-REDIS_PORT=${{ secrets.REDIS_PORT }}
-GOOGLE_CLIENT_ID=${{ secrets.GOOGLE_CLIENT_ID }}
-JWT_SECRET_KEY=${{ secrets.JWT_SECRET_KEY }}
-AMOCRM_REDIRECT_URL=${{ secrets.AMOCRM_REDIRECT_URL }}
-AMOCRM_DOMAIN=${{ secrets.AMOCRM_DOMAIN }}
-AMOCRM_CLIENT_SECRET=${{ secrets.AMOCRM_CLIENT_SECRET }}
-AMOCRM_CLIENT_ID=${{ secrets.AMOCRM_CLIENT_ID }}
-AMOCRM_CODE=${{ secrets.AMOCRM_CODE }}
-TELEGRAM_BOT_TOKEN=${{ secrets.TELEGRAM_BOT_TOKEN }}
-ADMIN_CHAT_ID=${{ secrets.ADMIN_CHAT_ID }}
-ADMIN_USER_ID=${{ secrets.ADMIN_USER_ID }}
-TOPIC_ID=${{ secrets.TOPIC_ID }}
-SWAGGER_PASSWORD=${{ secrets.SWAGGER_PASSWORD }}
-EOL
+            {
+              echo "PORT=${{ secrets.PORT }}"
+              echo "MONGODB_URI=${{ secrets.MONGODB_URI }}"
+              echo "REDIS_HOST=${{ secrets.REDIS_HOST }}"
+              echo "REDIS_PORT=${{ secrets.REDIS_PORT }}"
+              echo "GOOGLE_CLIENT_ID=${{ secrets.GOOGLE_CLIENT_ID }}"
+              echo "JWT_SECRET_KEY=${{ secrets.JWT_SECRET_KEY }}"
+              echo "AMOCRM_REDIRECT_URL=${{ secrets.AMOCRM_REDIRECT_URL }}"
+              echo "AMOCRM_DOMAIN=${{ secrets.AMOCRM_DOMAIN }}"
+              echo "AMOCRM_CLIENT_SECRET=${{ secrets.AMOCRM_CLIENT_SECRET }}"
+              echo "AMOCRM_CLIENT_ID=${{ secrets.AMOCRM_CLIENT_ID }}"
+              echo "AMOCRM_CODE=${{ secrets.AMOCRM_CODE }}"
+              echo "TELEGRAM_BOT_TOKEN=${{ secrets.TELEGRAM_BOT_TOKEN }}"
+              echo "ADMIN_CHAT_ID=${{ secrets.ADMIN_CHAT_ID }}"
+              echo "ADMIN_USER_ID=${{ secrets.ADMIN_USER_ID }}"
+              echo "TOPIC_ID=${{ secrets.TOPIC_ID }}"
+              echo "SWAGGER_PASSWORD=${{ secrets.SWAGGER_PASSWORD }}"
+            } > .env
 
             docker compose down app
             docker compose up -d --build app
