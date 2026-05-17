@@ -1,4 +1,4 @@
-name: Deploy to VPS(Contabo)
+name: Deploy to VPS
 
 on:
   push:
@@ -15,37 +15,35 @@ jobs:
         uses: appleboy/ssh-action@master
         with:
           host: ${{ secrets.SERVER_IP }}
-
           username: ${{ secrets.SERVER_USER }}
           password: ${{ secrets.SERVER_PASSWORD }}
           script: |
-
-            if [ ! -d "dynamics-market-backend" ]; then
-              rm -rf dynamics-market-backend
-              git clone https://github.com/farruhzoirov/dynamics-market-backend.git
+            if [ ! -d "/root/dynamics-market-backend" ]; then
+              git clone https://github.com/farruhzoirov/dynamics-market-backend.git /root/dynamics-market-backend
             fi
 
-            cd dynamics-market-backend
+            cd /root/dynamics-market-backend
             git reset --hard HEAD
             git pull origin main
 
-            # 🔹 .env faylni yaratish
             cat > .env <<EOL
-            PORT=${{ secrets.PORT }}
-            MONGODB_URI=${{ secrets.MONGODB_URI }}
-            GOOGLE_CLIENT_ID=${{ secrets.GOOGLE_CLIENT_ID }}
-            JWT_SECRET_KEY=${{ secrets.JWT_SECRET_KEY }}
-            AMOCRM_REDIRECT_URL=${{ secrets.AMOCRM_REDIRECT_URL }}
-            AMOCRM_DOMAIN=${{ secrets.AMOCRM_DOMAIN }}
-            AMOCRM_CLIENT_SECRET=${{ secrets.AMOCRM_CLIENT_SECRET }}
-            AMOCRM_CLIENT_ID=${{ secrets.AMOCRM_CLIENT_ID }}
-            AMOCRM_CODE=${{secrets.AMOCRM_CODE}}
-            TELEGRAM_BOT_TOKEN=${{secrets.TELEGRAM_BOT_TOKEN}}
-            ADMIN_CHAT_ID=${{secrets.ADMIN_CHAT_ID}}
-            ADMIN_USER_ID=${{secrets.ADMIN_USER_ID}}
-            TOPIC_ID=${{secrets.TOPIC_ID}}
-            SWAGGER_PASSWORD=${{secrets.SWAGGER_PASSWORD}}
-            EOL
+PORT=${{ secrets.PORT }}
+MONGODB_URI=${{ secrets.MONGODB_URI }}
+REDIS_HOST=${{ secrets.REDIS_HOST }}
+REDIS_PORT=${{ secrets.REDIS_PORT }}
+GOOGLE_CLIENT_ID=${{ secrets.GOOGLE_CLIENT_ID }}
+JWT_SECRET_KEY=${{ secrets.JWT_SECRET_KEY }}
+AMOCRM_REDIRECT_URL=${{ secrets.AMOCRM_REDIRECT_URL }}
+AMOCRM_DOMAIN=${{ secrets.AMOCRM_DOMAIN }}
+AMOCRM_CLIENT_SECRET=${{ secrets.AMOCRM_CLIENT_SECRET }}
+AMOCRM_CLIENT_ID=${{ secrets.AMOCRM_CLIENT_ID }}
+AMOCRM_CODE=${{ secrets.AMOCRM_CODE }}
+TELEGRAM_BOT_TOKEN=${{ secrets.TELEGRAM_BOT_TOKEN }}
+ADMIN_CHAT_ID=${{ secrets.ADMIN_CHAT_ID }}
+ADMIN_USER_ID=${{ secrets.ADMIN_USER_ID }}
+TOPIC_ID=${{ secrets.TOPIC_ID }}
+SWAGGER_PASSWORD=${{ secrets.SWAGGER_PASSWORD }}
+EOL
 
-            docker-compose down
-            docker-compose up -d --build
+            docker compose down app
+            docker compose up -d --build app
