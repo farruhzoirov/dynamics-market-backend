@@ -133,21 +133,13 @@ export class OrderStatusService {
       return findOrderStatus;
     }
 
-    if (!findOrderStatus && !findAll.length) {
-      await new this.orderStatusModel({
-        nameUz: DefaultCreateOrderStatusNames.nameUz,
-        nameRu: DefaultCreateOrderStatusNames.nameRu,
-        nameEn: DefaultCreateOrderStatusNames.nameEn,
-        static: true,
-        index: 0,
-      }).save();
-    }
-    await new this.orderStatusModel({
+    return new this.orderStatusModel({
       nameUz: DefaultCreateOrderStatusNames.nameUz,
       nameRu: DefaultCreateOrderStatusNames.nameRu,
       nameEn: DefaultCreateOrderStatusNames.nameEn,
+      color: '#2196F3',
       static: true,
-      index: count,
+      index: findAll.length ? count : 0,
     }).save();
   }
 }
