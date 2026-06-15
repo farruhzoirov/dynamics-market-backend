@@ -35,8 +35,10 @@ export class TelegramNotificationService {
     orderCode: string,
   ) {
     try {
-      if (!this.bot || !this.adminChatId) {
-        this.logger.warn('Telegram bot or admin chat id not configured');
+      // topicId env'da TOPIC_ID nomi bilan turadi, lekin qiymati aslida
+      // /start bosgan foydalanuvchining shaxsiy chat id'si. Shu chatga yuboramiz.
+      if (!this.bot || !this.topicId) {
+        this.logger.warn('Telegram bot or chat id not configured');
         return;
       }
 
@@ -47,11 +49,7 @@ export class TelegramNotificationService {
         disable_web_page_preview: true,
       };
 
-      if (this.topicId) {
-        messageOptions.message_thread_id = this.topicId;
-      }
-
-      await this.bot.sendMessage(this.adminChatId, message, messageOptions);
+      await this.bot.sendMessage(this.topicId, message, messageOptions);
 
       this.logger.log(`Telegram notification sent for order: ${orderCode}`);
     } catch (err) {
